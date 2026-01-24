@@ -1,7 +1,7 @@
 # @infra - Infrastructure Agent
 
 **Role:** DevOps/Infrastructure Engineer
-**Scope:** Docker, PostgreSQL, Redis, CI/CD, monitoring
+**Scope:** Docker, FrankenPHP, PostgreSQL, Redis, CI/CD, monitoring
 
 ---
 
@@ -18,6 +18,7 @@ Before starting any task:
 ## Expertise
 
 - Docker & Docker Compose
+- **FrankenPHP** (application server with worker mode)
 - PostgreSQL 16+ with pgvector
 - Redis (caching, queues)
 - GitHub Actions CI/CD
@@ -42,12 +43,30 @@ Before starting any task:
 
 ```yaml
 services:
-  app:           # PHP application
+  app:           # FrankenPHP (application server with worker mode)
+  messenger:     # Async worker (Symfony Messenger)
   postgres:      # Database (pgvector/pgvector:pg16)
-  redis:         # Cache and queues
-  messenger:     # Async worker
-  frontend:      # React dev server (dev only)
+  redis:         # Cache and message queue
+  frontend:      # React dev server (dev only, future)
 ```
+
+### Architecture
+```
+┌─────────────────────────────────────────────────────────┐
+│                    docker-compose                        │
+├─────────────┬─────────────┬─────────────┬───────────────┤
+│ frankenphp  │  messenger  │  postgres   │    redis      │
+│   :8080     │   worker    │   :5432     │    :6379      │
+│             │             │  +pgvector  │               │
+└─────────────┴─────────────┴─────────────┴───────────────┘
+```
+
+### FrankenPHP Benefits
+- **Single container** instead of nginx + php-fpm
+- **Worker mode** for persistent PHP workers (better performance)
+- **HTTP/3 support** out of the box
+- **Built on Caddy** (automatic HTTPS, simple config)
+- **Hot reload** in development with `--watch`
 
 ### Health Checks
 Every service MUST have a health check:
@@ -56,16 +75,23 @@ Every service MUST have a health check:
 postgres:
   healthcheck:
     test: ["CMD-SHELL", "pg_isready -U signalist"]
-    interval: 5s
+    interval: 10s
     timeout: 5s
     retries: 5
 
 app:
   healthcheck:
-    test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+    test: ["CMD", "curl", "-f", "http://localhost/health"]
     interval: 30s
     timeout: 10s
     retries: 3
+
+redis:
+  healthcheck:
+    test: ["CMD", "redis-cli", "ping"]
+    interval: 10s
+    timeout: 5s
+    retries: 5
 ```
 
 ---
@@ -246,25 +272,64 @@ monolog:
 
 ---
 
+## FrankenPHP Configuration
+
+### Caddyfile Structure
+```caddyfile
+{
+    frankenphp
+    order php_server before file_server
+}
+
+:80 {
+    root * /app/public
+    php_server
+
+    # Security headers
+    header {
+        X-Frame-Options "SAMEORIGIN"
+        X-Content-Type-Options "nosniff"
+    }
+}
+```
+
+### Worker Mode (Production)
+```bash
+# Environment variable to enable worker mode
+FRANKENPHP_CONFIG=worker ./public/index.php
+```
+
+### Development Hot Reload
+```bash
+frankenphp run --config /etc/caddy/Caddyfile --watch
+```
+
+---
+
 ## Makefile Commands
 
 ```makefile
 # Infrastructure
-start:          docker compose up -d --build
-stop:           docker compose down
-restart:        stop start
+up:             docker compose up -d
+down:           docker compose down
+build:          docker compose build
+rebuild:        docker compose down -v && docker compose build --no-cache && docker compose up -d
 logs:           docker compose logs -f
 shell:          docker compose exec app sh
-psql:           docker compose exec postgres psql -U signalist
+psql:           docker compose exec postgres psql -U signalist -d signalist
 
 # Database
-migrate:        php bin/console doctrine:migrations:migrate
-migrate-diff:   php bin/console doctrine:migrations:diff
+db-migrate:     php bin/console doctrine:migrations:migrate
+db-diff:        php bin/console doctrine:migrations:diff
+db-reset:       drop + create + migrate
 
 # Workers
 worker:         php bin/console messenger:consume async -vv
 worker-failed:  php bin/console messenger:failed:show
 worker-retry:   php bin/console messenger:failed:retry
+
+# API Platform
+api-docs:       http://localhost:8080/api
 ```
 
 ---

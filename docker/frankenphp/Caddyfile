@@ -1,0 +1,50 @@
+{
+    # Global options
+    frankenphp
+    order php_server before file_server
+
+    # Development: disable HTTPS auto-redirect
+    auto_https disable_redirects
+
+    # Logging
+    log {
+        output stdout
+        format console
+        level INFO
+    }
+}
+
+:80 {
+    # Set root directory
+    root * /app/public
+
+    # Encode responses
+    encode zstd br gzip
+
+    # Handle PHP requests via FrankenPHP worker mode
+    php_server
+
+    # Static file handling with caching
+    @static {
+        file
+        path *.ico *.css *.js *.gif *.jpg *.jpeg *.png *.svg *.woff *.woff2 *.ttf *.eot
+    }
+    handle @static {
+        header Cache-Control "public, max-age=31536000, immutable"
+        file_server
+    }
+
+    # Security headers
+    header {
+        X-Frame-Options "SAMEORIGIN"
+        X-Content-Type-Options "nosniff"
+        X-XSS-Protection "1; mode=block"
+        Referrer-Policy "strict-origin-when-cross-origin"
+        -Server
+    }
+
+    # Health check endpoint
+    handle /health {
+        respond "OK" 200
+    }
+}

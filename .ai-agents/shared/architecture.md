@@ -8,9 +8,10 @@ This document defines the architectural patterns all agents must follow.
 
 1. **Hexagonal Architecture** (Ports & Adapters)
 2. **CQRS** (Command Query Responsibility Segregation)
-3. **Domain-Driven Design** (Bounded Contexts)
-4. **SOLID** Principles
-5. **Async-First** (Non-blocking operations)
+3. **API Platform** (REST API framework with automatic CRUD)
+4. **Domain-Driven Design** (Bounded Contexts)
+5. **SOLID** Principles
+6. **Async-First** (Non-blocking operations)
 
 ---
 
@@ -81,6 +82,75 @@ Read Model / Repository
 OutputDTO (response shaping)
     ↓
 HTTP Response
+```
+
+---
+
+## API Platform Integration
+
+API Platform provides automatic REST/GraphQL endpoints for Doctrine entities. Use it for standard CRUD operations; use CQRS for complex business logic.
+
+### When to Use API Platform
+- **Standard CRUD** operations on entities
+- **Resource-based APIs** (feeds, articles, bookmarks)
+- **Filtering, pagination, sorting** (built-in)
+- **OpenAPI documentation** (automatic)
+
+### When to Use CQRS
+- **Complex business logic** (newsletter generation)
+- **Cross-aggregate operations** (semantic search)
+- **Side effects** (dispatch async messages)
+- **Custom validation** beyond simple constraints
+
+### API Platform Flow
+```
+HTTP Request
+    ↓
+API Platform Router
+    ↓
+State Provider (custom read) or Doctrine (default)
+    ↓
+Serialization
+    ↓
+HTTP Response
+
+HTTP Request (POST/PUT/PATCH)
+    ↓
+Deserialization + Validation
+    ↓
+State Processor (custom write) or Doctrine (default)
+    ↓
+Serialization
+    ↓
+HTTP Response
+```
+
+### Hybrid Approach
+For operations that need both API Platform conveniences and CQRS:
+
+```php
+#[ApiResource(
+    operations: [
+        new Post(
+            processor: CreateFeedProcessor::class,  // Custom processor
+        ),
+    ],
+)]
+final class Feed { }
+
+// Processor delegates to CQRS Handler
+final readonly class CreateFeedProcessor implements ProcessorInterface
+{
+    public function __construct(
+        private CreateFeedHandler $handler,
+    ) {}
+
+    public function process(mixed $data, Operation $op, array $uriVars = [], array $ctx = []): Feed
+    {
+        $id = ($this->handler)(new CreateFeedCommand($data->url, $data->categoryId));
+        // Return enriched entity
+    }
+}
 ```
 
 ---

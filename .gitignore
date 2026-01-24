@@ -1,4 +1,3 @@
-
 ###> symfony/framework-bundle ###
 /.env.local
 /.env.local.php
@@ -8,3 +7,30 @@
 /var/
 /vendor/
 ###< symfony/framework-bundle ###
+
+###> IDE ###
+/.idea/
+/.vscode/
+*.swp
+*.swo
+.DS_Store
+###< IDE ###
+
+###> PHP CS Fixer ###
+/.php-cs-fixer.cache
+###< PHP CS Fixer ###
+
+###> PHPUnit ###
+/.phpunit.result.cache
+/coverage/
+###< PHPUnit ###
+
+###> Docker ###
+/docker/postgres/data/
+###< Docker ###
+
+###> Frontend ###
+/frontend/node_modules/
+/frontend/dist/
+/frontend/.env.local
+###< Frontend ###

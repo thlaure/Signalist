@@ -1,14 +1,14 @@
 # @engineer - Backend Engineer Agent
 
 **Role:** Senior PHP/Symfony Engineer
-**Scope:** Backend implementation, CQRS, domain logic, API endpoints
+**Scope:** Backend implementation, CQRS, API Platform, domain logic, API endpoints
 
 ---
 
 ## Prerequisites
 
 Before starting any task:
-1. Read `shared/architecture.md` for CQRS patterns
+1. Read `shared/architecture.md` for CQRS and API Platform patterns
 2. Read `shared/conventions.md` for naming rules
 3. Read relevant `domains/{domain}/context.md`
 4. Check existing code in `src/Domain/{Domain}/` for style matching
@@ -18,6 +18,7 @@ Before starting any task:
 ## Expertise
 
 - PHP 8.5, Symfony 8.x
+- **API Platform 4.x** (REST/GraphQL API framework)
 - CQRS pattern implementation
 - Hexagonal Architecture
 - Doctrine ORM
@@ -40,7 +41,19 @@ Before starting any task:
 
 ## Implementation Checklist
 
-### New Endpoint
+### New API Resource (API Platform)
+
+- [ ] Create Doctrine Entity with `#[ApiResource]` attribute
+- [ ] Configure operations (GET, POST, PUT, DELETE, PATCH)
+- [ ] Add validation constraints with `#[Assert\...]`
+- [ ] Create State Providers for custom read logic
+- [ ] Create State Processors for custom write logic
+- [ ] Configure filters (search, order, boolean, date)
+- [ ] Write unit tests for processors/providers
+- [ ] Write API tests using API Platform test client
+- [ ] Run `make lint && make analyse && make tests`
+
+### New Custom Endpoint (CQRS)
 
 - [ ] Create `InputDTO` with validation constraints
 - [ ] Create `Command` (write) or `Query` (read)
@@ -66,7 +79,99 @@ Before starting any task:
 
 ## Code Templates
 
-### Command
+### API Platform Resource
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace App\Entity;
+
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
+#[ORM\Entity]
+#[ApiResource(
+    operations: [
+        new GetCollection(),
+        new Get(),
+        new Post(
+            processor: CreateFeedProcessor::class,
+        ),
+        new Patch(),
+        new Delete(),
+    ],
+    paginationItemsPerPage: 20,
+)]
+final class Feed
+{
+    #[ORM\Id]
+    #[ORM\Column(type: 'uuid')]
+    private string $id;
+
+    #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\Url]
+    private string $url;
+
+    // ... getters/setters
+}
+```
+
+### State Processor (Write Logic)
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace App\State;
+
+use ApiPlatform\Metadata\Operation;
+use ApiPlatform\State\ProcessorInterface;
+
+final readonly class CreateFeedProcessor implements ProcessorInterface
+{
+    public function __construct(
+        private MessageBusInterface $bus,
+    ) {}
+
+    public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): Feed
+    {
+        // Custom business logic
+        $this->bus->dispatch(new CrawlFeedMessage($data->getId()));
+
+        return $data;
+    }
+}
+```
+
+### State Provider (Read Logic)
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace App\State;
+
+use ApiPlatform\Metadata\Operation;
+use ApiPlatform\State\ProviderInterface;
+
+final readonly class FeedCollectionProvider implements ProviderInterface
+{
+    public function provide(Operation $operation, array $uriVariables = [], array $context = []): array
+    {
+        // Custom read logic (e.g., filtering, sorting)
+    }
+}
+```
+
+### Command (CQRS)
 ```php
 <?php
 

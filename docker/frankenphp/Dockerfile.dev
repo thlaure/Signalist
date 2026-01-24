@@ -1,0 +1,47 @@
+FROM dunglas/frankenphp:latest-alpine
+
+# Install system dependencies
+RUN apk add --no-cache \
+    git \
+    curl \
+    libpng-dev \
+    libzip-dev \
+    zip \
+    unzip \
+    icu-dev \
+    linux-headers \
+    postgresql-dev \
+    $PHPIZE_DEPS
+
+# Install PHP extensions
+RUN docker-php-ext-configure intl \
+    && docker-php-ext-install -j$(nproc) \
+        pdo \
+        pdo_pgsql \
+        intl \
+        opcache \
+        zip \
+        bcmath
+
+# Install Redis extension
+RUN pecl install redis && docker-php-ext-enable redis
+
+# Install Xdebug for development
+RUN pecl install xdebug && docker-php-ext-enable xdebug
+
+# Install Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# Set working directory
+WORKDIR /app
+
+# Copy PHP configuration
+COPY php.ini /usr/local/etc/php/conf.d/app.ini
+COPY xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
+COPY Caddyfile /etc/caddy/Caddyfile
+
+# Expose ports
+EXPOSE 80 443 443/udp
+
+# FrankenPHP server with hot reload
+CMD ["frankenphp", "run", "--config", "/etc/caddy/Caddyfile", "--watch"]

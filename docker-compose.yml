@@ -1,0 +1,109 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/frankenphp/Dockerfile.dev
+    container_name: signalist-app
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - .:/app:cached
+      - ./docker/frankenphp/php.ini:/usr/local/etc/php/conf.d/app.ini:ro
+      - ./docker/frankenphp/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini:ro
+      - ./docker/frankenphp/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    environment:
+      - APP_ENV=${APP_ENV:-dev}
+      - APP_DEBUG=${APP_DEBUG:-1}
+      - APP_SECRET=${APP_SECRET:-changeme}
+      - DATABASE_URL=postgresql://signalist:signalist@postgres:5432/signalist?serverVersion=16&charset=utf8
+      - REDIS_URL=redis://redis:6379
+      - MESSENGER_TRANSPORT_DSN=redis://redis:6379/messages
+      - FRANKENPHP_CONFIG=worker ./public/index.php
+      - SERVER_NAME=:80
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - signalist
+
+  messenger:
+    build:
+      context: .
+      dockerfile: docker/frankenphp/Dockerfile.dev
+    container_name: signalist-messenger
+    restart: unless-stopped
+    volumes:
+      - .:/app:cached
+    environment:
+      - APP_ENV=${APP_ENV:-dev}
+      - APP_SECRET=${APP_SECRET:-changeme}
+      - DATABASE_URL=postgresql://signalist:signalist@postgres:5432/signalist?serverVersion=16&charset=utf8
+      - REDIS_URL=redis://redis:6379
+      - MESSENGER_TRANSPORT_DSN=redis://redis:6379/messages
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: php bin/console messenger:consume async --time-limit=3600 --memory-limit=256M -vv
+    networks:
+      - signalist
+
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: signalist-postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: signalist
+      POSTGRES_PASSWORD: signalist
+      POSTGRES_DB: signalist
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U signalist -d signalist"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - signalist
+
+  redis:
+    image: redis:7-alpine
+    container_name: signalist-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - signalist
+
+networks:
+  signalist:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:
+  caddy_data:
+  caddy_config:

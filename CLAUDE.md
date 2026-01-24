@@ -5,9 +5,10 @@
 # 0. TL;DR (Read This First)
 
 - **Project:** AI-powered RSS intelligence platform (SaaS)
-- **Architecture:** Hexagonal Architecture + CQRS + SOLID
-- **Flow:** `InputDTO → Command/Query → Handler → Domain Model → Repository → OutputDTO`
-- **Stack:** PHP 8.5 + Symfony 8.x (Backend) | React + TypeScript + Vite + MUI (Frontend)
+- **Architecture:** Hexagonal Architecture + CQRS + API Platform + SOLID
+- **Flow:** `API Platform → State Processor → Handler → Domain Model → Repository`
+- **Stack:** PHP 8.4 + Symfony 8.x + API Platform 4.x (Backend) | React + TypeScript + Vite + MUI (Frontend)
+- **Server:** **FrankenPHP** (replaces nginx + php-fpm)
 - **Database:** PostgreSQL + **pgvector** for embeddings
 - **AI:** Symfony AI (OpenAI, Anthropic, Mistral) + MCP Server
 - **Queue:** Symfony Messenger + Redis
@@ -20,6 +21,8 @@
 
 ## Quick Start
 ```bash
+make install
+# Or manually:
 docker compose up -d --build
 ```
 
@@ -55,8 +58,9 @@ docker compose up -d --build
 # 2. Tech Stack
 
 ## 2.1 Backend
-- **Language:** PHP **8.5**
-- **Framework:** Symfony **8.x**
+- **Language:** PHP **8.4**
+- **Framework:** Symfony **8.x** + **API Platform 4.x**
+- **Server:** **FrankenPHP** (built on Caddy, worker mode)
 - **Architecture:** CQRS, Clean Architecture, Hexagonal (Ports & Adapters)
 - **Database:** PostgreSQL + **pgvector** extension
 - **Queue:** Symfony Messenger + Redis

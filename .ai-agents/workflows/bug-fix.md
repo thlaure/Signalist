@@ -13,7 +13,8 @@ Use this workflow when fixing bugs in Signalist.
 4. FIX        → Implement solution
 5. TEST       → Add regression test
 6. REVIEW     → Code review
-7. MERGE      → Complete
+7. ACCEPT     → Verify bug is truly fixed
+8. MERGE      → Complete
 ```
 
 ---
@@ -283,7 +284,50 @@ git stash pop
 
 ---
 
-## Step 7: Merge
+## Step 7: Acceptance Check
+
+**Verify the bug is truly fixed and no regressions introduced.**
+
+### Acceptance Checklist
+
+- [ ] **Original bug fixed** - Reproduce steps no longer trigger the issue
+- [ ] **Root cause addressed** - Not just a symptom fix
+- [ ] **No regressions** - Related functionality still works
+- [ ] **No scope creep** - Only the bug was fixed, no unrelated changes
+
+### User Validation
+
+Present to user:
+```markdown
+## Bug Fix Ready for Acceptance
+
+### Original Bug
+[Description of the bug]
+
+### Root Cause
+[What was causing it]
+
+### Fix Applied
+[What was changed]
+
+### Verification Steps
+1. [Step to verify bug is fixed]
+2. [Step to verify no regression]
+
+### Regression Test
+`tests/Unit/.../Test.php::testMethod_BugScenario_CorrectBehavior`
+
+**Can you confirm the bug is fixed?**
+```
+
+### If Acceptance Fails
+1. Document what's still broken
+2. Return to Step 2 (Diagnose) - root cause may be wrong
+3. Do NOT merge incomplete fixes
+
+---
+
+## Step 8: Merge
 
 ### Commit Message
 ```

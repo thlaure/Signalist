@@ -14,7 +14,8 @@ Use this workflow when adding new functionality to Signalist.
 5. IMPLEMENT   → Build incrementally
 6. TEST        → Write and run tests
 7. REVIEW      → Code review
-8. MERGE       → Complete
+8. ACCEPT      → Verify against original request
+9. MERGE       → Complete
 ```
 
 ---
@@ -243,7 +244,61 @@ make lint           # Code style
 
 ---
 
-## Step 8: Merge
+## Step 8: Acceptance Check
+
+**Before marking complete, verify the implementation matches the original request.**
+
+### Acceptance Checklist
+
+- [ ] **Re-read original request** - What did the user actually ask for?
+- [ ] **All acceptance criteria met** - Every requirement addressed
+- [ ] **No scope creep** - Nothing built that wasn't requested
+- [ ] **No missing pieces** - All aspects of the request covered
+- [ ] **Edge cases handled** - As discussed in planning phase
+
+### Specification Compliance
+
+- [ ] API contract matches what was planned
+- [ ] Error responses follow RFC 7807
+- [ ] Domain context still accurate (update if behavior changed)
+
+### User Validation
+
+Present to user for final approval:
+```markdown
+## Ready for Acceptance
+
+### Original Request
+[Copy the original user request]
+
+### What Was Built
+- [Feature 1]: [Brief description]
+- [Feature 2]: [Brief description]
+
+### Acceptance Criteria Status
+- [x] Criteria 1 - Implemented in `Handler.php`
+- [x] Criteria 2 - Tested in `HandlerTest.php`
+- [ ] Criteria 3 - **Not implemented** (reason: [explain])
+
+### Demo
+[How to test/verify the feature]
+
+### Documentation Updated
+- [ ] Domain context updated (if behavior changed)
+- [ ] API docs reflect new endpoints
+- [ ] README updated (if needed)
+
+**Does this match what you requested?**
+```
+
+### If Acceptance Fails
+1. Document what's missing or wrong
+2. Return to Step 5 (Implement) or Step 3 (Plan)
+3. Do NOT merge incomplete features
+
+---
+
+## Step 9: Merge
 
 ### Pre-Merge Checklist
 - [ ] All tests passing

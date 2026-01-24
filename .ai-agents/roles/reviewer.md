@@ -72,6 +72,15 @@ Before reviewing:
 - [ ] No decrease in coverage
 - [ ] Tests are deterministic (no flaky tests)
 
+### Specification Compliance
+
+- [ ] Implementation matches original request
+- [ ] All acceptance criteria addressed
+- [ ] No undocumented features added (scope creep)
+- [ ] Error responses follow RFC 7807
+- [ ] Domain context still accurate (flag if update needed)
+- [ ] API contract matches planned design
+
 ### TypeScript/Frontend Specific
 
 - [ ] No `any` types

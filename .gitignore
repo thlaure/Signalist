@@ -8,3 +8,11 @@
 /var/
 /vendor/
 ###< symfony/framework-bundle ###
+
+###> AI agents ###
+CLAUDE.md
+GEMINI.md
+.continue/
+.ai-agents/
+.opencode/
+###< AI agents ###

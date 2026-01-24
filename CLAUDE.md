@@ -197,26 +197,143 @@ src/
 
 ---
 
-# 7. Exception Handling
+# 7. Exception Handling (RFC 7807)
 
-## 7.1 Strategy
-- Centralized Exception Listener
-- Domain exceptions map to HTTP status codes:
-  - `FeedUnreachableException` → 422
-  - `CategoryNotFoundException` → 404
-  - `QuotaExceededException` → 402
-  - `InvalidFeedFormatException` → 400
+All API errors follow **RFC 7807 - Problem Details for HTTP APIs**.
 
-## 7.2 Custom Exceptions
-```php
-final class FeedUnreachableException extends HttpException
+## 7.1 Problem Details Format
+```json
 {
-    public function __construct(string $url)
+  "type": "https://signalist.app/problems/feed-not-found",
+  "title": "Feed Not Found",
+  "status": 404,
+  "detail": "The feed with ID 550e8400-e29b-41d4-a716-446655440000 was not found",
+  "instance": "/api/v1/feeds/550e8400-e29b-41d4-a716-446655440000"
+}
+```
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| `type` | Yes | URI identifying the problem type |
+| `title` | Yes | Short, human-readable summary |
+| `status` | Yes | HTTP status code |
+| `detail` | Yes | Human-readable explanation specific to this occurrence |
+| `instance` | No | URI reference to the specific occurrence |
+
+## 7.2 Problem Types
+
+| Type URI | Title | Status | When |
+|----------|-------|--------|------|
+| `/problems/validation-error` | Validation Error | 400 | Input validation failed |
+| `/problems/not-found` | Resource Not Found | 404 | Entity doesn't exist |
+| `/problems/conflict` | Resource Conflict | 409 | Duplicate or conflict |
+| `/problems/unprocessable` | Unprocessable Entity | 422 | Business rule violation |
+| `/problems/quota-exceeded` | Quota Exceeded | 402 | Rate/usage limit hit |
+| `/problems/internal-error` | Internal Error | 500 | Unexpected server error |
+
+## 7.3 Validation Errors (Extended)
+For validation errors, include field-level details:
+```json
+{
+  "type": "https://signalist.app/problems/validation-error",
+  "title": "Validation Error",
+  "status": 400,
+  "detail": "The request body contains invalid data",
+  "errors": [
+    {
+      "field": "url",
+      "message": "This value is not a valid URL"
+    },
+    {
+      "field": "categoryId",
+      "message": "This value should not be blank"
+    }
+  ]
+}
+```
+
+## 7.4 Custom Exceptions
+```php
+final class FeedNotFoundException extends ProblemException
+{
+    public function __construct(string $feedId)
     {
         parent::__construct(
-            Response::HTTP_UNPROCESSABLE_ENTITY,
-            sprintf('Feed at %s is unreachable', $url)
+            type: 'https://signalist.app/problems/not-found',
+            title: 'Feed Not Found',
+            status: Response::HTTP_NOT_FOUND,
+            detail: sprintf('The feed with ID %s was not found', $feedId),
         );
+    }
+}
+```
+
+## 7.5 Base ProblemException
+```php
+abstract class ProblemException extends \Exception implements HttpExceptionInterface
+{
+    public function __construct(
+        public readonly string $type,
+        public readonly string $title,
+        public readonly int $status,
+        public readonly string $detail,
+        public readonly ?string $instance = null,
+        public readonly array $extensions = [],
+    ) {
+        parent::__construct($detail, $status);
+    }
+
+    public function getStatusCode(): int
+    {
+        return $this->status;
+    }
+
+    public function toProblemDetails(): array
+    {
+        return array_filter([
+            'type' => $this->type,
+            'title' => $this->title,
+            'status' => $this->status,
+            'detail' => $this->detail,
+            'instance' => $this->instance,
+            ...$this->extensions,
+        ]);
+    }
+}
+```
+
+## 7.6 Exception Listener
+```php
+final class ProblemDetailsExceptionListener
+{
+    public function onKernelException(ExceptionEvent $event): void
+    {
+        $exception = $event->getThrowable();
+        $request = $event->getRequest();
+
+        $problem = match (true) {
+            $exception instanceof ProblemException => $exception->toProblemDetails(),
+            $exception instanceof HttpExceptionInterface => [
+                'type' => 'https://signalist.app/problems/http-error',
+                'title' => Response::$statusTexts[$exception->getStatusCode()] ?? 'Error',
+                'status' => $exception->getStatusCode(),
+                'detail' => $exception->getMessage(),
+            ],
+            default => [
+                'type' => 'https://signalist.app/problems/internal-error',
+                'title' => 'Internal Server Error',
+                'status' => 500,
+                'detail' => $this->env === 'prod' ? 'An unexpected error occurred' : $exception->getMessage(),
+            ],
+        };
+
+        $problem['instance'] ??= $request->getPathInfo();
+
+        $response = new JsonResponse($problem, $problem['status'], [
+            'Content-Type' => 'application/problem+json',
+        ]);
+
+        $event->setResponse($response);
     }
 }
 ```

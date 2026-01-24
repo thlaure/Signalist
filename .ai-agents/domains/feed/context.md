@@ -83,14 +83,25 @@ Update Feed.lastCrawledAt
 
 ---
 
-## Error Handling
+## Error Handling (RFC 7807)
 
-| Error | Exception | HTTP |
-|-------|-----------|------|
-| Feed URL unreachable | `FeedUnreachableException` | 422 |
-| Invalid RSS format | `InvalidFeedFormatException` | 400 |
-| Category not found | `CategoryNotFoundException` | 404 |
-| Duplicate feed URL | `FeedAlreadyExistsException` | 409 |
+| Error | Exception | Problem Type | Status |
+|-------|-----------|--------------|--------|
+| Feed URL unreachable | `FeedUnreachableException` | `/problems/unprocessable` | 422 |
+| Invalid RSS format | `InvalidFeedFormatException` | `/problems/validation-error` | 400 |
+| Category not found | `CategoryNotFoundException` | `/problems/not-found` | 404 |
+| Duplicate feed URL | `FeedAlreadyExistsException` | `/problems/conflict` | 409 |
+
+### Example Response
+```json
+{
+  "type": "https://signalist.app/problems/not-found",
+  "title": "Category Not Found",
+  "status": 404,
+  "detail": "The category with ID abc-123 was not found",
+  "instance": "/api/v1/feeds"
+}
+```
 
 ---
 

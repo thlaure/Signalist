@@ -357,25 +357,73 @@ final readonly class CrawlFeedMessageHandler
 
 ---
 
-## Error Handling Strategy
+## Error Handling Strategy (RFC 7807)
+
+All errors follow **RFC 7807 Problem Details for HTTP APIs**.
 
 ```
-Domain Exception
+Domain Exception (extends ProblemException)
     ↓
-Caught by ExceptionListener
+Caught by ProblemDetailsExceptionListener
     ↓
-Mapped to HTTP Status
+Converted to Problem Details JSON
     ↓
-JSON Error Response
+Response with Content-Type: application/problem+json
 ```
 
-| Exception Type | HTTP Status |
-|----------------|-------------|
-| `NotFoundException` | 404 |
-| `ValidationException` | 400 |
-| `ConflictException` | 409 |
-| `UnauthorizedException` | 401 |
-| `ForbiddenException` | 403 |
-| `QuotaExceededException` | 402 |
-| `UnprocessableException` | 422 |
-| `InternalException` | 500 |
+### Exception Hierarchy
+```php
+ProblemException (abstract base)
+├── NotFoundException
+├── ValidationException
+├── ConflictException
+├── UnauthorizedException
+├── ForbiddenException
+├── QuotaExceededException
+├── UnprocessableException
+└── InternalException
+```
+
+### Exception to Problem Mapping
+
+| Exception Type | Problem Type | Status |
+|----------------|--------------|--------|
+| `NotFoundException` | `/problems/not-found` | 404 |
+| `ValidationException` | `/problems/validation-error` | 400 |
+| `ConflictException` | `/problems/conflict` | 409 |
+| `UnauthorizedException` | `/problems/unauthorized` | 401 |
+| `ForbiddenException` | `/problems/forbidden` | 403 |
+| `QuotaExceededException` | `/problems/quota-exceeded` | 402 |
+| `UnprocessableException` | `/problems/unprocessable` | 422 |
+| `InternalException` | `/problems/internal-error` | 500 |
+
+### Problem Details Response
+```json
+{
+  "type": "https://signalist.app/problems/not-found",
+  "title": "Feed Not Found",
+  "status": 404,
+  "detail": "The feed with ID 550e8400-e29b-41d4-a716-446655440000 was not found",
+  "instance": "/api/v1/feeds/550e8400-e29b-41d4-a716-446655440000"
+}
+```
+
+### Creating Domain Exceptions
+```php
+final class FeedNotFoundException extends ProblemException
+{
+    public function __construct(string $feedId)
+    {
+        parent::__construct(
+            type: 'https://signalist.app/problems/not-found',
+            title: 'Feed Not Found',
+            status: Response::HTTP_NOT_FOUND,
+            detail: sprintf('The feed with ID %s was not found', $feedId),
+        );
+    }
+}
+
+// Usage in Handler
+$feed = $this->feedRepo->get($id)
+    ?? throw new FeedNotFoundException($id);
+```

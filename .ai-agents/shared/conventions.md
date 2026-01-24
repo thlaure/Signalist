@@ -323,15 +323,43 @@ POST   /api/v1/search                # Action (not a resource)
     "limit": 20
   }
 }
+```
 
-// Error
+### Error Format (RFC 7807)
+All errors use **RFC 7807 Problem Details** with `Content-Type: application/problem+json`:
+
+```json
+// Standard error
 {
-  "error": {
-    "code": "FEED_NOT_FOUND",
-    "message": "Feed with ID xyz not found"
-  }
+  "type": "https://signalist.app/problems/not-found",
+  "title": "Feed Not Found",
+  "status": 404,
+  "detail": "The feed with ID xyz was not found",
+  "instance": "/api/v1/feeds/xyz"
+}
+
+// Validation error (with field details)
+{
+  "type": "https://signalist.app/problems/validation-error",
+  "title": "Validation Error",
+  "status": 400,
+  "detail": "The request body contains invalid data",
+  "errors": [
+    { "field": "url", "message": "This value is not a valid URL" },
+    { "field": "categoryId", "message": "This value should not be blank" }
+  ]
 }
 ```
+
+### Problem Types
+| Type | Status | Use For |
+|------|--------|---------|
+| `/problems/validation-error` | 400 | Input validation failures |
+| `/problems/not-found` | 404 | Resource doesn't exist |
+| `/problems/conflict` | 409 | Duplicate or state conflict |
+| `/problems/unprocessable` | 422 | Business rule violation |
+| `/problems/quota-exceeded` | 402 | Rate limit or quota |
+| `/problems/internal-error` | 500 | Unexpected server error |
 
 ### Status Codes
 | Code | Use For |

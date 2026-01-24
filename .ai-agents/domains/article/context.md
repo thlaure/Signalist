@@ -105,13 +105,13 @@ Dispatch:
 
 ---
 
-## Error Handling
+## Error Handling (RFC 7807)
 
-| Error | Exception | HTTP |
-|-------|-----------|------|
-| Article not found | `ArticleNotFoundException` | 404 |
-| Content extraction failed | `ContentExtractionException` | - (logged, async) |
-| Tag not found | `TagNotFoundException` | 404 |
+| Error | Exception | Problem Type | Status |
+|-------|-----------|--------------|--------|
+| Article not found | `ArticleNotFoundException` | `/problems/not-found` | 404 |
+| Content extraction failed | `ContentExtractionException` | - (logged, async) | - |
+| Tag not found | `TagNotFoundException` | `/problems/not-found` | 404 |
 
 ---
 

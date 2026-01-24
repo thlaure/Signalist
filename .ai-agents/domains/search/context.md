@@ -117,13 +117,13 @@ CREATE INDEX idx_embeddings_vector ON article_embeddings
 
 ---
 
-## Error Handling
+## Error Handling (RFC 7807)
 
-| Error | Exception | HTTP |
-|-------|-----------|------|
-| Embedding generation failed | `EmbeddingGenerationException` | - (logged, async) |
-| No results found | - | Return empty array |
-| Rate limit exceeded | `QuotaExceededException` | 429 |
+| Error | Exception | Problem Type | Status |
+|-------|-----------|--------------|--------|
+| Embedding generation failed | `EmbeddingGenerationException` | - (logged, async) | - |
+| No results found | - | Return empty array | 200 |
+| Rate limit exceeded | `QuotaExceededException` | `/problems/quota-exceeded` | 429 |
 
 ---
 

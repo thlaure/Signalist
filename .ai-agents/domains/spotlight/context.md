@@ -193,12 +193,25 @@ class ExecuteCommandTool
 
 ## Error Handling
 
+### UX Responses (Frontend)
 | Error | Response |
 |-------|----------|
 | Unrecognized command | Show "I don't understand. Try..." |
 | Ambiguous intent | Show multiple suggestions |
 | Entity not found | "Category 'X' not found. Create it?" |
 | Action failed | Show error, suggest retry |
+
+### API Errors (RFC 7807)
+Backend errors return Problem Details format:
+```json
+{
+  "type": "https://signalist.app/problems/not-found",
+  "title": "Category Not Found",
+  "status": 404,
+  "detail": "The category 'Tech' was not found"
+}
+```
+Frontend transforms these into user-friendly messages.
 
 ---
 

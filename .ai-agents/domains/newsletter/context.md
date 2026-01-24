@@ -182,14 +182,14 @@ class NewsletterSchedule implements ScheduleProviderInterface
 
 ---
 
-## Error Handling
+## Error Handling (RFC 7807)
 
-| Error | Exception | HTTP |
-|-------|-----------|------|
-| No unread articles | `NoContentForNewsletterException` | 422 |
-| LLM generation failed | - | Logged, status = failed |
-| Email delivery failed | - | Logged, retry |
-| Newsletter not found | `NewsletterNotFoundException` | 404 |
+| Error | Exception | Problem Type | Status |
+|-------|-----------|--------------|--------|
+| No unread articles | `NoContentForNewsletterException` | `/problems/unprocessable` | 422 |
+| LLM generation failed | - | - (logged, async) | - |
+| Email delivery failed | - | - (logged, retry) | - |
+| Newsletter not found | `NewsletterNotFoundException` | `/problems/not-found` | 404 |
 
 ---
 

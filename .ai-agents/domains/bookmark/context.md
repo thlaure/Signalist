@@ -87,14 +87,14 @@ GET  /rest/v1/raindrops/0   # List bookmarks
 
 ---
 
-## Error Handling
+## Error Handling (RFC 7807)
 
-| Error | Exception | HTTP |
-|-------|-----------|------|
-| Article not found | `ArticleNotFoundException` | 404 |
-| Already bookmarked | `BookmarkAlreadyExistsException` | 409 |
-| Raindrop sync failed | - | Logged, retried async |
-| Raindrop not configured | `RaindropNotConfiguredException` | 422 |
+| Error | Exception | Problem Type | Status |
+|-------|-----------|--------------|--------|
+| Article not found | `ArticleNotFoundException` | `/problems/not-found` | 404 |
+| Already bookmarked | `BookmarkAlreadyExistsException` | `/problems/conflict` | 409 |
+| Raindrop sync failed | - | - (logged, async) | - |
+| Raindrop not configured | `RaindropNotConfiguredException` | `/problems/unprocessable` | 422 |
 
 ---
 

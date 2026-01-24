@@ -275,8 +275,10 @@ Implement tools with `#[AsTool]` for LLM accessibility:
 )]
 final class SearchArticlesTool
 {
-    public function __invoke(string $query, int $limit = 10): array
-    {
+    public function __invoke(
+        string $query,
+        int $limit = 10,
+    ): array {
         // Semantic search implementation
     }
 }
@@ -311,7 +313,8 @@ final readonly class AddFeedInput
         #[Assert\NotBlank]
         #[Assert\Uuid]
         public string $categoryId,
-    ) {}
+    ) {
+    }
 }
 ```
 
@@ -322,7 +325,8 @@ final readonly class AddFeedCommand
     public function __construct(
         public string $url,
         public string $categoryId,
-    ) {}
+    ) {
+    }
 }
 ```
 
@@ -334,7 +338,8 @@ final readonly class AddFeedHandler
         private FeedRepositoryInterface $feedRepo,
         private CategoryRepositoryInterface $categoryRepo,
         private MessageBusInterface $bus,
-    ) {}
+    ) {
+    }
 
     public function __invoke(AddFeedCommand $command): string
     {
@@ -361,7 +366,10 @@ final readonly class AddFeedHandler
 #[Route('/api/v1/feeds', methods: ['POST'])]
 final readonly class AddFeedController
 {
-    public function __construct(private AddFeedHandler $handler) {}
+    public function __construct(
+        private AddFeedHandler $handler,
+    ) {
+    }
 
     public function __invoke(
         #[MapRequestPayload] AddFeedInput $input

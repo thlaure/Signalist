@@ -106,5 +106,3 @@ Here is the technical and functional specification document for **Signalist**.
 4. **Phase 4 (Ecosystem):** Spotlight command engine and MCP server implementation.
 
 ---
-
-Would you like me to generate the **PostgreSQL schema** (SQL) specifically optimized for the `pgvector` implementation and article metadata?

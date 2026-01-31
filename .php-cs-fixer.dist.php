@@ -8,6 +8,7 @@ $finder = (new PhpCsFixer\Finder())
     ->exclude('vendor')
     ->exclude('docker')
     ->exclude('frontend')
+    ->notPath('config/reference.php')
 ;
 
 return (new PhpCsFixer\Config())

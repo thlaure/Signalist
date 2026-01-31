@@ -1,0 +1,34 @@
+framework:
+    messenger:
+        failure_transport: failed
+
+        transports:
+            async:
+                dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+                options:
+                    auto_setup: true
+                    stream: 'signalist_messages'
+                    group: 'signalist_consumers'
+                    consumer: 'signalist_worker'
+                retry_strategy:
+                    max_retries: 3
+                    delay: 1000
+                    multiplier: 2
+                    max_delay: 60000
+
+            failed:
+                dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+                options:
+                    stream: 'signalist_failed'
+                    group: 'signalist_failed_consumers'
+                    consumer: 'signalist_failed_worker'
+
+        routing:
+            'App\Domain\Feed\Message\CrawlFeedMessage': async
+
+when@test:
+    framework:
+        messenger:
+            transports:
+                async: 'in-memory://'
+                failed: 'in-memory://'

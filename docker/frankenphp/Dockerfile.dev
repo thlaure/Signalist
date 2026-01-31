@@ -1,33 +1,25 @@
-FROM dunglas/frankenphp:latest-alpine
+FROM dunglas/frankenphp:1-php8.5-alpine
+
+# Install mlocati/docker-php-extension-installer for easier extension management
+ADD --chmod=0755 https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
 
 # Install system dependencies
 RUN apk add --no-cache \
     git \
     curl \
-    libpng-dev \
-    libzip-dev \
     zip \
     unzip \
-    icu-dev \
-    linux-headers \
-    postgresql-dev \
-    $PHPIZE_DEPS
+    linux-headers
 
-# Install PHP extensions
-RUN docker-php-ext-configure intl \
-    && docker-php-ext-install -j$(nproc) \
-        pdo \
-        pdo_pgsql \
-        intl \
-        opcache \
-        zip \
-        bcmath
-
-# Install Redis extension
-RUN pecl install redis && docker-php-ext-enable redis
-
-# Install Xdebug for development
-RUN pecl install xdebug && docker-php-ext-enable xdebug
+# Install PHP extensions using install-php-extensions (handles PHP 8.5 compatibility)
+RUN install-php-extensions \
+    pdo_pgsql \
+    intl \
+    opcache \
+    zip \
+    bcmath \
+    redis \
+    xdebug
 
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
@@ -36,9 +28,9 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 WORKDIR /app
 
 # Copy PHP configuration
-COPY php.ini /usr/local/etc/php/conf.d/app.ini
-COPY xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
-COPY Caddyfile /etc/caddy/Caddyfile
+COPY docker/frankenphp/php.ini /usr/local/etc/php/conf.d/app.ini
+COPY docker/frankenphp/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
+COPY docker/frankenphp/Caddyfile /etc/caddy/Caddyfile
 
 # Expose ports
 EXPOSE 80 443 443/udp

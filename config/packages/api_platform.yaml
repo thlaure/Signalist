@@ -1,0 +1,34 @@
+api_platform:
+    title: 'Signalist API'
+    description: 'AI-powered RSS intelligence platform'
+    version: '1.0.0'
+
+    formats:
+        jsonld: ['application/ld+json']
+        json: ['application/json']
+
+    docs_formats:
+        jsonld: ['application/ld+json']
+        jsonopenapi: ['application/vnd.openapi+json']
+        html: ['text/html']
+
+    defaults:
+        stateless: true
+        cache_headers:
+            vary: ['Content-Type', 'Authorization', 'Origin']
+        extra_properties:
+            standard_put: true
+            rfc_7807_compliant_errors: true
+
+    collection:
+        pagination:
+            enabled: true
+
+    exception_to_status:
+        App\Infrastructure\Exception\NotFoundException: 404
+        App\Infrastructure\Exception\ValidationException: 400
+        App\Infrastructure\Exception\ConflictException: 409
+
+    mapping:
+        paths:
+            - '%kernel.project_dir%/src/Infrastructure/ApiPlatform/Resource'

@@ -1,0 +1,144 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+      - main
+  pull_request:
+    branches:
+      - master
+      - main
+  workflow_dispatch: ~
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    name: Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker images
+        run: docker compose build --no-cache
+
+      - name: Start services
+        run: |
+          docker compose up -d
+          # Wait for services to be healthy
+          echo "Waiting for services to be healthy..."
+          sleep 10
+          docker compose ps
+
+      - name: Print logs on failure
+        if: failure()
+        run: docker compose logs
+
+      - name: Install Composer dependencies
+        run: docker compose exec -T app composer install --no-interaction --no-progress --prefer-dist
+
+      - name: Check HTTP reachability
+        run: |
+          # Wait for app to be ready
+          for i in {1..30}; do
+            if curl -s -f http://localhost:8000/api/v1 > /dev/null 2>&1; then
+              echo "App is ready"
+              break
+            fi
+            echo "Waiting for app... ($i/30)"
+            sleep 2
+          done
+          curl -v --fail-with-body http://localhost:8000/api/v1 || true
+
+      - name: Create test database
+        run: docker compose exec -T app php bin/console -e test doctrine:database:create --if-not-exists
+
+      - name: Run migrations
+        run: docker compose exec -T app php bin/console -e test doctrine:migrations:migrate --no-interaction
+
+      - name: Run PHPUnit
+        run: docker compose exec -T app php bin/phpunit
+
+      - name: Run CS Fixer (dry-run)
+        run: docker compose exec -T app vendor/bin/php-cs-fixer fix --dry-run --diff
+
+      - name: Run PHPStan
+        run: docker compose exec -T app vendor/bin/phpstan analyse
+
+      - name: YAML linter
+        run: docker compose exec -T app php bin/console lint:yaml config
+
+      - name: Doctrine Schema Validator
+        run: docker compose exec -T app php bin/console -e test doctrine:schema:validate --skip-sync || true
+
+  lint:
+    name: Docker Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Lint Dockerfile (dev)
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: docker/frankenphp/Dockerfile.dev
+          failure-threshold: warning
+
+      - name: Lint Dockerfile (prod)
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: docker/frankenphp/Dockerfile
+          failure-threshold: warning
+
+  frontend:
+    name: Frontend
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Check if frontend exists
+        id: check_frontend
+        run: |
+          if [ -f "package.json" ]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Install dependencies
+        if: steps.check_frontend.outputs.exists == 'true'
+        run: npm ci
+
+      - name: Type check
+        if: steps.check_frontend.outputs.exists == 'true'
+        run: npm run typecheck || true
+
+      - name: Lint
+        if: steps.check_frontend.outputs.exists == 'true'
+        run: npm run lint || true
+
+      - name: Run tests
+        if: steps.check_frontend.outputs.exists == 'true'
+        run: npm test -- --passWithNoTests
+
+      - name: Build
+        if: steps.check_frontend.outputs.exists == 'true'
+        run: npm run build

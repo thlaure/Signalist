@@ -6,9 +6,9 @@ services:
     container_name: signalist-app
     restart: unless-stopped
     ports:
-      - "8080:80"
-      - "443:443"
-      - "443:443/udp"
+      - "8000:80"
+      - "4443:443"
+      - "4443:443/udp"
     volumes:
       - .:/app:cached
       - ./docker/frankenphp/php.ini:/usr/local/etc/php/conf.d/app.ini:ro

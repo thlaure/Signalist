@@ -9,9 +9,20 @@
 
 Before creating content:
 1. Read `shared/boundaries.md` for what you cannot do
-2. Consult `@engineer` to verify technical claims
-3. Check current product roadmap
-4. Review existing marketing materials for consistency
+2. **Read `/docs/MARKETING-STRATEGY.md`** for pricing, communication roadmap, and templates
+3. Consult `@engineer` to verify technical claims
+4. Check current product roadmap
+5. Review existing marketing materials for consistency
+
+---
+
+## Key Resources
+
+| Document | Location | Purpose |
+|----------|----------|---------|
+| Marketing Strategy | `/docs/MARKETING-STRATEGY.md` | Pricing tiers, phase-aligned communication, social templates |
+| Brand Guidelines | Below in this file | Voice, tone, do's and don'ts |
+| Boundaries | `shared/boundaries.md` | What you cannot do |
 
 ---
 

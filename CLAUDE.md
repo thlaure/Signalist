@@ -577,6 +577,15 @@ This project uses specialized agents defined in `.ai-agents/`:
 | `@signalist-infra` | `infrastructure.md` | Docker, PostgreSQL, Redis |
 | `@signalist-marketer` | `marketing.md` | Content, growth, positioning |
 
+## 12.1 Marketing Resources
+
+The `@signalist-marketer` agent should reference `/docs/MARKETING-STRATEGY.md` for:
+- Pricing tiers and feature matrix
+- Phase-aligned communication roadmap
+- Social media posting guidelines
+- Content templates (launch, features, tutorials)
+- Launch checklists
+
 ---
 
 # 13. Git Conventions

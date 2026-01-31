@@ -69,6 +69,7 @@ All agents MUST follow these shared guidelines:
 | `shared/architecture.md` | CQRS, Hexagonal, data flow |
 | `shared/conventions.md` | Naming, testing, git commits |
 | `shared/boundaries.md` | ALWAYS/ASK/NEVER rules |
+| `/docs/MARKETING-STRATEGY.md` | Pricing, communication roadmap, social templates (for `@marketer`) |
 
 ---
 

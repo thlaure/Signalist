@@ -1,7 +1,7 @@
 grumphp:
     process_timeout: 120
     git_hook_variables:
-        EXEC_GRUMPHP_COMMAND: ['docker', 'compose', 'run', '-T', '--rm', '--no-deps', 'ris-api-svc']
+        EXEC_GRUMPHP_COMMAND: ['docker', 'compose', 'exec', '-T', 'app']
     tasks:
         git_commit_message:
             enforce_capitalized_subject: false
@@ -40,7 +40,7 @@ grumphp:
 
         phpstan:
             level: 9
-            configuration: phpstan.dist.neon
+            configuration: phpstan.neon
             memory_limit: "-1"
             use_grumphp_paths: false
 

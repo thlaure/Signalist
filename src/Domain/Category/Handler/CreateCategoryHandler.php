@@ -18,7 +18,7 @@ final readonly class CreateCategoryHandler
 
     public function __invoke(CreateCategoryCommand $command): string
     {
-        if ($this->categoryRepository->findBySlug($command->slug) !== null) {
+        if ($this->categoryRepository->findBySlug($command->slug) instanceof Category) {
             throw new CategorySlugAlreadyExistsException($command->slug);
         }
 

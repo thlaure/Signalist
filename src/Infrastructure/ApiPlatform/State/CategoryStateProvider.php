@@ -10,7 +10,6 @@ use ApiPlatform\State\ProviderInterface;
 use App\Domain\Category\Handler\GetCategoryHandler;
 use App\Domain\Category\Handler\ListCategoriesHandler;
 use App\Domain\Category\Query\GetCategoryQuery;
-use App\Domain\Category\Query\ListCategoriesQuery;
 use App\Entity\Category;
 use App\Infrastructure\ApiPlatform\Resource\CategoryResource;
 
@@ -37,7 +36,7 @@ final readonly class CategoryStateProvider implements ProviderInterface
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): CategoryResource|array
     {
         if ($operation instanceof CollectionOperationInterface) {
-            $categories = ($this->listCategoriesHandler)(new ListCategoriesQuery());
+            $categories = ($this->listCategoriesHandler)();
 
             return array_map($this->toResource(...), $categories);
         }

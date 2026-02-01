@@ -60,7 +60,7 @@ final readonly class DoctrineCategoryRepository implements CategoryRepositoryInt
 
         $count = $this->entityManager->createQueryBuilder()
             ->select('COUNT(f.id)')
-            ->from('App\Entity\Feed', 'f')
+            ->from(\App\Entity\Feed::class, 'f')
             ->where('f.category = :categoryId')
             ->setParameter('categoryId', Uuid::fromString($categoryId))
             ->getQuery()

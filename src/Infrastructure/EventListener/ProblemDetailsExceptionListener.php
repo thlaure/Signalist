@@ -22,9 +22,9 @@ use Throwable;
 #[AsEventListener(event: KernelEvents::EXCEPTION, priority: -10)]
 final readonly class ProblemDetailsExceptionListener
 {
-    private const CONTENT_TYPE = 'application/problem+json';
+    private const string CONTENT_TYPE = 'application/problem+json';
 
-    private const BASE_TYPE_URI = 'https://signalist.app/problems';
+    private const string BASE_TYPE_URI = 'https://signalist.app/problems';
 
     public function __construct(
         private string $environment,

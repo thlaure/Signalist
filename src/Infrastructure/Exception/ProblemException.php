@@ -14,7 +14,7 @@ use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
  */
 abstract class ProblemException extends Exception implements HttpExceptionInterface
 {
-    private const BASE_TYPE_URI = 'https://signalist.app/problems';
+    private const string BASE_TYPE_URI = 'https://signalist.app/problems';
 
     /**
      * @param array<string, mixed> $extensions Additional problem details

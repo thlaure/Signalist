@@ -74,6 +74,14 @@ lint-dry: ## Run PHP CS Fixer in dry-run mode
 analyse: ## Run PHPStan static analysis
 	docker compose exec app vendor/bin/phpstan analyse
 
+rector: ## Run Rector to refactor code
+	docker compose exec app vendor/bin/rector process
+
+rector-dry: ## Run Rector in dry-run mode
+	docker compose exec app vendor/bin/rector process --dry-run
+
+quality: lint analyse rector ## Run all code quality tools (CS Fixer, PHPStan, Rector)
+
 ## —— Testing —————————————————————————————————————————————————————————————————
 
 tests-unit: ## Run unit tests

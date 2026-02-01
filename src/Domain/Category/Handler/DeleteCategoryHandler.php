@@ -20,7 +20,7 @@ final readonly class DeleteCategoryHandler
     {
         $category = $this->categoryRepository->find($command->id);
 
-        if ($category === null) {
+        if (!$category instanceof \App\Entity\Category) {
             throw new CategoryNotFoundException($command->id);
         }
 

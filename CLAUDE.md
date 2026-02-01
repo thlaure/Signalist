@@ -13,11 +13,12 @@
 - **AI:** Symfony AI (OpenAI, Anthropic, Mistral) + MCP Server
 - **Queue:** Symfony Messenger + Redis
 - **Testing:** PHPUnit (Backend) + Jest (Frontend) - mandatory
+- **Code Quality:** PHP CS Fixer + PHPStan + Rector
 - **Process:**
   1. **Explore** context
-  2. **Plan** step-by-step & get approval
-  3. **Implement** strictly following the plan
-  4. **Verify** (Lint, Analyze, Test)
+  2. **Plan** step-by-step & get approval (explain choices)
+  3. **Implement** strictly following the plan (narrate actions)
+  4. **Verify** (Lint, Analyze, Rector, Test)
 
 ## Quick Start
 ```bash
@@ -87,6 +88,8 @@ docker compose up -d --build
 | Start containers | `docker compose up -d --build` |
 | Code style | `make lint` |
 | Static analysis | `make analyse` |
+| Code refactoring | `make rector` |
+| All quality checks | `make quality` |
 | Backend tests | `make tests-unit` |
 | Frontend tests | `npm test` |
 | All commands | `make help` |
@@ -175,10 +178,17 @@ src/
 
 # 6. Agent Instructions & Boundaries
 
+## 6.0 Communication Style
+When working on this project, the agent MUST:
+- **Explain choices in real-time:** Before implementing, explain WHY a particular approach is chosen over alternatives
+- **Narrate actions:** Describe what you are doing as you do it (e.g., "I'm creating the handler first because it contains the core business logic")
+- **Justify technical decisions:** When choosing a pattern, library, or approach, explain the reasoning (e.g., "Using UUID v7 because it's time-ordered, which improves database index performance")
+- **Highlight trade-offs:** When multiple valid approaches exist, explain the pros/cons of each before proceeding
+
 ## 6.1 ALWAYS DO
 - Follow CQRS, Hexagonal Architecture, SOLID
 - Validate inputs strictly via InputDTOs
-- Run `make lint` + `make analyse` on generated code
+- Run `make lint` + `make analyse` + `make rector` on generated code
 - Write tests for every change (PHPUnit/Jest)
 - Use async processing for RSS crawling and AI inference
 - Ensure AI summaries retain source URLs (factual integrity)

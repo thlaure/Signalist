@@ -21,13 +21,13 @@ final readonly class UpdateCategoryHandler
     {
         $category = $this->categoryRepository->find($command->id);
 
-        if ($category === null) {
+        if (!$category instanceof \App\Entity\Category) {
             throw new CategoryNotFoundException($command->id);
         }
 
         $existingWithSlug = $this->categoryRepository->findBySlug($command->slug);
 
-        if ($existingWithSlug !== null && $existingWithSlug->getId()->toRfc4122() !== $command->id) {
+        if ($existingWithSlug instanceof \App\Entity\Category && $existingWithSlug->getId()->toRfc4122() !== $command->id) {
             throw new CategorySlugAlreadyExistsException($command->slug);
         }
 

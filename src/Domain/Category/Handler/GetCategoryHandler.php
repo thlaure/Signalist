@@ -20,7 +20,7 @@ final readonly class GetCategoryHandler
     {
         $category = $this->categoryRepository->find($query->id);
 
-        if ($category === null) {
+        if (!$category instanceof Category) {
             throw new CategoryNotFoundException($query->id);
         }
 

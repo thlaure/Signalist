@@ -12,26 +12,19 @@ use Symfony\Component\HttpFoundation\Response;
 final class ValidationException extends ProblemException
 {
     /**
-     * @var array<array{field: string, message: string}>
-     */
-    private array $errors;
-
-    /**
      * @param array<array{field: string, message: string}> $errors
      */
     public function __construct(
-        array $errors,
+        private readonly array $errors,
         ?string $instance = null,
     ) {
-        $this->errors = $errors;
-
         parent::__construct(
             type: self::buildTypeUri('validation-error'),
             title: 'Validation Error',
             status: Response::HTTP_BAD_REQUEST,
             detail: 'The request body contains invalid data.',
             instance: $instance,
-            extensions: ['errors' => $errors],
+            extensions: ['errors' => $this->errors],
         );
     }
 

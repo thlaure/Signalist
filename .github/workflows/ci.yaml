@@ -70,6 +70,9 @@ jobs:
       - name: Run PHPStan
         run: docker compose exec -T app vendor/bin/phpstan analyse
 
+      - name: Run Rector (dry-run)
+        run: docker compose exec -T app vendor/bin/rector process --dry-run
+
       - name: YAML linter
         run: docker compose exec -T app php bin/console lint:yaml config
 

@@ -535,7 +535,13 @@ docker compose exec app php bin/console messenger:failed:retry
 docker compose exec app php bin/console cache:clear && \
 docker compose exec app vendor/bin/php-cs-fixer fix --dry-run && \
 docker compose exec app vendor/bin/phpstan analyse && \
+docker compose exec app vendor/bin/rector process --dry-run && \
 docker compose exec app php bin/phpunit
 ```
 
 **Expected:** All commands complete without errors.
+
+Or use the Makefile shortcut:
+```bash
+make quality && make tests
+```

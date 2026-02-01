@@ -33,3 +33,6 @@ services:
 
     App\Domain\Feed\Port\RssFetcherInterface:
         alias: App\Infrastructure\RSS\LaminasFeedRssFetcher
+
+    App\Domain\Article\Port\ArticleRepositoryInterface:
+        alias: App\Infrastructure\Persistence\Article\DoctrineArticleRepository

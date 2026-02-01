@@ -1,25 +1,17 @@
 import { Routes, Route } from 'react-router-dom';
-import Box from '@mui/material/Box';
-
-// Placeholder pages - will be implemented in Phase 7
-function Dashboard() {
-  return <Box p={3}>Dashboard - All recent articles</Box>;
-}
-
-function CategoryPage() {
-  return <Box p={3}>Category Page</Box>;
-}
-
-function BookmarksPage() {
-  return <Box p={3}>Bookmarks Page</Box>;
-}
+import AppLayout from './components/Layout/AppLayout';
+import Dashboard from './pages/Dashboard';
+import CategoryPage from './pages/CategoryPage';
+import BookmarksPage from './pages/BookmarksPage';
 
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Dashboard />} />
-      <Route path="/categories/:id" element={<CategoryPage />} />
-      <Route path="/bookmarks" element={<BookmarksPage />} />
+      <Route element={<AppLayout />}>
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/categories/:id" element={<CategoryPage />} />
+        <Route path="/bookmarks" element={<BookmarksPage />} />
+      </Route>
     </Routes>
   );
 }

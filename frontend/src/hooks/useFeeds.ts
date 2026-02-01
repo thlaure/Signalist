@@ -5,15 +5,16 @@ import {
   addFeed,
   updateFeed,
   deleteFeed,
+  type FeedFilters,
 } from '../api/feeds';
 import type { AddFeedInput, UpdateFeedInput } from '../types';
 
 export const FEEDS_QUERY_KEY = ['feeds'];
 
-export function useFeeds() {
+export function useFeeds(filters?: FeedFilters) {
   return useQuery({
-    queryKey: FEEDS_QUERY_KEY,
-    queryFn: getFeeds,
+    queryKey: [...FEEDS_QUERY_KEY, filters],
+    queryFn: () => getFeeds(filters),
   });
 }
 

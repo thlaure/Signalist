@@ -6,8 +6,18 @@ import type {
   ApiCollection,
 } from '../types';
 
-export async function getFeeds(): Promise<Feed[]> {
-  const response = await apiClient.get<ApiCollection<Feed>>('/feeds');
+export interface FeedFilters {
+  categoryId?: string;
+}
+
+export async function getFeeds(filters?: FeedFilters): Promise<Feed[]> {
+  const params = new URLSearchParams();
+  if (filters?.categoryId) {
+    params.append('categoryId', filters.categoryId);
+  }
+  const query = params.toString();
+  const url = query ? `/feeds?${query}` : '/feeds';
+  const response = await apiClient.get<ApiCollection<Feed>>(url);
   return response.data['hydra:member'];
 }
 

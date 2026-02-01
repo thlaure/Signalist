@@ -14,6 +14,7 @@
 - **Queue:** Symfony Messenger + Redis
 - **Testing:** PHPUnit (Backend) + Jest (Frontend) - mandatory
 - **Code Quality:** PHP CS Fixer + PHPStan + Rector
+- **Compliance:** GDPR-compliant by design
 - **Process:**
   1. **Explore** context
   2. **Plan** step-by-step & get approval (explain choices)
@@ -208,6 +209,10 @@ When working on this project, the agent MUST:
 - Write business logic in controllers
 - Mix frontend and backend logic
 - Create "god services"
+- Store personal data without documented purpose (GDPR)
+- Send raw user data to external AI services without anonymization (GDPR)
+- Skip consent mechanisms for data processing (GDPR)
+- Log sensitive data (passwords, tokens, PII) in plain text (GDPR)
 
 ---
 
@@ -624,3 +629,166 @@ docs(readme): update installation steps
 | Error handling | ExceptionListener | Consistent API errors |
 | AI processing | Messenger Workers | Async, non-blocking |
 | Semantic search | pgvector | Vector similarity queries |
+
+---
+
+# 15. GDPR Compliance
+
+This project **MUST** be GDPR-compliant. All features involving personal data require privacy-by-design.
+
+## 15.1 Core Principles
+
+| Principle | Implementation |
+|-----------|----------------|
+| **Data Minimization** | Only collect data strictly necessary for the feature |
+| **Purpose Limitation** | Data used only for stated purpose; no secondary use without consent |
+| **Storage Limitation** | Define and enforce retention periods for all personal data |
+| **Accuracy** | Provide mechanisms for users to update their data |
+| **Integrity & Confidentiality** | Encrypt data at rest and in transit |
+| **Accountability** | Log all data processing activities |
+
+## 15.2 User Rights (MUST Implement)
+
+| Right | Endpoint | Description |
+|-------|----------|-------------|
+| **Access** | `GET /api/v1/user/data-export` | Export all user data in JSON/CSV |
+| **Erasure** | `DELETE /api/v1/user/account` | Delete account and all associated data |
+| **Portability** | `GET /api/v1/user/data-export?format=portable` | Machine-readable format (JSON) |
+| **Rectification** | `PUT /api/v1/user/profile` | Update personal information |
+| **Restriction** | `POST /api/v1/user/restrict-processing` | Pause data processing |
+| **Objection** | `POST /api/v1/user/opt-out` | Opt-out of specific processing |
+
+## 15.3 Consent Management
+
+```php
+// Every consent must be:
+// - Freely given (no pre-checked boxes)
+// - Specific (per purpose)
+// - Informed (clear explanation)
+// - Unambiguous (explicit action)
+// - Withdrawable (easy opt-out)
+
+final readonly class UserConsent
+{
+    public function __construct(
+        public string $userId,
+        public ConsentType $type,        // newsletter, analytics, ai_processing
+        public bool $granted,
+        public \DateTimeImmutable $grantedAt,
+        public ?string $ipAddress,        // For audit trail
+        public string $consentVersion,    // Track policy version
+    ) {}
+}
+```
+
+## 15.4 Data Retention Policies
+
+| Data Type | Retention Period | Action on Expiry |
+|-----------|------------------|------------------|
+| User account | Until deletion request | Hard delete |
+| Articles | 90 days after last access | Soft delete, then purge |
+| Bookmarks | Until user deletes | Hard delete with account |
+| AI embeddings | Same as source article | Cascade delete |
+| Audit logs | 2 years | Archive then delete |
+| Session data | 30 days | Auto-expire |
+| Deleted account data | 30 days grace period | Permanent deletion |
+
+## 15.5 Third-Party AI Processing
+
+When sending data to LLM providers (OpenAI, Anthropic, Mistral):
+
+```php
+// ALWAYS anonymize before sending to AI
+final class ArticleAnonymizer
+{
+    public function anonymize(Article $article): AnonymizedContent
+    {
+        // Remove: email addresses, names, phone numbers, IPs
+        // Replace with: [EMAIL], [NAME], [PHONE], [IP]
+        // Never send: user IDs, internal references
+    }
+}
+```
+
+**Requirements:**
+- Document all AI providers in privacy policy
+- Ensure DPA (Data Processing Agreement) with each provider
+- Prefer EU-based or GDPR-compliant providers
+- Log all data sent to external AI services
+
+## 15.6 Technical Measures
+
+### Encryption
+```yaml
+# Database: Encrypt sensitive columns
+doctrine:
+  dbal:
+    types:
+      encrypted_string: App\Infrastructure\Doctrine\EncryptedStringType
+
+# Application: Use sodium for encryption
+# Transport: TLS 1.3 minimum
+```
+
+### Pseudonymization
+```php
+// Use UUIDs instead of sequential IDs (already implemented)
+// Hash email for analytics: hash('sha256', $email . $salt)
+// Separate identity data from behavioral data
+```
+
+### Access Control
+```php
+// Implement data access logging
+#[AsEventListener(event: 'doctrine.postLoad')]
+final class DataAccessAuditor
+{
+    public function __invoke(PostLoadEventArgs $event): void
+    {
+        $entity = $event->getObject();
+        if ($entity instanceof PersonalDataInterface) {
+            $this->auditLog->logAccess($entity, $this->currentUser);
+        }
+    }
+}
+```
+
+## 15.7 Privacy by Design Checklist
+
+Before implementing ANY feature involving user data:
+
+- [ ] **Necessity check:** Is this data truly needed?
+- [ ] **Minimization:** Can we achieve the goal with less data?
+- [ ] **Consent:** Does this require explicit user consent?
+- [ ] **Retention:** How long will this data be kept?
+- [ ] **Access control:** Who can access this data?
+- [ ] **Deletion:** How will this data be deleted?
+- [ ] **Export:** Can this data be included in user export?
+- [ ] **Third-party:** Is data shared externally? Document it.
+- [ ] **Anonymization:** Can we use anonymized/aggregated data instead?
+
+## 15.8 GDPR-Related Problem Types
+
+| Type URI | Title | Status | When |
+|----------|-------|--------|------|
+| `/problems/consent-required` | Consent Required | 403 | Action requires user consent |
+| `/problems/data-processing-restricted` | Processing Restricted | 403 | User restricted processing |
+| `/problems/retention-expired` | Data Expired | 410 | Data deleted per retention policy |
+
+## 15.9 Agent GDPR Rules
+
+### ALWAYS DO
+- Add `deletedAt` soft-delete column to entities with personal data
+- Implement cascade deletion for related personal data
+- Log data access in audit trail
+- Anonymize data before sending to external services
+- Include data in user export endpoints
+
+### NEVER DO
+- Store personal data without documented purpose
+- Send raw personal data to AI providers
+- Use personal data for undisclosed purposes
+- Retain data beyond defined retention periods
+- Implement analytics without anonymization
+- Skip consent for marketing communications
+- Log sensitive data (passwords, tokens) in plain text

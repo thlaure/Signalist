@@ -27,3 +27,9 @@ services:
     # Repository bindings
     App\Domain\Category\Port\CategoryRepositoryInterface:
         alias: App\Infrastructure\Persistence\Category\DoctrineCategoryRepository
+
+    App\Domain\Feed\Port\FeedRepositoryInterface:
+        alias: App\Infrastructure\Persistence\Feed\DoctrineFeedRepository
+
+    App\Domain\Feed\Port\RssFetcherInterface:
+        alias: App\Infrastructure\RSS\LaminasFeedRssFetcher

@@ -3,15 +3,13 @@ FROM dunglas/frankenphp:1-php8.5-alpine
 # Install mlocati/docker-php-extension-installer for easier extension management
 ADD --chmod=0755 https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
 
-# Install system dependencies
+# Install system dependencies and PHP extensions
 RUN apk add --no-cache \
     git \
     curl \
     zip \
-    unzip
-
-# Install PHP extensions (production - no xdebug)
-RUN install-php-extensions \
+    unzip \
+    && install-php-extensions \
     pdo_pgsql \
     intl \
     opcache \
@@ -32,11 +30,9 @@ COPY . .
 COPY docker/frankenphp/php.ini /usr/local/etc/php/conf.d/app.ini
 COPY docker/frankenphp/Caddyfile /etc/caddy/Caddyfile
 
-# Install dependencies
-RUN composer install --no-dev --optimize-autoloader --classmap-authoritative --no-interaction
-
-# Set proper permissions
-RUN chown -R www-data:www-data /app/var
+# Install dependencies and set permissions
+RUN composer install --no-dev --optimize-autoloader --classmap-authoritative --no-interaction \
+    && chown -R www-data:www-data /app/var
 
 # Expose ports (HTTP/HTTPS/HTTP3)
 EXPOSE 80 443 443/udp

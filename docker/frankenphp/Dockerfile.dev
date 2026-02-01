@@ -3,16 +3,14 @@ FROM dunglas/frankenphp:1-php8.5-alpine
 # Install mlocati/docker-php-extension-installer for easier extension management
 ADD --chmod=0755 https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
 
-# Install system dependencies
+# Install system dependencies and PHP extensions
 RUN apk add --no-cache \
     git \
     curl \
     zip \
     unzip \
-    linux-headers
-
-# Install PHP extensions using install-php-extensions (handles PHP 8.5 compatibility)
-RUN install-php-extensions \
+    linux-headers \
+    && install-php-extensions \
     pdo_pgsql \
     intl \
     opcache \

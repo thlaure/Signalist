@@ -221,11 +221,7 @@ final class ApiContext implements Context
         $data = $this->getJsonResponse();
 
         // Handle Hydra collection format
-        if (isset($data['member']) && is_array($data['member'])) {
-            $actual = count($data['member']);
-        } else {
-            $actual = count($data);
-        }
+        $actual = isset($data['member']) && is_array($data['member']) ? count($data['member']) : count($data);
 
         if ($actual !== $count) {
             throw new RuntimeException(sprintf('Expected %d items, got %d', $count, $actual));

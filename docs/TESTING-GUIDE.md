@@ -20,7 +20,7 @@ docker compose ps  # All services should be "Up" and "healthy"
 ```bash
 docker compose exec app php -v
 ```
-**Expected:** PHP 8.4.x
+**Expected:** PHP 8.5.x
 
 ### 0.2 Verify Symfony Cache
 ```bash

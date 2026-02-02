@@ -7,7 +7,7 @@
 - **Project:** AI-powered RSS intelligence platform (SaaS)
 - **Architecture:** Hexagonal Architecture + CQRS + API Platform + SOLID
 - **Flow:** `API Platform → State Processor → Handler → Domain Model → Repository`
-- **Stack:** PHP 8.4 + Symfony 8.x + API Platform 4.x (Backend) | React + TypeScript + Vite + MUI (Frontend)
+- **Stack:** PHP 8.5 + Symfony 8.x + API Platform 4.x (Backend) | React + TypeScript + Vite + MUI (Frontend)
 - **Server:** **FrankenPHP** (replaces nginx + php-fpm)
 - **Database:** PostgreSQL + **pgvector** for embeddings
 - **AI:** Symfony AI (OpenAI, Anthropic, Mistral) + MCP Server

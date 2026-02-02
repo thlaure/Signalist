@@ -34,7 +34,11 @@
         "symfony/yaml": "7.4.*"
     },
     "require-dev": {
+        "behat/behat": "^3.29",
+        "behatch/contexts": "^1.3",
         "enlightn/security-checker": "^2.0",
+        "friends-of-behat/mink-browserkit-driver": "^1.6",
+        "friends-of-behat/symfony-extension": "^2.6",
         "friendsofphp/php-cs-fixer": "^3.91",
         "phpro/grumphp": ">=2.18",
         "phpstan/phpstan": "^2.1",

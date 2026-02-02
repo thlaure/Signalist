@@ -24,8 +24,8 @@ doctrine:
 when@test:
     doctrine:
         dbal:
-            url: '%env(resolve:DATABASE_URL_TEST)%'
-            dbname_suffix: ''
+            # Uses DATABASE_URL from .env.test
+            dbname_suffix: '_test%env(default::TEST_TOKEN)%'
 
 when@prod:
     doctrine:

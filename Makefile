@@ -96,6 +96,12 @@ tests: ## Run all tests
 tests-coverage: ## Run tests with coverage report
 	docker compose exec app vendor/bin/phpunit --coverage-html var/coverage
 
+tests-api: ## Run Behat API tests
+	docker compose exec app vendor/bin/behat --colors
+
+tests-api-wip: ## Run Behat tests tagged @wip
+	docker compose exec app vendor/bin/behat --colors --tags=@wip
+
 ## —— Database ————————————————————————————————————————————————————————————————
 
 db-migrate: ## Run database migrations

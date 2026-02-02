@@ -1,0 +1,21 @@
+default:
+  suites:
+    api:
+      paths:
+        - '%paths.base%/features/api'
+      contexts:
+        - App\Tests\Behat\ApiContext
+
+  extensions:
+    FriendsOfBehat\SymfonyExtension:
+      bootstrap: tests/bootstrap.php
+      kernel:
+        class: App\Kernel
+        environment: test
+        debug: true
+
+    Behat\MinkExtension:
+      base_url: 'http://localhost'
+      sessions:
+        default:
+          symfony: ~

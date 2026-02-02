@@ -1,0 +1,9 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    App\Tests\Behat\ApiContext:
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $session: '@behat.mink.default_session'

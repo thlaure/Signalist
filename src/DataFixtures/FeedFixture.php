@@ -12,7 +12,7 @@ use Doctrine\Persistence\ObjectManager;
 
 final class FeedFixture extends Fixture implements OrderedFixtureInterface
 {
-    private const FEEDS = [
+    private const array FEEDS = [
         'smashing' => [
             'title' => 'Smashing Magazine',
             'url' => 'https://www.smashingmagazine.com/feed/',

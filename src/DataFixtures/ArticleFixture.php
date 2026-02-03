@@ -12,7 +12,7 @@ use Doctrine\Persistence\ObjectManager;
 
 final class ArticleFixture extends Fixture implements OrderedFixtureInterface
 {
-    private const ARTICLES = [
+    private const array ARTICLES = [
         'article-smashing-1' => [
             'feed' => 'feed-smashing',
             'guid' => 'https://www.smashingmagazine.com/2026/01/modern-css-grid/',

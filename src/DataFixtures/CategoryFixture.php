@@ -11,7 +11,7 @@ use Doctrine\Persistence\ObjectManager;
 
 final class CategoryFixture extends Fixture implements OrderedFixtureInterface
 {
-    private const CATEGORIES = [
+    private const array CATEGORIES = [
         'tech' => [
             'name' => 'Tech & Development',
             'slug' => 'tech-development',

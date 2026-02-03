@@ -11,7 +11,7 @@ use Doctrine\Persistence\ObjectManager;
 
 final class BookmarkFixture extends Fixture implements OrderedFixtureInterface
 {
-    private const BOOKMARKS = [
+    private const array BOOKMARKS = [
         [
             'article' => 'article-smashing-1',
             'notes' => 'Great reference for the new dashboard layout',

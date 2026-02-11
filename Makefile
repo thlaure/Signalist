@@ -1,4 +1,4 @@
-.PHONY: help up down build rebuild shell logs lint analyse tests-unit tests-integration db-migrate db-reset cache-clear composer-install composer-update
+.PHONY: help up down build rebuild shell logs lint analyse tests-unit tests-integration db-migrate db-reset cache-clear composer-install composer-update front-install front-dev front-build front-preview front-lint front-test front-test-watch
 
 # Default target
 .DEFAULT_GOAL := help
@@ -148,9 +148,33 @@ worker-retry: ## Retry failed messages
 api-docs: ## Open API documentation
 	@echo "$(CYAN)API Documentation:$(RESET) http://localhost:8080/api"
 
+## —— Frontend ————————————————————————————————————————————————————————————
+
+front-install: ## Install frontend dependencies
+	cd frontend && npm install
+
+front-dev: ## Start frontend dev server (http://localhost:5173)
+	cd frontend && npm run dev
+
+front-build: ## Build frontend for production
+	cd frontend && npm run build
+
+front-preview: ## Preview production build locally
+	cd frontend && npm run preview
+
+front-lint: ## Run frontend linter (ESLint)
+	cd frontend && npm run lint
+
+front-test: ## Run frontend tests
+	cd frontend && npm run test
+
+front-test-watch: ## Run frontend tests in watch mode
+	cd frontend && npm run test:watch
+
 ## —— Project Setup ———————————————————————————————————————————————————————————
 
-install: build up composer-install db-migrate ## Full project setup
+install: build up composer-install db-migrate front-install ## Full project setup
 	@echo "$(GREEN)Signalist is ready!$(RESET)"
-	@echo "Access the application at: $(CYAN)http://localhost:8080$(RESET)"
-	@echo "API documentation at: $(CYAN)http://localhost:8080/api$(RESET)"
+	@echo "Backend API at: $(CYAN)http://localhost:8000$(RESET)"
+	@echo "API documentation at: $(CYAN)http://localhost:8000/api$(RESET)"
+	@echo "Frontend: run $(CYAN)make front-dev$(RESET) to start at $(CYAN)http://localhost:5173$(RESET)"

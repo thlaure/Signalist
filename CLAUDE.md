@@ -185,6 +185,7 @@ When working on this project, the agent MUST:
 - **Narrate actions:** Describe what you are doing as you do it (e.g., "I'm creating the handler first because it contains the core business logic")
 - **Justify technical decisions:** When choosing a pattern, library, or approach, explain the reasoning (e.g., "Using UUID v7 because it's time-ordered, which improves database index performance")
 - **Highlight trade-offs:** When multiple valid approaches exist, explain the pros/cons of each before proceeding
+- **Compare alternatives explicitly:** When a design decision is non-trivial (e.g., choosing between event sourcing vs. simple persistence, sync vs. async, different DTO mapping strategies), list at least two alternatives with their pros/cons before selecting one
 
 ## 6.1 ALWAYS DO
 - Follow CQRS, Hexagonal Architecture, SOLID
@@ -194,6 +195,7 @@ When working on this project, the agent MUST:
 - Use async processing for RSS crawling and AI inference
 - Ensure AI summaries retain source URLs (factual integrity)
 - Use Conventional Commits for git messages
+- After implementing a feature that passes `make quality` and tests, update `docs/ROADMAP.md` to mark the corresponding task(s) as `Done`
 
 ## 6.2 ASK FIRST
 - Adding new composer/npm packages

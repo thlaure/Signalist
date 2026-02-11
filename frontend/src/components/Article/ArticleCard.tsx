@@ -4,7 +4,6 @@ import CardActions from '@mui/material/CardActions';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
-import Chip from '@mui/material/Chip';
 import Box from '@mui/material/Box';
 import Tooltip from '@mui/material/Tooltip';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
@@ -42,8 +41,13 @@ export default function ArticleCard({
         display: 'flex',
         flexDirection: 'column',
         height: '100%',
-        opacity: article.isRead ? 0.7 : 1,
-        transition: 'opacity 0.2s',
+        '&:hover': {
+          transform: 'translateY(-2px)',
+          boxShadow: 4,
+        },
+        '&:hover .article-actions': {
+          opacity: 1,
+        },
       }}
     >
       {article.imageUrl && (
@@ -56,15 +60,11 @@ export default function ArticleCard({
         />
       )}
       <CardContent sx={{ flexGrow: 1 }}>
-        <Box display="flex" gap={1} mb={1} flexWrap="wrap">
-          <Chip
-            label={article.categoryName}
-            size="small"
-            color="primary"
-            variant="outlined"
-          />
-          <Chip label={article.feedTitle} size="small" variant="outlined" />
-        </Box>
+        <Typography variant="caption" color="text.secondary" gutterBottom component="div">
+          {article.feedTitle}
+          {article.feedTitle && (article.publishedAt || article.createdAt) ? ' \u00b7 ' : ''}
+          {formatDate(article.publishedAt || article.createdAt)}
+        </Typography>
         <Typography
           variant="h6"
           component="h2"
@@ -75,7 +75,7 @@ export default function ArticleCard({
             display: '-webkit-box',
             WebkitLineClamp: 2,
             WebkitBoxOrient: 'vertical',
-            textDecoration: article.isRead ? 'none' : 'none',
+            color: article.isRead ? 'text.secondary' : 'text.primary',
           }}
         >
           {article.title}
@@ -95,14 +95,24 @@ export default function ArticleCard({
             {article.summary}
           </Typography>
         )}
-        <Box mt={1}>
-          <Typography variant="caption" color="text.secondary">
-            {article.author && `${article.author} • `}
-            {formatDate(article.publishedAt || article.createdAt)}
-          </Typography>
-        </Box>
+        {article.author && (
+          <Box mt={1}>
+            <Typography variant="caption" color="text.secondary">
+              {article.author}
+            </Typography>
+          </Box>
+        )}
       </CardContent>
-      <CardActions sx={{ justifyContent: 'space-between', px: 2, pb: 2 }}>
+      <CardActions
+        className="article-actions"
+        sx={{
+          justifyContent: 'space-between',
+          px: 2,
+          pb: 2,
+          opacity: 0,
+          transition: 'opacity 0.2s ease',
+        }}
+      >
         <Box>
           <Tooltip title={article.isRead ? 'Mark as unread' : 'Mark as read'}>
             <IconButton

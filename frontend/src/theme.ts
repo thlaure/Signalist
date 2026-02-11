@@ -4,14 +4,14 @@ const theme = createTheme({
   palette: {
     mode: 'light',
     primary: {
-      main: '#1976d2',
-      light: '#42a5f5',
-      dark: '#1565c0',
+      main: '#4F46E5',
+      light: '#818CF8',
+      dark: '#3730A3',
     },
     secondary: {
-      main: '#9c27b0',
-      light: '#ba68c8',
-      dark: '#7b1fa2',
+      main: '#64748B',
+      light: '#94A3B8',
+      dark: '#475569',
     },
     background: {
       default: '#f5f5f5',
@@ -42,7 +42,8 @@ const theme = createTheme({
     },
     h4: {
       fontSize: '1.5rem',
-      fontWeight: 500,
+      fontWeight: 600,
+      letterSpacing: '-0.01em',
     },
     h5: {
       fontSize: '1.25rem',
@@ -53,6 +54,33 @@ const theme = createTheme({
       fontWeight: 500,
     },
   },
+  shadows: [
+    'none',
+    '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02)',
+    '0 2px 6px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.03)',
+    '0 4px 12px rgba(0,0,0,0.04), 0 2px 4px rgba(0,0,0,0.02)',
+    '0 5px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1)',
+    '0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1)',
+    '0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1)',
+    '0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1)',
+    '0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1)',
+    '0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1)',
+    '0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1)',
+    '0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1)',
+    '0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1)',
+    '0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1)',
+    '0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1)',
+    '0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1)',
+    '0 25px 50px -12px rgba(0,0,0,0.25)',
+    '0 25px 50px -12px rgba(0,0,0,0.25)',
+    '0 25px 50px -12px rgba(0,0,0,0.25)',
+    '0 25px 50px -12px rgba(0,0,0,0.25)',
+    '0 25px 50px -12px rgba(0,0,0,0.25)',
+    '0 25px 50px -12px rgba(0,0,0,0.25)',
+    '0 25px 50px -12px rgba(0,0,0,0.25)',
+    '0 25px 50px -12px rgba(0,0,0,0.25)',
+    '0 25px 50px -12px rgba(0,0,0,0.25)',
+  ],
   components: {
     MuiButton: {
       styleOverrides: {
@@ -64,14 +92,15 @@ const theme = createTheme({
     MuiCard: {
       styleOverrides: {
         root: {
-          borderRadius: 8,
+          borderRadius: 12,
+          transition: 'transform 0.2s ease, box-shadow 0.2s ease',
         },
       },
     },
     MuiPaper: {
       styleOverrides: {
         root: {
-          borderRadius: 8,
+          borderRadius: 12,
         },
       },
     },

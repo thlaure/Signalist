@@ -4,9 +4,7 @@ import ListItemText from '@mui/material/ListItemText';
 import ListItemSecondaryAction from '@mui/material/ListItemSecondaryAction';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import Chip from '@mui/material/Chip';
 import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
 import Tooltip from '@mui/material/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
@@ -66,70 +64,61 @@ export default function BookmarkList({
   }
 
   return (
-    <Paper>
-      <List>
-        {bookmarks.map((bookmark, index) => (
-          <ListItem
-            key={bookmark.id}
-            divider={index < bookmarks.length - 1}
-            sx={{ py: 2 }}
-          >
-            <ListItemText
-              primary={
-                <Typography variant="subtitle1" fontWeight={500}>
-                  {bookmark.articleTitle}
+    <List>
+      {bookmarks.map((bookmark, index) => (
+        <ListItem
+          key={bookmark.id}
+          sx={{
+            py: 2,
+            borderBottom: index < bookmarks.length - 1 ? '1px solid' : 'none',
+            borderColor: 'divider',
+          }}
+        >
+          <ListItemText
+            primary={
+              <Typography variant="subtitle1" fontWeight={500}>
+                {bookmark.articleTitle}
+              </Typography>
+            }
+            secondary={
+              <Box mt={0.5}>
+                <Typography variant="caption" color="text.secondary">
+                  {bookmark.feedTitle} &middot; {bookmark.categoryName}
                 </Typography>
-              }
-              secondary={
-                <Box mt={1}>
-                  <Box display="flex" gap={1} mb={1}>
-                    <Chip
-                      label={bookmark.categoryName}
-                      size="small"
-                      color="primary"
-                      variant="outlined"
-                    />
-                    <Chip
-                      label={bookmark.feedTitle}
-                      size="small"
-                      variant="outlined"
-                    />
-                  </Box>
-                  {bookmark.notes && (
-                    <Typography variant="body2" color="text.secondary" mb={1}>
-                      {bookmark.notes}
-                    </Typography>
-                  )}
-                  <Typography variant="caption" color="text.secondary">
-                    Bookmarked on {formatDate(bookmark.createdAt)}
+                {bookmark.notes && (
+                  <Typography variant="body2" color="text.secondary" mt={0.5}>
+                    {bookmark.notes}
                   </Typography>
-                </Box>
-              }
-            />
-            <ListItemSecondaryAction>
-              <Tooltip title="Open article">
-                <IconButton
-                  component="a"
-                  href={bookmark.articleUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <OpenInNewIcon />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="Remove bookmark">
-                <IconButton
-                  edge="end"
-                  onClick={() => onDelete(bookmark.id)}
-                  color="error"
-                >
-                  <DeleteIcon />
-                </IconButton>
-              </Tooltip>
-            </ListItemSecondaryAction>
-          </ListItem>
-        ))}
-      </List>
-    </Paper>
+                )}
+                <Typography variant="caption" color="text.secondary" component="div" mt={0.5}>
+                  Bookmarked on {formatDate(bookmark.createdAt)}
+                </Typography>
+              </Box>
+            }
+          />
+          <ListItemSecondaryAction>
+            <Tooltip title="Open article">
+              <IconButton
+                component="a"
+                href={bookmark.articleUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <OpenInNewIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Remove bookmark">
+              <IconButton
+                edge="end"
+                onClick={() => onDelete(bookmark.id)}
+                color="error"
+              >
+                <DeleteIcon />
+              </IconButton>
+            </Tooltip>
+          </ListItemSecondaryAction>
+        </ListItem>
+      ))}
+    </List>
   );
 }

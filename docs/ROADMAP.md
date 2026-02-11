@@ -164,6 +164,7 @@
 | PHPStan configuration | Done |
 | Rector configuration | Done |
 | GrumPHP pre-commit hooks | Done |
+| Frontend pre-commit hooks (husky + lint-staged) | Done |
 | `.env` / `.env.test` / `.env.local.example` | Done |
 
 ### 1.8 Testing (Phase 1)

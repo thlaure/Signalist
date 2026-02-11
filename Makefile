@@ -1,4 +1,4 @@
-.PHONY: help up down build rebuild shell logs lint analyse tests-unit tests-integration db-migrate db-reset cache-clear composer-install composer-update front-install front-dev front-build front-preview front-lint front-test front-test-watch
+.PHONY: help up down build rebuild shell logs lint analyse tests-unit tests-integration db-migrate db-reset cache-clear composer-install composer-update front-install front-dev front-build front-preview front-lint front-test front-test-watch front-hooks
 
 # Default target
 .DEFAULT_GOAL := help
@@ -171,9 +171,12 @@ front-test: ## Run frontend tests
 front-test-watch: ## Run frontend tests in watch mode
 	cd frontend && npm run test:watch
 
+front-hooks: ## Set up frontend Git hooks (husky + lint-staged)
+	cd frontend && npm run prepare
+
 ## —— Project Setup ———————————————————————————————————————————————————————————
 
-install: build up composer-install db-migrate front-install ## Full project setup
+install: build up composer-install db-migrate front-install front-hooks ## Full project setup
 	@echo "$(GREEN)Signalist is ready!$(RESET)"
 	@echo "Backend API at: $(CYAN)http://localhost:8000$(RESET)"
 	@echo "API documentation at: $(CYAN)http://localhost:8000/api$(RESET)"

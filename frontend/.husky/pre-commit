@@ -1,0 +1,10 @@
+# Backend: GrumPHP (phpstan, phpcsfixer, yamllint, blacklist, security)
+DIFF=$(git -c diff.mnemonicprefix=false -c diff.noprefix=false --no-pager diff -r -p -m -M --full-index --no-color --staged | cat)
+export GRUMPHP_GIT_WORKING_DIR="$(git rev-parse --show-toplevel)"
+(cd "./" && printf "%s\n" "${DIFF}" | docker compose exec -T app vendor/bin/grumphp git:pre-commit --skip-success-output)
+
+# Frontend: TypeScript type check (whole project, catches cross-file errors)
+(cd frontend && npx tsc --noEmit)
+
+# Frontend: ESLint on staged files only
+(cd frontend && npx lint-staged)

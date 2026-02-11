@@ -103,8 +103,3 @@ export interface ProblemDetails {
   }>;
 }
 
-// API Response wrapper for collections (plain JSON format from API Platform)
-export interface ApiCollection<T> {
-  member: T[];
-  totalItems: number;
-}

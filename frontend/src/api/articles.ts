@@ -1,5 +1,5 @@
 import apiClient from './client';
-import type { Article, ApiCollection } from '../types';
+import type { Article } from '../types';
 
 export interface ArticleFilters {
   feedId?: string;
@@ -23,8 +23,8 @@ export async function getArticles(filters?: ArticleFilters): Promise<Article[]> 
   const queryString = params.toString();
   const url = queryString ? `/articles?${queryString}` : '/articles';
 
-  const response = await apiClient.get<ApiCollection<Article>>(url);
-  return response.data.member;
+  const response = await apiClient.get<Article[]>(url);
+  return response.data;
 }
 
 export async function getArticle(id: string): Promise<Article> {

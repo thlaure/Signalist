@@ -3,7 +3,6 @@ import type {
   Feed,
   AddFeedInput,
   UpdateFeedInput,
-  ApiCollection,
 } from '../types';
 
 export interface FeedFilters {
@@ -17,8 +16,8 @@ export async function getFeeds(filters?: FeedFilters): Promise<Feed[]> {
   }
   const query = params.toString();
   const url = query ? `/feeds?${query}` : '/feeds';
-  const response = await apiClient.get<ApiCollection<Feed>>(url);
-  return response.data.member;
+  const response = await apiClient.get<Feed[]>(url);
+  return response.data;
 }
 
 export async function getFeed(id: string): Promise<Feed> {

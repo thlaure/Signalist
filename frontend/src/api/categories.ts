@@ -3,12 +3,11 @@ import type {
   Category,
   CreateCategoryInput,
   UpdateCategoryInput,
-  ApiCollection,
 } from '../types';
 
 export async function getCategories(): Promise<Category[]> {
-  const response = await apiClient.get<ApiCollection<Category>>('/categories');
-  return response.data.member;
+  const response = await apiClient.get<Category[]>('/categories');
+  return response.data;
 }
 
 export async function getCategory(id: string): Promise<Category> {

@@ -1,9 +1,9 @@
 import apiClient from './client';
-import type { Bookmark, CreateBookmarkInput, ApiCollection } from '../types';
+import type { Bookmark, CreateBookmarkInput } from '../types';
 
 export async function getBookmarks(): Promise<Bookmark[]> {
-  const response = await apiClient.get<ApiCollection<Bookmark>>('/bookmarks');
-  return response.data.member;
+  const response = await apiClient.get<Bookmark[]>('/bookmarks');
+  return response.data;
 }
 
 export async function getBookmark(id: string): Promise<Bookmark> {

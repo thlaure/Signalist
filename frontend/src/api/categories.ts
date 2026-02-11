@@ -8,7 +8,7 @@ import type {
 
 export async function getCategories(): Promise<Category[]> {
   const response = await apiClient.get<ApiCollection<Category>>('/categories');
-  return response.data['hydra:member'];
+  return response.data.member;
 }
 
 export async function getCategory(id: string): Promise<Category> {

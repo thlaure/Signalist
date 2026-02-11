@@ -3,7 +3,7 @@ import type { Bookmark, CreateBookmarkInput, ApiCollection } from '../types';
 
 export async function getBookmarks(): Promise<Bookmark[]> {
   const response = await apiClient.get<ApiCollection<Bookmark>>('/bookmarks');
-  return response.data['hydra:member'];
+  return response.data.member;
 }
 
 export async function getBookmark(id: string): Promise<Bookmark> {

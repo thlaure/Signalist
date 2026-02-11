@@ -103,8 +103,8 @@ export interface ProblemDetails {
   }>;
 }
 
-// API Response wrapper for collections
+// API Response wrapper for collections (plain JSON format from API Platform)
 export interface ApiCollection<T> {
-  'hydra:member': T[];
-  'hydra:totalItems': number;
+  member: T[];
+  totalItems: number;
 }

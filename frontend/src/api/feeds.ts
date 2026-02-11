@@ -18,7 +18,7 @@ export async function getFeeds(filters?: FeedFilters): Promise<Feed[]> {
   const query = params.toString();
   const url = query ? `/feeds?${query}` : '/feeds';
   const response = await apiClient.get<ApiCollection<Feed>>(url);
-  return response.data['hydra:member'];
+  return response.data.member;
 }
 
 export async function getFeed(id: string): Promise<Feed> {

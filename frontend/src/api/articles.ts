@@ -24,7 +24,7 @@ export async function getArticles(filters?: ArticleFilters): Promise<Article[]> 
   const url = queryString ? `/articles?${queryString}` : '/articles';
 
   const response = await apiClient.get<ApiCollection<Article>>(url);
-  return response.data['hydra:member'];
+  return response.data.member;
 }
 
 export async function getArticle(id: string): Promise<Article> {

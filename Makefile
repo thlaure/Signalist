@@ -146,7 +146,7 @@ worker-retry: ## Retry failed messages
 ## —— API Platform ————————————————————————————————————————————————————————————
 
 api-docs: ## Open API documentation
-	@echo "$(CYAN)API Documentation:$(RESET) http://localhost:8080/api"
+	@echo "$(CYAN)API Documentation:$(RESET) http://localhost:8000/api"
 
 ## —— Frontend ————————————————————————————————————————————————————————————
 

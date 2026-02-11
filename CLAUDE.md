@@ -5,7 +5,7 @@
 # 0. TL;DR (Read This First)
 
 - **Project:** AI-powered RSS intelligence platform (SaaS)
-- **Architecture:** Hexagonal Architecture + CQRS + API Platform + SOLID
+- **Architecture:** Hexagonal Architecture + CQRS + API Platform + SOLID + DDD
 - **Flow:** `API Platform → State Processor → Handler → Domain Model → Repository`
 - **Stack:** PHP 8.5 + Symfony 8.x + API Platform 4.x (Backend) | React + TypeScript + Vite + MUI (Frontend)
 - **Server:** **FrankenPHP** (replaces nginx + php-fpm)
@@ -60,7 +60,7 @@ docker compose up -d --build
 # 2. Tech Stack
 
 ## 2.1 Backend
-- **Language:** PHP **8.4**
+- **Language:** PHP **8.5**
 - **Framework:** Symfony **8.x** + **API Platform 4.x**
 - **Server:** **FrankenPHP** (built on Caddy, worker mode)
 - **Architecture:** CQRS, Clean Architecture, Hexagonal (Ports & Adapters)

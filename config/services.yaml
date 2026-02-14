@@ -39,3 +39,6 @@ services:
 
     App\Domain\Bookmark\Port\BookmarkRepositoryInterface:
         alias: App\Infrastructure\Persistence\Bookmark\DoctrineBookmarkRepository
+
+    App\Domain\Auth\Port\UserRepositoryInterface:
+        alias: App\Infrastructure\Persistence\Auth\DoctrineUserRepository

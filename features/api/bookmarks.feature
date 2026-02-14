@@ -5,6 +5,8 @@ Feature: Bookmark Management
 
   Background:
     Given I set the content type to JSON
+    And there are default users
+    And I am authenticated as "admin@signalist.app"
 
   Scenario: List bookmarks when none exist
     When I send a "GET" request to "/api/v1/bookmarks"

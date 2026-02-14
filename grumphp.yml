@@ -51,3 +51,16 @@ grumphp:
             verbose: true
             diff: true
             triggered_by: ["php"]
+
+        phpunit:
+            testsuite: Unit
+            always_execute: true
+
+        behat:
+            config: behat.yaml.dist
+            suite: api
+
+        rector:
+            config: rector.php
+            no_diffs: false
+            triggered_by: ["php"]

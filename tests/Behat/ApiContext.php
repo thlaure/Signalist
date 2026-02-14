@@ -14,6 +14,8 @@ use Behat\Mink\Session;
 
 use function count;
 
+use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
+use Doctrine\Common\DataFixtures\Loader;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
 
@@ -40,6 +42,7 @@ use function sprintf;
 use function str_contains;
 
 use Symfony\Component\BrowserKit\AbstractBrowser;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 final class ApiContext implements Context
 {
@@ -49,9 +52,12 @@ final class ApiContext implements Context
     /** @var array<string, string> */
     private array $storedVariables = [];
 
+    private ?string $jwtToken = null;
+
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly Session $session,
+        private readonly UserPasswordHasherInterface $passwordHasher,
     ) {
     }
 
@@ -68,6 +74,47 @@ final class ApiContext implements Context
 
         $this->entityManager->clear();
         $this->storedVariables = [];
+        $this->lastResponseData = null;
+        $this->jwtToken = null;
+    }
+
+    /**
+     * @Given there are default users
+     */
+    public function thereAreDefaultUsers(): void
+    {
+        $loader = new Loader();
+        $loader->addFixture(new \App\DataFixtures\UserFixture($this->passwordHasher));
+
+        $executor = new ORMExecutor($this->entityManager);
+        $executor->execute($loader->getFixtures(), append: true);
+
+        $this->entityManager->clear();
+    }
+
+    /**
+     * @Given I am authenticated as :email
+     */
+    public function iAmAuthenticatedAs(string $email): void
+    {
+        $this->getClient()->request(
+            'POST',
+            '/api/v1/auth/login',
+            [],
+            [],
+            ['CONTENT_TYPE' => 'application/json', 'HTTP_ACCEPT' => 'application/json'],
+            json_encode(['email' => $email, 'password' => 'password'], JSON_THROW_ON_ERROR),
+        );
+
+        $content = $this->session->getPage()->getContent();
+        /** @var array{token: string}|null $data */
+        $data = json_decode($content, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE || !isset($data['token'])) {
+            throw new RuntimeException('Authentication failed: ' . $content);
+        }
+
+        $this->jwtToken = $data['token'];
         $this->lastResponseData = null;
     }
 
@@ -90,7 +137,7 @@ final class ApiContext implements Context
             $url,
             [],
             [],
-            ['CONTENT_TYPE' => 'application/json', 'HTTP_ACCEPT' => 'application/ld+json'],
+            $this->buildHeaders('application/json'),
         );
         $this->lastResponseData = null;
     }
@@ -110,7 +157,7 @@ final class ApiContext implements Context
             $url,
             [],
             [],
-            ['CONTENT_TYPE' => $contentType, 'HTTP_ACCEPT' => 'application/ld+json'],
+            $this->buildHeaders($contentType),
             $bodyContent,
         );
         $this->lastResponseData = null;
@@ -285,7 +332,7 @@ final class ApiContext implements Context
             '/api/v1/categories',
             [],
             [],
-            ['CONTENT_TYPE' => 'application/json', 'HTTP_ACCEPT' => 'application/ld+json'],
+            $this->buildHeaders('application/json'),
             json_encode(['name' => $name, 'slug' => $slug], JSON_THROW_ON_ERROR),
         );
 
@@ -379,6 +426,23 @@ final class ApiContext implements Context
         }
 
         return $value;
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private function buildHeaders(string $contentType): array
+    {
+        $headers = [
+            'CONTENT_TYPE' => $contentType,
+            'HTTP_ACCEPT' => 'application/ld+json',
+        ];
+
+        if ($this->jwtToken !== null) {
+            $headers['HTTP_AUTHORIZATION'] = 'Bearer ' . $this->jwtToken;
+        }
+
+        return $headers;
     }
 
     /**

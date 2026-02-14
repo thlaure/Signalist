@@ -43,6 +43,9 @@ jobs:
       - name: Install Composer dependencies
         run: docker compose exec -T app composer install --no-interaction --no-progress --prefer-dist
 
+      - name: Generate JWT keys
+        run: docker compose exec -T app php bin/console lexik:jwt:generate-keypair --overwrite --no-interaction
+
       - name: Check HTTP reachability
         run: |
           for i in {1..30}; do

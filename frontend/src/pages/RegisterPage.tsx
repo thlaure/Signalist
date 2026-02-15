@@ -9,25 +9,33 @@ import Typography from '@mui/material/Typography';
 import Alert from '@mui/material/Alert';
 import CircularProgress from '@mui/material/CircularProgress';
 import Link from '@mui/material/Link';
-import { useAuth } from '../hooks/useAuth';
+import { register } from '../api/auth';
 import { isProblemError } from '../api/client';
 
-export default function LoginPage() {
-  const { login } = useAuth();
+export default function RegisterPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  const passwordsMatch = password === confirmPassword;
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError(null);
+
+    if (!passwordsMatch) {
+      setError('Passwords do not match.');
+      return;
+    }
+
     setLoading(true);
 
     try {
-      await login({ email, password });
-      navigate('/', { replace: true });
+      await register({ email, password });
+      navigate('/login', { replace: true });
     } catch (err) {
       if (isProblemError(err)) {
         setError(err.problem.detail);
@@ -60,7 +68,7 @@ export default function LoginPage() {
             textAlign="center"
             mb={4}
           >
-            Sign in to your account
+            Create your account
           </Typography>
 
           {error && (
@@ -88,7 +96,23 @@ export default function LoginPage() {
               onChange={(e) => setPassword(e.target.value)}
               fullWidth
               required
-              autoComplete="current-password"
+              autoComplete="new-password"
+              sx={{ mb: 2 }}
+            />
+            <TextField
+              label="Confirm password"
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              fullWidth
+              required
+              autoComplete="new-password"
+              error={confirmPassword.length > 0 && !passwordsMatch}
+              helperText={
+                confirmPassword.length > 0 && !passwordsMatch
+                  ? 'Passwords do not match'
+                  : undefined
+              }
               sx={{ mb: 3 }}
             />
             <Button
@@ -96,9 +120,11 @@ export default function LoginPage() {
               variant="contained"
               fullWidth
               size="large"
-              disabled={loading || !email || !password}
+              disabled={
+                loading || !email || !password || !confirmPassword
+              }
             >
-              {loading ? <CircularProgress size={24} /> : 'Sign in'}
+              {loading ? <CircularProgress size={24} /> : 'Sign up'}
             </Button>
           </Box>
 
@@ -108,9 +134,9 @@ export default function LoginPage() {
             textAlign="center"
             mt={3}
           >
-            Don't have an account?{' '}
-            <Link component={RouterLink} to="/register">
-              Sign up
+            Already have an account?{' '}
+            <Link component={RouterLink} to="/login">
+              Sign in
             </Link>
           </Typography>
         </CardContent>

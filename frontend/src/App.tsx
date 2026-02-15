@@ -5,11 +5,13 @@ import Dashboard from './pages/Dashboard';
 import CategoryPage from './pages/CategoryPage';
 import BookmarksPage from './pages/BookmarksPage';
 import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
 
 function App() {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
       <Route element={<ProtectedRoute />}>
         <Route element={<AppLayout />}>
           <Route path="/" element={<Dashboard />} />

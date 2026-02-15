@@ -66,6 +66,15 @@ export interface LoginResponse {
   expiresIn: number;
 }
 
+export interface RegisterInput {
+  email: string;
+  password: string;
+}
+
+export interface RegisterResponse {
+  id: string;
+}
+
 // Input Types
 
 export interface CreateCategoryInput {

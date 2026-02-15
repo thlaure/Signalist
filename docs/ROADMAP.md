@@ -89,14 +89,27 @@
 
 | Task | Status |
 |------|--------|
-| `User` entity (email, password, roles, deletedAt) | Done |
+| `User` entity (email, password, roles, deletedAt, emailVerifiedAt) | Done |
 | `LoginInput` DTO (email + password validation) | Done |
 | `LoginHandler` (JWT token generation) | Done |
 | `LoginController` (`POST /api/v1/auth/login`) | Done |
+| `RegisterInput` DTO + `RegisterCommand` + `RegisterHandler` | Done |
+| `RegisterController` (`POST /api/v1/auth/register`) | Done |
+| `EmailVerificationTokenGeneratorInterface` port | Done |
+| `HmacEmailVerificationTokenGenerator` adapter (HMAC-SHA256, 24h TTL) | Done |
+| `SendVerificationEmailMessage` + async handler | Done |
+| `VerifyEmailInput` DTO + `VerifyEmailCommand` + `VerifyEmailHandler` | Done |
+| `VerifyEmailController` (`POST /api/v1/auth/verify-email`) | Done |
+| `ResendVerificationInput` DTO + `ResendVerificationCommand` + `ResendVerificationHandler` | Done |
+| `ResendVerificationController` (`POST /api/v1/auth/resend-verification`) | Done |
+| `EmailNotVerifiedException` (403) | Done |
+| `InvalidVerificationTokenException` (400) | Done |
 | `InvalidCredentialsException` | Done |
+| `EmailAlreadyExistsException` | Done |
 | `DeletedAccountException` | Done |
 | LexikJWTAuthenticationBundle configuration | Done |
 | JWT firewall for `/api/v1/*` endpoints | Done |
+| Symfony Mailer + Mailpit (local dev) | Done |
 
 ### 1.3 Infrastructure Layer
 
@@ -141,7 +154,7 @@
 |------|--------|
 | Vite + React 19 + TypeScript setup | Done |
 | MUI theme configuration | Done |
-| React Router (3 routes) | Done |
+| React Router (7 routes) | Done |
 | Axios API client with proxy | Done |
 | `AppLayout` (shell: header + sidebar) | Done |
 | `Header` component | Done |
@@ -153,6 +166,13 @@
 | `CategoryDialog` (create/edit) | Done |
 | `AddFeedDialog` | Done |
 | `BookmarkList` component | Done |
+| `LoginPage` | Done |
+| `RegisterPage` | Done |
+| `CheckEmailPage` (post-registration) | Done |
+| `VerifyEmailPage` (email verification) | Done |
+| `ProtectedRoute` component | Done |
+| Auth API functions (login, register, verifyEmail, resendVerification) | Done |
+| `AuthContext` + `useAuth` hook | Done |
 | `EmptyState`, `ErrorAlert`, `LoadingSpinner` | Done |
 | `useArticles` hook | Done |
 | `useCategories` hook | Done |
@@ -169,7 +189,7 @@
 
 | Task | Status |
 |------|--------|
-| Docker Compose (FrankenPHP + PostgreSQL 16 + Redis 7) | Done |
+| Docker Compose (FrankenPHP + PostgreSQL 16 + Redis 7 + Mailpit) | Done |
 | FrankenPHP Dockerfile (worker mode) | Done |
 | PostgreSQL init script (pgvector extension) | Done |
 | Makefile (50+ commands) | Done |
@@ -205,11 +225,17 @@
 | `ListBookmarksHandlerTest` | Done |
 | `LoginHandlerTest` | Done |
 | `LoginInputTest` (DTO validation) | Done |
+| `RegisterHandlerTest` | Done |
+| `VerifyEmailHandlerTest` | Done |
+| `ResendVerificationHandlerTest` | Done |
+| `HmacEmailVerificationTokenGeneratorTest` | Done |
 | Behat: categories.feature | Done |
 | Behat: feeds.feature | Done |
 | Behat: articles.feature | Done |
 | Behat: bookmarks.feature | Done |
-| Behat: login.feature (7 scenarios) | Done |
+| Behat: login.feature (8 scenarios) | Done |
+| Behat: register.feature | Done |
+| Behat: verify_email.feature (4 scenarios) | Done |
 | Behat JWT auth support in ApiContext | Done |
 | PHPUnit coverage reporting (93%+ on Domain) | Done |
 | CI coverage threshold enforcement (80%) | Done |
@@ -343,7 +369,7 @@
 | Daily / weekly / custom schedule options | Not Started |
 | `GenerateNewsletterMessage` (async) | Not Started |
 | `GenerateNewsletterMessageHandler` | Not Started |
-| Symfony Mailer configuration | Not Started |
+| Symfony Mailer configuration | Done |
 | Email delivery adapter | Not Started |
 | Schedule management UI (frontend) | Not Started |
 | Unit + integration tests | Not Started |

@@ -10,6 +10,7 @@ final readonly class UpdateCategoryCommand
         public string $id,
         public string $name,
         public string $slug,
+        public string $ownerId,
         public ?string $description = null,
         public ?string $color = null,
         public int $position = 0,

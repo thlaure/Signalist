@@ -24,6 +24,10 @@ final readonly class GetBookmarkHandler
             throw new BookmarkNotFoundException($query->id);
         }
 
+        if ($bookmark->getArticle()->getFeed()->getOwner()->getId()->toRfc4122() !== $query->ownerId) {
+            throw new BookmarkNotFoundException($query->id);
+        }
+
         return $bookmark;
     }
 }

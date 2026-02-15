@@ -11,6 +11,7 @@ final readonly class UpdateFeedCommand
         public string $title,
         public string $categoryId,
         public string $status,
+        public string $ownerId,
     ) {
     }
 }

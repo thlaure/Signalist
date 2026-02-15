@@ -29,9 +29,17 @@ final readonly class UpdateFeedHandler
             throw new FeedNotFoundException($command->id);
         }
 
+        if ($feed->getOwner()->getId()->toRfc4122() !== $command->ownerId) {
+            throw new FeedNotFoundException($command->id);
+        }
+
         $category = $this->categoryRepository->find($command->categoryId);
 
         if (!$category instanceof Category) {
+            throw new CategoryNotFoundException($command->categoryId);
+        }
+
+        if ($category->getOwner()->getId()->toRfc4122() !== $command->ownerId) {
             throw new CategoryNotFoundException($command->categoryId);
         }
 

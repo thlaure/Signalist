@@ -19,13 +19,13 @@ use App\Domain\Feed\Handler\DeleteFeedHandler;
 use App\Domain\Feed\Handler\GetFeedHandler;
 use App\Domain\Feed\Handler\UpdateFeedHandler;
 use App\Domain\Feed\Query\GetFeedQuery;
+use App\Entity\User;
 use App\Infrastructure\ApiPlatform\Resource\FeedResource;
 
 use function assert;
-
-use DateTimeInterface;
-
 use function is_string;
+
+use Symfony\Bundle\SecurityBundle\Security;
 
 /**
  * @implements ProcessorInterface<AddFeedInput|UpdateFeedInput, FeedResource|null>
@@ -37,32 +37,27 @@ final readonly class FeedStateProcessor implements ProcessorInterface
         private UpdateFeedHandler $updateFeedHandler,
         private DeleteFeedHandler $deleteFeedHandler,
         private GetFeedHandler $getFeedHandler,
+        private Security $security,
     ) {
     }
 
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): ?FeedResource
     {
+        $user = $this->security->getUser();
+        assert($user instanceof User);
+        $ownerId = $user->getId()->toRfc4122();
+
         if ($operation instanceof Post && $data instanceof AddFeedInput) {
             $id = ($this->addFeedHandler)(new AddFeedCommand(
                 url: $data->url,
                 categoryId: $data->categoryId,
+                ownerId: $ownerId,
                 title: $data->title,
             ));
 
-            $feed = ($this->getFeedHandler)(new GetFeedQuery($id));
+            $feed = ($this->getFeedHandler)(new GetFeedQuery($id, $ownerId));
 
-            return new FeedResource(
-                id: $feed->getId()->toRfc4122(),
-                title: $feed->getTitle(),
-                url: $feed->getUrl(),
-                status: $feed->getStatus(),
-                lastError: $feed->getLastError(),
-                lastFetchedAt: $feed->getLastFetchedAt()?->format(DateTimeInterface::ATOM),
-                categoryId: $feed->getCategory()->getId()->toRfc4122(),
-                categoryName: $feed->getCategory()->getName(),
-                createdAt: $feed->getCreatedAt()->format(DateTimeInterface::ATOM),
-                updatedAt: $feed->getUpdatedAt()->format(DateTimeInterface::ATOM),
-            );
+            return FeedStateProvider::toResource($feed);
         }
 
         if ($operation instanceof Put && $data instanceof UpdateFeedInput) {
@@ -74,29 +69,19 @@ final readonly class FeedStateProcessor implements ProcessorInterface
                 title: $data->title,
                 categoryId: $data->categoryId,
                 status: $data->status,
+                ownerId: $ownerId,
             ));
 
-            $feed = ($this->getFeedHandler)(new GetFeedQuery($id));
+            $feed = ($this->getFeedHandler)(new GetFeedQuery($id, $ownerId));
 
-            return new FeedResource(
-                id: $feed->getId()->toRfc4122(),
-                title: $feed->getTitle(),
-                url: $feed->getUrl(),
-                status: $feed->getStatus(),
-                lastError: $feed->getLastError(),
-                lastFetchedAt: $feed->getLastFetchedAt()?->format(DateTimeInterface::ATOM),
-                categoryId: $feed->getCategory()->getId()->toRfc4122(),
-                categoryName: $feed->getCategory()->getName(),
-                createdAt: $feed->getCreatedAt()->format(DateTimeInterface::ATOM),
-                updatedAt: $feed->getUpdatedAt()->format(DateTimeInterface::ATOM),
-            );
+            return FeedStateProvider::toResource($feed);
         }
 
         if ($operation instanceof Delete) {
             $id = $uriVariables['id'] ?? '';
             assert(is_string($id));
 
-            ($this->deleteFeedHandler)(new DeleteFeedCommand($id));
+            ($this->deleteFeedHandler)(new DeleteFeedCommand($id, $ownerId));
 
             return null;
         }

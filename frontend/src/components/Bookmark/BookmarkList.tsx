@@ -1,8 +1,10 @@
+import { useNavigate } from 'react-router-dom';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemSecondaryAction from '@mui/material/ListItemSecondaryAction';
 import IconButton from '@mui/material/IconButton';
+import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Tooltip from '@mui/material/Tooltip';
@@ -31,6 +33,8 @@ export default function BookmarkList({
   onRefetch,
   onDelete,
 }: BookmarkListProps) {
+  const navigate = useNavigate();
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       month: 'short',
@@ -76,9 +80,15 @@ export default function BookmarkList({
         >
           <ListItemText
             primary={
-              <Typography variant="subtitle1" fontWeight={500}>
+              <Link
+                component="button"
+                variant="subtitle1"
+                underline="hover"
+                onClick={() => navigate(`/articles/${bookmark.articleId}`)}
+                sx={{ fontWeight: 500, textAlign: 'left' }}
+              >
                 {bookmark.articleTitle}
-              </Typography>
+              </Link>
             }
             secondary={
               <Box mt={0.5}>

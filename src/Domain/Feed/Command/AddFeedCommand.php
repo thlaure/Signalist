@@ -9,6 +9,7 @@ final readonly class AddFeedCommand
     public function __construct(
         public string $url,
         public string $categoryId,
+        public string $ownerId,
         public ?string $title = null,
     ) {
     }

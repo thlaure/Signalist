@@ -17,5 +17,5 @@ interface BookmarkRepositoryInterface
     public function findByArticle(string $articleId): ?Bookmark;
 
     /** @return Bookmark[] */
-    public function findAll(): array;
+    public function findAllByOwner(string $ownerId): array;
 }

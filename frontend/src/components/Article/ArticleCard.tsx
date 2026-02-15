@@ -1,4 +1,6 @@
+import { useNavigate } from 'react-router-dom';
 import Card from '@mui/material/Card';
+import CardActionArea from '@mui/material/CardActionArea';
 import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import CardMedia from '@mui/material/CardMedia';
@@ -26,6 +28,8 @@ export default function ArticleCard({
   onToggleRead,
   onToggleBookmark,
 }: ArticleCardProps) {
+  const navigate = useNavigate();
+
   const formatDate = (dateString: string | null) => {
     if (!dateString) return '';
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -50,59 +54,61 @@ export default function ArticleCard({
         },
       }}
     >
-      {article.imageUrl && (
-        <CardMedia
-          component="img"
-          height="140"
-          image={article.imageUrl}
-          alt={article.title}
-          sx={{ objectFit: 'cover' }}
-        />
-      )}
-      <CardContent sx={{ flexGrow: 1 }}>
-        <Typography variant="caption" color="text.secondary" gutterBottom component="div">
-          {article.feedTitle}
-          {article.feedTitle && (article.publishedAt || article.createdAt) ? ' \u00b7 ' : ''}
-          {formatDate(article.publishedAt || article.createdAt)}
-        </Typography>
-        <Typography
-          variant="h6"
-          component="h2"
-          gutterBottom
-          sx={{
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            display: '-webkit-box',
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: 'vertical',
-            color: article.isRead ? 'text.secondary' : 'text.primary',
-          }}
-        >
-          {article.title}
-        </Typography>
-        {article.summary && (
+      <CardActionArea onClick={() => navigate(`/articles/${article.id}`)} sx={{ flexGrow: 1 }}>
+        {article.imageUrl && (
+          <CardMedia
+            component="img"
+            height="140"
+            image={article.imageUrl}
+            alt={article.title}
+            sx={{ objectFit: 'cover' }}
+          />
+        )}
+        <CardContent>
+          <Typography variant="caption" color="text.secondary" gutterBottom component="div">
+            {article.feedTitle}
+            {article.feedTitle && (article.publishedAt || article.createdAt) ? ' \u00b7 ' : ''}
+            {formatDate(article.publishedAt || article.createdAt)}
+          </Typography>
           <Typography
-            variant="body2"
-            color="text.secondary"
+            variant="h6"
+            component="h2"
+            gutterBottom
             sx={{
               overflow: 'hidden',
               textOverflow: 'ellipsis',
               display: '-webkit-box',
-              WebkitLineClamp: 3,
+              WebkitLineClamp: 2,
               WebkitBoxOrient: 'vertical',
+              color: article.isRead ? 'text.secondary' : 'text.primary',
             }}
           >
-            {article.summary}
+            {article.title}
           </Typography>
-        )}
-        {article.author && (
-          <Box mt={1}>
-            <Typography variant="caption" color="text.secondary">
-              {article.author}
+          {article.summary && (
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                display: '-webkit-box',
+                WebkitLineClamp: 3,
+                WebkitBoxOrient: 'vertical',
+              }}
+            >
+              {article.summary}
             </Typography>
-          </Box>
-        )}
-      </CardContent>
+          )}
+          {article.author && (
+            <Box mt={1}>
+              <Typography variant="caption" color="text.secondary">
+                {article.author}
+              </Typography>
+            </Box>
+          )}
+        </CardContent>
+      </CardActionArea>
       <CardActions
         className="article-actions"
         sx={{
@@ -117,7 +123,7 @@ export default function ArticleCard({
           <Tooltip title={article.isRead ? 'Mark as unread' : 'Mark as read'}>
             <IconButton
               size="small"
-              onClick={() => onToggleRead(article.id, article.isRead)}
+              onClick={(e) => { e.stopPropagation(); onToggleRead(article.id, article.isRead); }}
               color={article.isRead ? 'primary' : 'default'}
             >
               {article.isRead ? <CheckCircleIcon /> : <CheckCircleOutlineIcon />}
@@ -126,7 +132,7 @@ export default function ArticleCard({
           <Tooltip title={isBookmarked ? 'Remove bookmark' : 'Add bookmark'}>
             <IconButton
               size="small"
-              onClick={() => onToggleBookmark(article.id, isBookmarked)}
+              onClick={(e) => { e.stopPropagation(); onToggleBookmark(article.id, isBookmarked); }}
               color={isBookmarked ? 'primary' : 'default'}
             >
               {isBookmarked ? <BookmarkIcon /> : <BookmarkBorderIcon />}
@@ -140,6 +146,7 @@ export default function ArticleCard({
             href={article.url}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={(e: React.MouseEvent) => e.stopPropagation()}
           >
             <OpenInNewIcon />
           </IconButton>

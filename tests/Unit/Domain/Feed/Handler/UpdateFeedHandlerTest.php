@@ -12,8 +12,10 @@ use App\Domain\Feed\Handler\UpdateFeedHandler;
 use App\Domain\Feed\Port\FeedRepositoryInterface;
 use App\Entity\Category;
 use App\Entity\Feed;
+use App\Entity\User;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Uid\Uuid;
 
 final class UpdateFeedHandlerTest extends TestCase
 {
@@ -23,17 +25,25 @@ final class UpdateFeedHandlerTest extends TestCase
 
     private UpdateFeedHandler $handler;
 
+    private string $ownerId;
+
     protected function setUp(): void
     {
         $this->feedRepository = $this->createMock(FeedRepositoryInterface::class);
         $this->categoryRepository = $this->createMock(CategoryRepositoryInterface::class);
         $this->handler = new UpdateFeedHandler($this->feedRepository, $this->categoryRepository);
+        $this->ownerId = Uuid::v7()->toRfc4122();
     }
 
     public function testInvokeValidUpdateSavesFeed(): void
     {
         $feed = $this->createMock(Feed::class);
         $category = $this->createMock(Category::class);
+
+        $owner = $this->createMock(User::class);
+        $owner->method('getId')->willReturn(Uuid::fromString($this->ownerId));
+        $feed->method('getOwner')->willReturn($owner);
+        $category->method('getOwner')->willReturn($owner);
 
         $this->feedRepository->method('find')->with('feed-id')->willReturn($feed);
         $this->categoryRepository->method('find')->with('cat-id')->willReturn($category);
@@ -48,6 +58,7 @@ final class UpdateFeedHandlerTest extends TestCase
             title: 'New Title',
             categoryId: 'cat-id',
             status: 'active',
+            ownerId: $this->ownerId,
         ));
     }
 
@@ -62,12 +73,38 @@ final class UpdateFeedHandlerTest extends TestCase
             title: 'Title',
             categoryId: 'cat-id',
             status: 'active',
+            ownerId: $this->ownerId,
+        ));
+    }
+
+    public function testInvokeFeedOwnedByDifferentUserThrowsFeedNotFoundException(): void
+    {
+        $feed = $this->createMock(Feed::class);
+
+        $otherOwner = $this->createMock(User::class);
+        $otherOwner->method('getId')->willReturn(Uuid::v7());
+        $feed->method('getOwner')->willReturn($otherOwner);
+
+        $this->feedRepository->method('find')->willReturn($feed);
+
+        $this->expectException(FeedNotFoundException::class);
+
+        ($this->handler)(new UpdateFeedCommand(
+            id: 'feed-id',
+            title: 'Title',
+            categoryId: 'cat-id',
+            status: 'active',
+            ownerId: $this->ownerId,
         ));
     }
 
     public function testInvokeNonExistentCategoryThrowsCategoryNotFoundException(): void
     {
         $feed = $this->createMock(Feed::class);
+
+        $owner = $this->createMock(User::class);
+        $owner->method('getId')->willReturn(Uuid::fromString($this->ownerId));
+        $feed->method('getOwner')->willReturn($owner);
 
         $this->feedRepository->method('find')->with('feed-id')->willReturn($feed);
         $this->categoryRepository->method('find')->with('bad-cat')->willReturn(null);
@@ -79,6 +116,7 @@ final class UpdateFeedHandlerTest extends TestCase
             title: 'Title',
             categoryId: 'bad-cat',
             status: 'active',
+            ownerId: $this->ownerId,
         ));
     }
 }

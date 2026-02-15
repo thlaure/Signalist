@@ -39,7 +39,7 @@
 | `RssFetcherInterface` port | Done |
 | `FeedNotFoundException` | Done |
 | `FeedUrlAlreadyExistsException` | Done |
-| Feed output DTO | Not Started |
+| Feed output DTO | Done |
 
 #### Category Domain
 
@@ -68,7 +68,7 @@
 | `ArticleRepositoryInterface` port | Done |
 | `ArticleNotFoundException` | Done |
 | Article input DTOs | Not Started |
-| Article output DTO | Not Started |
+| Article output DTO | Done |
 
 #### Bookmark Domain
 
@@ -82,8 +82,8 @@
 | `BookmarkRepositoryInterface` port | Done |
 | `BookmarkNotFoundException` | Done |
 | `ArticleAlreadyBookmarkedException` | Done |
-| `ListBookmarksQuery` | Not Started |
-| Bookmark output DTO | Not Started |
+| `ListBookmarksQuery` | Done |
+| Bookmark output DTO | Done |
 
 #### Auth Domain
 
@@ -126,6 +126,8 @@
 | `NotFoundException` | Done |
 | `ValidationException` | Done |
 | `ProblemDetailsExceptionListener` | Done |
+| User-scoped data filtering (owner relationship on all entities) | Done |
+| Handle serializer `MissingConstructorArgumentsException` as 422 | Done |
 
 ### 1.4 API Platform Integration
 
@@ -181,8 +183,8 @@
 | API modules (articles, categories, feeds, bookmarks) | Done |
 | TypeScript types for API models | Done |
 | Full-text search UI | Not Started |
-| Article detail view / reader | Not Started |
-| Feed management page (edit, pause, delete) | Not Started |
+| Article detail view / reader | Done |
+| Feed management page (edit, pause, delete) | Done |
 | Responsive design polish | Not Started |
 
 ### 1.7 DevOps & Tooling
@@ -239,6 +241,9 @@
 | Behat JWT auth support in ApiContext | Done |
 | PHPUnit coverage reporting (93%+ on Domain) | Done |
 | CI coverage threshold enforcement (80%) | Done |
+| `FeedOutputTest` | Done |
+| `ArticleOutputTest` | Done |
+| `BookmarkOutputTest` | Done |
 | GrumPHP: phpunit + behat + rector tasks | Done |
 | Integration tests (Doctrine repositories) | Not Started |
 | Frontend component tests (Vitest) | Not Started |

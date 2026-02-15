@@ -10,6 +10,7 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import HomeIcon from '@mui/icons-material/Home';
+import RssFeedIcon from '@mui/icons-material/RssFeed';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import FolderIcon from '@mui/icons-material/Folder';
 import CircleIcon from '@mui/icons-material/Circle';
@@ -49,6 +50,7 @@ export default function Sidebar({
 
   const navItems = [
     { label: 'Dashboard', icon: <HomeIcon />, path: '/' },
+    { label: 'Feeds', icon: <RssFeedIcon />, path: '/feeds' },
     { label: 'Bookmarks', icon: <BookmarkIcon />, path: '/bookmarks' },
   ];
 

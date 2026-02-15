@@ -8,6 +8,7 @@ final readonly class GetCategoryQuery
 {
     public function __construct(
         public string $id,
+        public string $ownerId,
     ) {
     }
 }

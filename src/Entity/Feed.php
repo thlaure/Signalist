@@ -13,7 +13,7 @@ use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'feed')]
-#[ORM\UniqueConstraint(name: 'uniq_feed_url', columns: ['url'])]
+#[ORM\UniqueConstraint(name: 'uniq_feed_url_owner', columns: ['url', 'owner_id'])]
 class Feed
 {
     public const STATUS_ACTIVE = 'active';
@@ -50,6 +50,10 @@ class Feed
     #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'feeds')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private Category $category;
+
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private User $owner;
 
     /** @var Collection<int, Article> */
     #[ORM\OneToMany(targetEntity: Article::class, mappedBy: 'feed', orphanRemoval: true)]
@@ -161,5 +165,17 @@ class Feed
     public function getArticles(): Collection
     {
         return $this->articles;
+    }
+
+    public function getOwner(): User
+    {
+        return $this->owner;
+    }
+
+    public function setOwner(User $owner): self
+    {
+        $this->owner = $owner;
+
+        return $this;
     }
 }

@@ -4,6 +4,8 @@ import ProtectedRoute from './components/Auth/ProtectedRoute';
 import Dashboard from './pages/Dashboard';
 import CategoryPage from './pages/CategoryPage';
 import BookmarksPage from './pages/BookmarksPage';
+import ArticlePage from './pages/ArticlePage';
+import FeedManagementPage from './pages/FeedManagementPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import CheckEmailPage from './pages/CheckEmailPage';
@@ -19,6 +21,8 @@ function App() {
       <Route element={<ProtectedRoute />}>
         <Route element={<AppLayout />}>
           <Route path="/" element={<Dashboard />} />
+          <Route path="/articles/:id" element={<ArticlePage />} />
+          <Route path="/feeds" element={<FeedManagementPage />} />
           <Route path="/categories/:id" element={<CategoryPage />} />
           <Route path="/bookmarks" element={<BookmarksPage />} />
         </Route>

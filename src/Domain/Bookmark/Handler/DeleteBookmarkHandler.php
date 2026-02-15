@@ -24,6 +24,10 @@ final readonly class DeleteBookmarkHandler
             throw new BookmarkNotFoundException($command->id);
         }
 
+        if ($bookmark->getArticle()->getFeed()->getOwner()->getId()->toRfc4122() !== $command->ownerId) {
+            throw new BookmarkNotFoundException($command->id);
+        }
+
         $this->bookmarkRepository->delete($bookmark);
     }
 }

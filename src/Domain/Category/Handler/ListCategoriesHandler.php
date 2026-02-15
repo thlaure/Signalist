@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Category\Handler;
 
 use App\Domain\Category\Port\CategoryRepositoryInterface;
+use App\Domain\Category\Query\ListCategoriesQuery;
 use App\Entity\Category;
 
 final readonly class ListCategoriesHandler
@@ -17,8 +18,8 @@ final readonly class ListCategoriesHandler
     /**
      * @return Category[]
      */
-    public function __invoke(): array
+    public function __invoke(ListCategoriesQuery $query): array
     {
-        return $this->categoryRepository->findAll();
+        return $this->categoryRepository->findAllByOwner($query->ownerId);
     }
 }

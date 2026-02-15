@@ -24,6 +24,10 @@ final readonly class GetCategoryHandler
             throw new CategoryNotFoundException($query->id);
         }
 
+        if ($category->getOwner()->getId()->toRfc4122() !== $query->ownerId) {
+            throw new CategoryNotFoundException($query->id);
+        }
+
         return $category;
     }
 }

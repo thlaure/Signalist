@@ -13,7 +13,7 @@ interface ArticleRepositoryInterface
     public function find(string $id): ?Article;
 
     /**
-     * @param array{feedId?: string, categoryId?: string, isRead?: bool} $filters
+     * @param array{feedId?: string, categoryId?: string, isRead?: bool, ownerId?: string} $filters
      *
      * @return Article[]
      */
@@ -27,5 +27,5 @@ interface ArticleRepositoryInterface
     /**
      * @return Article[]
      */
-    public function findUnread(): array;
+    public function findUnreadByOwner(string $ownerId): array;
 }

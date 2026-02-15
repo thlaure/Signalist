@@ -24,6 +24,10 @@ final readonly class GetFeedHandler
             throw new FeedNotFoundException($query->id);
         }
 
+        if ($feed->getOwner()->getId()->toRfc4122() !== $query->ownerId) {
+            throw new FeedNotFoundException($query->id);
+        }
+
         return $feed;
     }
 }

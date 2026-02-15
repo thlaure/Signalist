@@ -49,10 +49,24 @@ final readonly class DoctrineBookmarkRepository implements BookmarkRepositoryInt
     }
 
     /** @return Bookmark[] */
-    public function findAll(): array
+    public function findAllByOwner(string $ownerId): array
     {
-        return $this->entityManager
-            ->getRepository(Bookmark::class)
-            ->findBy([], ['createdAt' => 'DESC']);
+        if (!Uuid::isValid($ownerId)) {
+            return [];
+        }
+
+        /** @var Bookmark[] $result */
+        $result = $this->entityManager->createQueryBuilder()
+            ->select('b')
+            ->from(Bookmark::class, 'b')
+            ->join('b.article', 'a')
+            ->join('a.feed', 'f')
+            ->where('f.owner = :ownerId')
+            ->setParameter('ownerId', Uuid::fromString($ownerId))
+            ->orderBy('b.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+
+        return $result;
     }
 }

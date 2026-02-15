@@ -7,6 +7,7 @@ namespace App\Infrastructure\ApiPlatform\State;
 use ApiPlatform\Metadata\CollectionOperationInterface;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
+use App\Domain\Article\DTO\Output\ArticleOutput;
 use App\Domain\Article\Handler\GetArticleHandler;
 use App\Domain\Article\Handler\ListArticlesHandler;
 use App\Domain\Article\Query\GetArticleQuery;
@@ -16,8 +17,6 @@ use App\Entity\User;
 use App\Infrastructure\ApiPlatform\Resource\ArticleResource;
 
 use function assert;
-
-use DateTimeInterface;
 
 use const FILTER_NULL_ON_FAILURE;
 use const FILTER_VALIDATE_BOOLEAN;
@@ -71,7 +70,7 @@ final readonly class ArticleStateProvider implements ProviderInterface
 
             $articles = ($this->listArticlesHandler)($query);
 
-            return array_map($this->toResource(...), $articles);
+            return array_map(self::toResource(...), $articles);
         }
 
         $id = $uriVariables['id'] ?? '';
@@ -79,29 +78,28 @@ final readonly class ArticleStateProvider implements ProviderInterface
 
         $article = ($this->getArticleHandler)(new GetArticleQuery($id, $ownerId));
 
-        return $this->toResource($article);
+        return self::toResource($article);
     }
 
-    private function toResource(Article $article): ArticleResource
+    public static function toResource(Article $article): ArticleResource
     {
-        $feed = $article->getFeed();
-        $category = $feed->getCategory();
+        $output = ArticleOutput::fromEntity($article);
 
         return new ArticleResource(
-            id: $article->getId()->toRfc4122(),
-            title: $article->getTitle(),
-            url: $article->getUrl(),
-            summary: $article->getSummary(),
-            content: $article->getContent(),
-            author: $article->getAuthor(),
-            imageUrl: $article->getImageUrl(),
-            isRead: $article->isRead(),
-            publishedAt: $article->getPublishedAt()?->format(DateTimeInterface::ATOM),
-            createdAt: $article->getCreatedAt()->format(DateTimeInterface::ATOM),
-            feedId: $feed->getId()->toRfc4122(),
-            feedTitle: $feed->getTitle(),
-            categoryId: $category->getId()->toRfc4122(),
-            categoryName: $category->getName(),
+            id: $output->id,
+            title: $output->title,
+            url: $output->url,
+            summary: $output->summary,
+            content: $output->content,
+            author: $output->author,
+            imageUrl: $output->imageUrl,
+            isRead: $output->isRead,
+            publishedAt: $output->publishedAt,
+            createdAt: $output->createdAt,
+            feedId: $output->feedId,
+            feedTitle: $output->feedTitle,
+            categoryId: $output->categoryId,
+            categoryName: $output->categoryName,
         );
     }
 }

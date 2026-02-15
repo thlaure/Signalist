@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\Serializer\Exception\MissingConstructorArgumentsException;
 use Throwable;
 
 /**
@@ -63,6 +64,16 @@ final readonly class ProblemDetailsExceptionListener
             $problem['instance'] ??= $path;
 
             return $problem;
+        }
+
+        if ($exception instanceof MissingConstructorArgumentsException) {
+            return [
+                'type' => self::BASE_TYPE_URI . '/validation-error',
+                'title' => 'Validation Error',
+                'status' => Response::HTTP_UNPROCESSABLE_ENTITY,
+                'detail' => $exception->getMessage(),
+                'instance' => $path,
+            ];
         }
 
         if ($exception instanceof HttpExceptionInterface) {

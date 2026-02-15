@@ -7,6 +7,7 @@ namespace App\Infrastructure\ApiPlatform\State;
 use ApiPlatform\Metadata\CollectionOperationInterface;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
+use App\Domain\Feed\DTO\Output\FeedOutput;
 use App\Domain\Feed\Handler\GetFeedHandler;
 use App\Domain\Feed\Handler\ListFeedsHandler;
 use App\Domain\Feed\Query\GetFeedQuery;
@@ -16,9 +17,6 @@ use App\Entity\User;
 use App\Infrastructure\ApiPlatform\Resource\FeedResource;
 
 use function assert;
-
-use DateTimeInterface;
-
 use function is_string;
 
 use Symfony\Bundle\SecurityBundle\Security;
@@ -47,7 +45,7 @@ final readonly class FeedStateProvider implements ProviderInterface
         if ($operation instanceof CollectionOperationInterface) {
             $feeds = ($this->listFeedsHandler)(new ListFeedsQuery($ownerId));
 
-            return array_map($this->toResource(...), $feeds);
+            return array_map(self::toResource(...), $feeds);
         }
 
         $id = $uriVariables['id'] ?? '';
@@ -55,22 +53,24 @@ final readonly class FeedStateProvider implements ProviderInterface
 
         $feed = ($this->getFeedHandler)(new GetFeedQuery($id, $ownerId));
 
-        return $this->toResource($feed);
+        return self::toResource($feed);
     }
 
-    private function toResource(Feed $feed): FeedResource
+    public static function toResource(Feed $feed): FeedResource
     {
+        $output = FeedOutput::fromEntity($feed);
+
         return new FeedResource(
-            id: $feed->getId()->toRfc4122(),
-            title: $feed->getTitle(),
-            url: $feed->getUrl(),
-            status: $feed->getStatus(),
-            lastError: $feed->getLastError(),
-            lastFetchedAt: $feed->getLastFetchedAt()?->format(DateTimeInterface::ATOM),
-            categoryId: $feed->getCategory()->getId()->toRfc4122(),
-            categoryName: $feed->getCategory()->getName(),
-            createdAt: $feed->getCreatedAt()->format(DateTimeInterface::ATOM),
-            updatedAt: $feed->getUpdatedAt()->format(DateTimeInterface::ATOM),
+            id: $output->id,
+            title: $output->title,
+            url: $output->url,
+            status: $output->status,
+            lastError: $output->lastError,
+            lastFetchedAt: $output->lastFetchedAt,
+            categoryId: $output->categoryId,
+            categoryName: $output->categoryName,
+            createdAt: $output->createdAt,
+            updatedAt: $output->updatedAt,
         );
     }
 }

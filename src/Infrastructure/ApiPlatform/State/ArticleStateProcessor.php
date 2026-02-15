@@ -15,9 +15,6 @@ use App\Entity\User;
 use App\Infrastructure\ApiPlatform\Resource\ArticleResource;
 
 use function assert;
-
-use DateTimeInterface;
-
 use function is_string;
 use function str_ends_with;
 
@@ -55,25 +52,8 @@ final readonly class ArticleStateProcessor implements ProcessorInterface
             ));
 
             $article = ($this->getArticleHandler)(new GetArticleQuery($id, $ownerId));
-            $feed = $article->getFeed();
-            $category = $feed->getCategory();
 
-            return new ArticleResource(
-                id: $article->getId()->toRfc4122(),
-                title: $article->getTitle(),
-                url: $article->getUrl(),
-                summary: $article->getSummary(),
-                content: $article->getContent(),
-                author: $article->getAuthor(),
-                imageUrl: $article->getImageUrl(),
-                isRead: $article->isRead(),
-                publishedAt: $article->getPublishedAt()?->format(DateTimeInterface::ATOM),
-                createdAt: $article->getCreatedAt()->format(DateTimeInterface::ATOM),
-                feedId: $feed->getId()->toRfc4122(),
-                feedTitle: $feed->getTitle(),
-                categoryId: $category->getId()->toRfc4122(),
-                categoryName: $category->getName(),
-            );
+            return ArticleStateProvider::toResource($article);
         }
 
         return null;

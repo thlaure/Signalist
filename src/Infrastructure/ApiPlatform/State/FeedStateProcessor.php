@@ -23,9 +23,6 @@ use App\Entity\User;
 use App\Infrastructure\ApiPlatform\Resource\FeedResource;
 
 use function assert;
-
-use DateTimeInterface;
-
 use function is_string;
 
 use Symfony\Bundle\SecurityBundle\Security;
@@ -60,18 +57,7 @@ final readonly class FeedStateProcessor implements ProcessorInterface
 
             $feed = ($this->getFeedHandler)(new GetFeedQuery($id, $ownerId));
 
-            return new FeedResource(
-                id: $feed->getId()->toRfc4122(),
-                title: $feed->getTitle(),
-                url: $feed->getUrl(),
-                status: $feed->getStatus(),
-                lastError: $feed->getLastError(),
-                lastFetchedAt: $feed->getLastFetchedAt()?->format(DateTimeInterface::ATOM),
-                categoryId: $feed->getCategory()->getId()->toRfc4122(),
-                categoryName: $feed->getCategory()->getName(),
-                createdAt: $feed->getCreatedAt()->format(DateTimeInterface::ATOM),
-                updatedAt: $feed->getUpdatedAt()->format(DateTimeInterface::ATOM),
-            );
+            return FeedStateProvider::toResource($feed);
         }
 
         if ($operation instanceof Put && $data instanceof UpdateFeedInput) {
@@ -88,18 +74,7 @@ final readonly class FeedStateProcessor implements ProcessorInterface
 
             $feed = ($this->getFeedHandler)(new GetFeedQuery($id, $ownerId));
 
-            return new FeedResource(
-                id: $feed->getId()->toRfc4122(),
-                title: $feed->getTitle(),
-                url: $feed->getUrl(),
-                status: $feed->getStatus(),
-                lastError: $feed->getLastError(),
-                lastFetchedAt: $feed->getLastFetchedAt()?->format(DateTimeInterface::ATOM),
-                categoryId: $feed->getCategory()->getId()->toRfc4122(),
-                categoryName: $feed->getCategory()->getName(),
-                createdAt: $feed->getCreatedAt()->format(DateTimeInterface::ATOM),
-                updatedAt: $feed->getUpdatedAt()->format(DateTimeInterface::ATOM),
-            );
+            return FeedStateProvider::toResource($feed);
         }
 
         if ($operation instanceof Delete) {

@@ -49,7 +49,7 @@ Feature: Category Management
         "description": "Missing name and slug"
       }
       """
-    Then the response status code should be 500
+    Then the response status code should be 422
     And the response should be JSON
     And the JSON response should be a RFC 7807 problem
 

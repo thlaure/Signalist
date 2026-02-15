@@ -23,9 +23,6 @@ use App\Entity\User;
 use App\Infrastructure\ApiPlatform\Resource\CategoryResource;
 
 use function assert;
-
-use DateTimeInterface;
-
 use function is_string;
 
 use Symfony\Bundle\SecurityBundle\Security;
@@ -62,16 +59,7 @@ final readonly class CategoryStateProcessor implements ProcessorInterface
 
             $category = ($this->getCategoryHandler)(new GetCategoryQuery($id, $ownerId));
 
-            return new CategoryResource(
-                id: $category->getId()->toRfc4122(),
-                name: $category->getName(),
-                slug: $category->getSlug(),
-                description: $category->getDescription(),
-                color: $category->getColor(),
-                position: $category->getPosition(),
-                createdAt: $category->getCreatedAt()->format(DateTimeInterface::ATOM),
-                updatedAt: $category->getUpdatedAt()->format(DateTimeInterface::ATOM),
-            );
+            return CategoryStateProvider::toResource($category);
         }
 
         if ($operation instanceof Put && $data instanceof UpdateCategoryInput) {
@@ -90,16 +78,7 @@ final readonly class CategoryStateProcessor implements ProcessorInterface
 
             $category = ($this->getCategoryHandler)(new GetCategoryQuery($id, $ownerId));
 
-            return new CategoryResource(
-                id: $category->getId()->toRfc4122(),
-                name: $category->getName(),
-                slug: $category->getSlug(),
-                description: $category->getDescription(),
-                color: $category->getColor(),
-                position: $category->getPosition(),
-                createdAt: $category->getCreatedAt()->format(DateTimeInterface::ATOM),
-                updatedAt: $category->getUpdatedAt()->format(DateTimeInterface::ATOM),
-            );
+            return CategoryStateProvider::toResource($category);
         }
 
         if ($operation instanceof Delete) {

@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Tests\Behat;
 
+use App\Entity\Article;
+use App\Entity\Feed;
+
 use function array_key_exists;
 
 use Behat\Behat\Context\Context;
@@ -14,6 +17,7 @@ use Behat\Mink\Session;
 
 use function count;
 
+use DateTimeImmutable;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\Loader;
 use Doctrine\ORM\EntityManagerInterface;
@@ -361,6 +365,98 @@ final class ApiContext implements Context
         }
 
         $this->lastResponseData = null;
+    }
+
+    /**
+     * @Given a feed exists with title :title and URL :url in category :slug
+     */
+    public function aFeedExistsWithTitleAndUrlInCategory(string $title, string $url, string $slug): void
+    {
+        // First, get the category ID by listing categories and finding by slug
+        $this->getClient()->request(
+            'GET',
+            '/api/v1/categories',
+            [],
+            [],
+            $this->buildHeaders('application/json'),
+        );
+
+        $content = $this->session->getPage()->getContent();
+        /** @var array{member?: list<array{id: string, slug: string}>} $data */
+        $data = json_decode($content, true);
+        $categoryId = null;
+
+        if (isset($data['member'])) {
+            foreach ($data['member'] as $category) {
+                if ($category['slug'] === $slug) {
+                    $categoryId = $category['id'];
+
+                    break;
+                }
+            }
+        }
+
+        if ($categoryId === null) {
+            throw new RuntimeException(sprintf('Category with slug "%s" not found', $slug));
+        }
+
+        $this->getClient()->request(
+            'POST',
+            '/api/v1/feeds',
+            [],
+            [],
+            $this->buildHeaders('application/json'),
+            json_encode(['url' => $url, 'categoryId' => $categoryId, 'title' => $title], JSON_THROW_ON_ERROR),
+        );
+
+        $statusCode = $this->session->getStatusCode();
+
+        if ($statusCode !== 201) {
+            throw new RuntimeException(sprintf(
+                'Failed to create feed. Status: %d, Response: %s',
+                $statusCode,
+                $this->session->getPage()->getContent(),
+            ));
+        }
+
+        $this->lastResponseData = null;
+    }
+
+    /**
+     * @Given an article exists with title :title in feed :feedTitle
+     */
+    public function anArticleExistsWithTitleInFeed(string $title, string $feedTitle): void
+    {
+        $feed = $this->entityManager->getRepository(Feed::class)->findOneBy(['title' => $feedTitle]);
+
+        if (!$feed instanceof Feed) {
+            throw new RuntimeException(sprintf('Feed with title "%s" not found', $feedTitle));
+        }
+
+        $article = new Article();
+        $article->setGuid('guid-' . $title);
+        $article->setTitle($title);
+        $article->setUrl('https://example.com/articles/' . urlencode($title));
+        $article->setFeed($feed);
+        $article->setPublishedAt(new DateTimeImmutable());
+
+        $this->entityManager->persist($article);
+        $this->entityManager->flush();
+
+        $this->storedVariables['lastArticleId'] = $article->getId()->toRfc4122();
+        $this->lastResponseData = null;
+    }
+
+    /**
+     * @Given I store the last article ID as :variable
+     */
+    public function iStoreTheLastArticleIdAs(string $variable): void
+    {
+        if (!isset($this->storedVariables['lastArticleId'])) {
+            throw new RuntimeException('No article has been created yet');
+        }
+
+        $this->storedVariables[$variable] = $this->storedVariables['lastArticleId'];
     }
 
     /**

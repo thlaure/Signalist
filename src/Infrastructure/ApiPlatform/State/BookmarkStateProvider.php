@@ -7,6 +7,7 @@ namespace App\Infrastructure\ApiPlatform\State;
 use ApiPlatform\Metadata\CollectionOperationInterface;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
+use App\Domain\Bookmark\DTO\Output\BookmarkOutput;
 use App\Domain\Bookmark\Handler\GetBookmarkHandler;
 use App\Domain\Bookmark\Handler\ListBookmarksHandler;
 use App\Domain\Bookmark\Query\GetBookmarkQuery;
@@ -16,9 +17,6 @@ use App\Entity\User;
 use App\Infrastructure\ApiPlatform\Resource\BookmarkResource;
 
 use function assert;
-
-use DateTimeInterface;
-
 use function is_string;
 
 use Symfony\Bundle\SecurityBundle\Security;
@@ -47,7 +45,7 @@ final readonly class BookmarkStateProvider implements ProviderInterface
         if ($operation instanceof CollectionOperationInterface) {
             $bookmarks = ($this->listBookmarksHandler)(new ListBookmarksQuery($ownerId));
 
-            return array_map($this->toResource(...), $bookmarks);
+            return array_map(self::toResource(...), $bookmarks);
         }
 
         $id = $uriVariables['id'] ?? '';
@@ -55,26 +53,24 @@ final readonly class BookmarkStateProvider implements ProviderInterface
 
         $bookmark = ($this->getBookmarkHandler)(new GetBookmarkQuery($id, $ownerId));
 
-        return $this->toResource($bookmark);
+        return self::toResource($bookmark);
     }
 
-    private function toResource(Bookmark $bookmark): BookmarkResource
+    public static function toResource(Bookmark $bookmark): BookmarkResource
     {
-        $article = $bookmark->getArticle();
-        $feed = $article->getFeed();
-        $category = $feed->getCategory();
+        $output = BookmarkOutput::fromEntity($bookmark);
 
         return new BookmarkResource(
-            id: $bookmark->getId()->toRfc4122(),
-            notes: $bookmark->getNotes(),
-            createdAt: $bookmark->getCreatedAt()->format(DateTimeInterface::ATOM),
-            articleId: $article->getId()->toRfc4122(),
-            articleTitle: $article->getTitle(),
-            articleUrl: $article->getUrl(),
-            feedId: $feed->getId()->toRfc4122(),
-            feedTitle: $feed->getTitle(),
-            categoryId: $category->getId()->toRfc4122(),
-            categoryName: $category->getName(),
+            id: $output->id,
+            notes: $output->notes,
+            createdAt: $output->createdAt,
+            articleId: $output->articleId,
+            articleTitle: $output->articleTitle,
+            articleUrl: $output->articleUrl,
+            feedId: $output->feedId,
+            feedTitle: $output->feedTitle,
+            categoryId: $output->categoryId,
+            categoryName: $output->categoryName,
         );
     }
 }

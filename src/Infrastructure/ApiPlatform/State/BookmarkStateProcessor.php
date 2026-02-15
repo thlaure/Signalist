@@ -19,9 +19,6 @@ use App\Entity\User;
 use App\Infrastructure\ApiPlatform\Resource\BookmarkResource;
 
 use function assert;
-
-use DateTimeInterface;
-
 use function is_string;
 
 use Symfony\Bundle\SecurityBundle\Security;
@@ -53,22 +50,8 @@ final readonly class BookmarkStateProcessor implements ProcessorInterface
             ));
 
             $bookmark = ($this->getBookmarkHandler)(new GetBookmarkQuery($id, $ownerId));
-            $article = $bookmark->getArticle();
-            $feed = $article->getFeed();
-            $category = $feed->getCategory();
 
-            return new BookmarkResource(
-                id: $bookmark->getId()->toRfc4122(),
-                notes: $bookmark->getNotes(),
-                createdAt: $bookmark->getCreatedAt()->format(DateTimeInterface::ATOM),
-                articleId: $article->getId()->toRfc4122(),
-                articleTitle: $article->getTitle(),
-                articleUrl: $article->getUrl(),
-                feedId: $feed->getId()->toRfc4122(),
-                feedTitle: $feed->getTitle(),
-                categoryId: $category->getId()->toRfc4122(),
-                categoryName: $category->getName(),
-            );
+            return BookmarkStateProvider::toResource($bookmark);
         }
 
         if ($operation instanceof Delete) {

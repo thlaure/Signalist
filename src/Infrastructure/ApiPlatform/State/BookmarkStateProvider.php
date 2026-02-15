@@ -10,7 +10,9 @@ use ApiPlatform\State\ProviderInterface;
 use App\Domain\Bookmark\Handler\GetBookmarkHandler;
 use App\Domain\Bookmark\Handler\ListBookmarksHandler;
 use App\Domain\Bookmark\Query\GetBookmarkQuery;
+use App\Domain\Bookmark\Query\ListBookmarksQuery;
 use App\Entity\Bookmark;
+use App\Entity\User;
 use App\Infrastructure\ApiPlatform\Resource\BookmarkResource;
 
 use function assert;
@@ -18,6 +20,8 @@ use function assert;
 use DateTimeInterface;
 
 use function is_string;
+
+use Symfony\Bundle\SecurityBundle\Security;
 
 /**
  * @implements ProviderInterface<BookmarkResource>
@@ -27,6 +31,7 @@ final readonly class BookmarkStateProvider implements ProviderInterface
     public function __construct(
         private GetBookmarkHandler $getBookmarkHandler,
         private ListBookmarksHandler $listBookmarksHandler,
+        private Security $security,
     ) {
     }
 
@@ -35,8 +40,12 @@ final readonly class BookmarkStateProvider implements ProviderInterface
      */
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): BookmarkResource|array
     {
+        $user = $this->security->getUser();
+        assert($user instanceof User);
+        $ownerId = $user->getId()->toRfc4122();
+
         if ($operation instanceof CollectionOperationInterface) {
-            $bookmarks = ($this->listBookmarksHandler)();
+            $bookmarks = ($this->listBookmarksHandler)(new ListBookmarksQuery($ownerId));
 
             return array_map($this->toResource(...), $bookmarks);
         }
@@ -44,7 +53,7 @@ final readonly class BookmarkStateProvider implements ProviderInterface
         $id = $uriVariables['id'] ?? '';
         assert(is_string($id));
 
-        $bookmark = ($this->getBookmarkHandler)(new GetBookmarkQuery($id));
+        $bookmark = ($this->getBookmarkHandler)(new GetBookmarkQuery($id, $ownerId));
 
         return $this->toResource($bookmark);
     }

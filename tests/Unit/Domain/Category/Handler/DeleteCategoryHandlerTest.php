@@ -10,8 +10,10 @@ use App\Domain\Category\Exception\CategoryNotFoundException;
 use App\Domain\Category\Handler\DeleteCategoryHandler;
 use App\Domain\Category\Port\CategoryRepositoryInterface;
 use App\Entity\Category;
+use App\Entity\User;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Uid\Uuid;
 
 final class DeleteCategoryHandlerTest extends TestCase
 {
@@ -19,16 +21,23 @@ final class DeleteCategoryHandlerTest extends TestCase
 
     private DeleteCategoryHandler $handler;
 
+    private string $ownerId;
+
     protected function setUp(): void
     {
         $this->categoryRepository = $this->createMock(CategoryRepositoryInterface::class);
         $this->handler = new DeleteCategoryHandler($this->categoryRepository);
+        $this->ownerId = Uuid::v7()->toRfc4122();
     }
 
     public function testInvokeExistingCategoryWithoutFeedsDeletesCategory(): void
     {
-        $categoryId = 'a1b2c3d4-e5f6-7890-abcd-ef1234567890';
+        $categoryId = Uuid::v7()->toRfc4122();
         $category = $this->createMock(Category::class);
+
+        $owner = $this->createMock(User::class);
+        $owner->method('getId')->willReturn(Uuid::fromString($this->ownerId));
+        $category->method('getOwner')->willReturn($owner);
 
         $this->categoryRepository
             ->method('find')
@@ -45,7 +54,7 @@ final class DeleteCategoryHandlerTest extends TestCase
             ->method('delete')
             ->with($category);
 
-        ($this->handler)(new DeleteCategoryCommand($categoryId));
+        ($this->handler)(new DeleteCategoryCommand($categoryId, $this->ownerId));
     }
 
     public function testInvokeNonExistentCategoryThrowsCategoryNotFoundException(): void
@@ -56,13 +65,33 @@ final class DeleteCategoryHandlerTest extends TestCase
 
         $this->expectException(CategoryNotFoundException::class);
 
-        ($this->handler)(new DeleteCategoryCommand('non-existent-id'));
+        ($this->handler)(new DeleteCategoryCommand('non-existent-id', $this->ownerId));
+    }
+
+    public function testInvokeCategoryOwnedByDifferentUserThrowsCategoryNotFoundException(): void
+    {
+        $categoryId = Uuid::v7()->toRfc4122();
+        $category = $this->createMock(Category::class);
+
+        $otherOwner = $this->createMock(User::class);
+        $otherOwner->method('getId')->willReturn(Uuid::v7());
+        $category->method('getOwner')->willReturn($otherOwner);
+
+        $this->categoryRepository->method('find')->willReturn($category);
+
+        $this->expectException(CategoryNotFoundException::class);
+
+        ($this->handler)(new DeleteCategoryCommand($categoryId, $this->ownerId));
     }
 
     public function testInvokeCategoryWithFeedsThrowsCategoryHasFeedsException(): void
     {
-        $categoryId = 'a1b2c3d4-e5f6-7890-abcd-ef1234567890';
+        $categoryId = Uuid::v7()->toRfc4122();
         $category = $this->createMock(Category::class);
+
+        $owner = $this->createMock(User::class);
+        $owner->method('getId')->willReturn(Uuid::fromString($this->ownerId));
+        $category->method('getOwner')->willReturn($owner);
 
         $this->categoryRepository
             ->method('find')
@@ -76,6 +105,6 @@ final class DeleteCategoryHandlerTest extends TestCase
 
         $this->expectException(CategoryHasFeedsException::class);
 
-        ($this->handler)(new DeleteCategoryCommand($categoryId));
+        ($this->handler)(new DeleteCategoryCommand($categoryId, $this->ownerId));
     }
 }

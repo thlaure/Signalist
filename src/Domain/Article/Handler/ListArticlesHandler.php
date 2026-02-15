@@ -20,7 +20,7 @@ final readonly class ListArticlesHandler
      */
     public function __invoke(ListArticlesQuery $query): array
     {
-        $filters = [];
+        $filters = ['ownerId' => $query->ownerId];
 
         if ($query->feedId !== null) {
             $filters['feedId'] = $query->feedId;

@@ -9,6 +9,7 @@ final readonly class MarkArticleReadCommand
     public function __construct(
         public string $id,
         public bool $isRead,
+        public string $ownerId,
     ) {
     }
 }

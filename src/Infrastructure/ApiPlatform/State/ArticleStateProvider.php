@@ -12,6 +12,7 @@ use App\Domain\Article\Handler\ListArticlesHandler;
 use App\Domain\Article\Query\GetArticleQuery;
 use App\Domain\Article\Query\ListArticlesQuery;
 use App\Entity\Article;
+use App\Entity\User;
 use App\Infrastructure\ApiPlatform\Resource\ArticleResource;
 
 use function assert;
@@ -23,6 +24,7 @@ use const FILTER_VALIDATE_BOOLEAN;
 
 use function is_string;
 
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
@@ -34,6 +36,7 @@ final readonly class ArticleStateProvider implements ProviderInterface
         private GetArticleHandler $getArticleHandler,
         private ListArticlesHandler $listArticlesHandler,
         private RequestStack $requestStack,
+        private Security $security,
     ) {
     }
 
@@ -42,6 +45,10 @@ final readonly class ArticleStateProvider implements ProviderInterface
      */
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): ArticleResource|array
     {
+        $user = $this->security->getUser();
+        assert($user instanceof User);
+        $ownerId = $user->getId()->toRfc4122();
+
         if ($operation instanceof CollectionOperationInterface) {
             $request = $this->requestStack->getCurrentRequest();
 
@@ -56,6 +63,7 @@ final readonly class ArticleStateProvider implements ProviderInterface
             }
 
             $query = new ListArticlesQuery(
+                ownerId: $ownerId,
                 feedId: is_string($feedId) ? $feedId : null,
                 categoryId: is_string($categoryId) ? $categoryId : null,
                 isRead: $isRead,
@@ -69,7 +77,7 @@ final readonly class ArticleStateProvider implements ProviderInterface
         $id = $uriVariables['id'] ?? '';
         assert(is_string($id));
 
-        $article = ($this->getArticleHandler)(new GetArticleQuery($id));
+        $article = ($this->getArticleHandler)(new GetArticleQuery($id, $ownerId));
 
         return $this->toResource($article);
     }

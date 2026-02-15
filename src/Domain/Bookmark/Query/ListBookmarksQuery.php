@@ -2,12 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Feed\Command;
+namespace App\Domain\Bookmark\Query;
 
-final readonly class DeleteFeedCommand
+final readonly class ListBookmarksQuery
 {
     public function __construct(
-        public string $id,
         public string $ownerId,
     ) {
     }

@@ -8,6 +8,7 @@ use App\Domain\Category\Command\UpdateCategoryCommand;
 use App\Domain\Category\Exception\CategoryNotFoundException;
 use App\Domain\Category\Exception\CategorySlugAlreadyExistsException;
 use App\Domain\Category\Port\CategoryRepositoryInterface;
+use App\Entity\Category;
 use DateTimeImmutable;
 
 final readonly class UpdateCategoryHandler
@@ -21,13 +22,17 @@ final readonly class UpdateCategoryHandler
     {
         $category = $this->categoryRepository->find($command->id);
 
-        if (!$category instanceof \App\Entity\Category) {
+        if (!$category instanceof Category) {
             throw new CategoryNotFoundException($command->id);
         }
 
-        $existingWithSlug = $this->categoryRepository->findBySlug($command->slug);
+        if ($category->getOwner()->getId()->toRfc4122() !== $command->ownerId) {
+            throw new CategoryNotFoundException($command->id);
+        }
 
-        if ($existingWithSlug instanceof \App\Entity\Category && $existingWithSlug->getId()->toRfc4122() !== $command->id) {
+        $existingWithSlug = $this->categoryRepository->findBySlugAndOwner($command->slug, $command->ownerId);
+
+        if ($existingWithSlug instanceof Category && $existingWithSlug->getId()->toRfc4122() !== $command->id) {
             throw new CategorySlugAlreadyExistsException($command->slug);
         }
 

@@ -86,3 +86,49 @@ Feature: Feed Management
     Then the response status code should be 404
     And the response should be JSON
     And the JSON response should be a RFC 7807 problem
+
+  Scenario: User cannot see another user's feeds
+    Given a category exists with name "Admin Cat" and slug "admin-cat"
+    And I store the response "id" as "categoryId"
+    And I send a "POST" request to "/api/v1/feeds" with body:
+      """
+      {
+        "url": "https://example.com/admin-feed.xml",
+        "categoryId": "stored:categoryId"
+      }
+      """
+    And I am authenticated as "user@signalist.app"
+    When I send a "GET" request to "/api/v1/feeds"
+    Then the response status code should be 200
+    And the response should be JSON
+    And the JSON collection should be empty
+
+  Scenario: User cannot get another user's feed
+    Given a category exists with name "Admin Cat" and slug "admin-cat"
+    And I store the response "id" as "categoryId"
+    And I send a "POST" request to "/api/v1/feeds" with body:
+      """
+      {
+        "url": "https://example.com/admin-feed.xml",
+        "categoryId": "stored:categoryId"
+      }
+      """
+    And I store the response "id" as "feedId"
+    And I am authenticated as "user@signalist.app"
+    When I send a "GET" request to "/api/v1/feeds/stored:feedId"
+    Then the response status code should be 404
+
+  Scenario: User cannot delete another user's feed
+    Given a category exists with name "Admin Cat" and slug "admin-cat"
+    And I store the response "id" as "categoryId"
+    And I send a "POST" request to "/api/v1/feeds" with body:
+      """
+      {
+        "url": "https://example.com/admin-feed.xml",
+        "categoryId": "stored:categoryId"
+      }
+      """
+    And I store the response "id" as "feedId"
+    And I am authenticated as "user@signalist.app"
+    When I send a "DELETE" request to "/api/v1/feeds/stored:feedId"
+    Then the response status code should be 404

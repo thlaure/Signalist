@@ -24,6 +24,10 @@ final readonly class GetArticleHandler
             throw new ArticleNotFoundException($query->id);
         }
 
+        if ($article->getFeed()->getOwner()->getId()->toRfc4122() !== $query->ownerId) {
+            throw new ArticleNotFoundException($query->id);
+        }
+
         return $article;
     }
 }

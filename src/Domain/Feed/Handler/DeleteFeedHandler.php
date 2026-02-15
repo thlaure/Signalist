@@ -24,6 +24,10 @@ final readonly class DeleteFeedHandler
             throw new FeedNotFoundException($command->id);
         }
 
+        if ($feed->getOwner()->getId()->toRfc4122() !== $command->ownerId) {
+            throw new FeedNotFoundException($command->id);
+        }
+
         $this->feedRepository->delete($feed);
     }
 }

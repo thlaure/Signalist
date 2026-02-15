@@ -6,4 +6,8 @@ namespace App\Domain\Category\Query;
 
 final readonly class ListCategoriesQuery
 {
+    public function __construct(
+        public string $ownerId,
+    ) {
+    }
 }

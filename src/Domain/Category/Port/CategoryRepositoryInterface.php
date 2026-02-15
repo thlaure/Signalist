@@ -14,10 +14,10 @@ interface CategoryRepositoryInterface
 
     public function find(string $id): ?Category;
 
-    public function findBySlug(string $slug): ?Category;
+    public function findBySlugAndOwner(string $slug, string $ownerId): ?Category;
 
     /** @return Category[] */
-    public function findAll(): array;
+    public function findAllByOwner(string $ownerId): array;
 
     public function hasFeedsAssigned(string $categoryId): bool;
 }

@@ -13,7 +13,7 @@ use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'category')]
-#[ORM\UniqueConstraint(name: 'uniq_category_slug', columns: ['slug'])]
+#[ORM\UniqueConstraint(name: 'uniq_category_slug_owner', columns: ['slug', 'owner_id'])]
 class Category
 {
     #[ORM\Id]
@@ -40,6 +40,10 @@ class Category
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private DateTimeImmutable $updatedAt;
+
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private User $owner;
 
     /** @var Collection<int, Feed> */
     #[ORM\OneToMany(targetEntity: Feed::class, mappedBy: 'category', orphanRemoval: true)]
@@ -139,5 +143,17 @@ class Category
     public function getFeeds(): Collection
     {
         return $this->feeds;
+    }
+
+    public function getOwner(): User
+    {
+        return $this->owner;
+    }
+
+    public function setOwner(User $owner): self
+    {
+        $this->owner = $owner;
+
+        return $this;
     }
 }

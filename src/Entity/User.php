@@ -39,6 +39,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private DateTimeImmutable $updatedAt;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?DateTimeImmutable $emailVerifiedAt = null;
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?DateTimeImmutable $deletedAt = null;
 
     public function __construct()
@@ -120,6 +123,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->updatedAt = $updatedAt;
 
         return $this;
+    }
+
+    public function getEmailVerifiedAt(): ?DateTimeImmutable
+    {
+        return $this->emailVerifiedAt;
+    }
+
+    public function setEmailVerifiedAt(?DateTimeImmutable $emailVerifiedAt): self
+    {
+        $this->emailVerifiedAt = $emailVerifiedAt;
+
+        return $this;
+    }
+
+    public function isEmailVerified(): bool
+    {
+        return $this->emailVerifiedAt instanceof DateTimeImmutable;
     }
 
     public function getDeletedAt(): ?DateTimeImmutable

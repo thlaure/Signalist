@@ -25,6 +25,7 @@ framework:
 
         routing:
             'App\Domain\Feed\Message\CrawlFeedMessage': async
+            'App\Domain\Auth\Message\SendVerificationEmailMessage': async
 
 when@test:
     framework:

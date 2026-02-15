@@ -35,7 +35,7 @@ export default function RegisterPage() {
 
     try {
       await register({ email, password });
-      navigate('/login', { replace: true });
+      navigate('/check-email', { replace: true, state: { email } });
     } catch (err) {
       if (isProblemError(err)) {
         setError(err.problem.detail);

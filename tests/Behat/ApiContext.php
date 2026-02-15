@@ -93,6 +93,20 @@ final class ApiContext implements Context
     }
 
     /**
+     * @Given there is an unverified user :email with password :password
+     */
+    public function thereIsAnUnverifiedUser(string $email, string $password): void
+    {
+        $user = new \App\Entity\User();
+        $user->setEmail($email);
+        $user->setPassword($this->passwordHasher->hashPassword($user, $password));
+
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
+        $this->entityManager->clear();
+    }
+
+    /**
      * @Given I am authenticated as :email
      */
     public function iAmAuthenticatedAs(string $email): void

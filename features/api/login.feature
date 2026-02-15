@@ -90,3 +90,16 @@ Feature: Authentication - Login
     Then the response status code should be 422
     And the response should be JSON
     And the JSON response should be a RFC 7807 problem
+
+  Scenario: Login with unverified email
+    Given there is an unverified user "unverified@signalist.app" with password "password"
+    When I send a "POST" request to "/api/v1/auth/login" with body:
+      """
+      {
+        "email": "unverified@signalist.app",
+        "password": "password"
+      }
+      """
+    Then the response status code should be 403
+    And the response should be JSON
+    And the JSON response should be a RFC 7807 problem

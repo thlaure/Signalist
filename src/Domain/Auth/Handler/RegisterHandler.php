@@ -6,8 +6,10 @@ namespace App\Domain\Auth\Handler;
 
 use App\Domain\Auth\Command\RegisterCommand;
 use App\Domain\Auth\Exception\EmailAlreadyExistsException;
+use App\Domain\Auth\Message\SendVerificationEmailMessage;
 use App\Domain\Auth\Port\UserRepositoryInterface;
 use App\Entity\User;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 final readonly class RegisterHandler
@@ -15,6 +17,7 @@ final readonly class RegisterHandler
     public function __construct(
         private UserRepositoryInterface $userRepository,
         private UserPasswordHasherInterface $passwordHasher,
+        private MessageBusInterface $messageBus,
     ) {
     }
 
@@ -31,6 +34,11 @@ final readonly class RegisterHandler
         $user->setPassword($this->passwordHasher->hashPassword($user, $command->password));
 
         $this->userRepository->save($user);
+
+        $this->messageBus->dispatch(new SendVerificationEmailMessage(
+            userId: $user->getId()->toRfc4122(),
+            email: $user->getEmail(),
+        ));
 
         return $user->getId()->toRfc4122();
     }

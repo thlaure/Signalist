@@ -18,11 +18,13 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [emailNotVerified, setEmailNotVerified] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError(null);
+    setEmailNotVerified(false);
     setLoading(true);
 
     try {
@@ -30,6 +32,9 @@ export default function LoginPage() {
       navigate('/', { replace: true });
     } catch (err) {
       if (isProblemError(err)) {
+        if (err.problem.type.endsWith('/email-not-verified')) {
+          setEmailNotVerified(true);
+        }
         setError(err.problem.detail);
       } else {
         setError('An unexpected error occurred. Please try again.');
@@ -64,9 +69,21 @@ export default function LoginPage() {
           </Typography>
 
           {error && (
-            <Alert severity="error" sx={{ mb: 3 }}>
+            <Alert severity="error" sx={{ mb: emailNotVerified ? 1 : 3 }}>
               {error}
             </Alert>
+          )}
+
+          {emailNotVerified && (
+            <Typography variant="body2" sx={{ mb: 3 }}>
+              <Link
+                component={RouterLink}
+                to="/check-email"
+                state={{ email }}
+              >
+                Resend verification email
+              </Link>
+            </Typography>
           )}
 
           <Box component="form" onSubmit={handleSubmit} noValidate>

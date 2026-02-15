@@ -1,4 +1,4 @@
-.PHONY: help up down build rebuild shell logs lint analyse tests-unit tests-integration db-migrate db-reset cache-clear composer-install composer-update front-install front-dev front-build front-preview front-lint front-test front-test-watch front-hooks grumphp
+.PHONY: help up down build rebuild shell logs lint analyse tests-unit tests-integration tests db-migrate db-reset cache-clear composer-install composer-update front-install front-dev front-build front-preview front-lint front-test front-test-watch front-hooks grumphp
 
 # Default target
 .DEFAULT_GOAL := help

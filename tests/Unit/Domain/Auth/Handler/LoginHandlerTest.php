@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Unit\Domain\Auth\Handler;
 
 use App\Domain\Auth\Command\LoginCommand;
+use App\Domain\Auth\Exception\EmailNotVerifiedException;
 use App\Domain\Auth\Exception\InvalidCredentialsException;
 use App\Domain\Auth\Handler\LoginHandler;
 use App\Domain\Auth\Port\UserRepositoryInterface;
@@ -41,6 +42,7 @@ final class LoginHandlerTest extends TestCase
     {
         $user = $this->createMock(User::class);
         $user->method('isDeleted')->willReturn(false);
+        $user->method('isEmailVerified')->willReturn(true);
 
         $this->userRepository
             ->expects($this->once())
@@ -127,6 +129,32 @@ final class LoginHandlerTest extends TestCase
 
         ($this->handler)(new LoginCommand(
             email: 'deleted@signalist.app',
+            password: 'password123',
+        ));
+    }
+
+    public function testInvokeWithUnverifiedEmailThrowsEmailNotVerifiedException(): void
+    {
+        $user = $this->createMock(User::class);
+        $user->method('isDeleted')->willReturn(false);
+        $user->method('isEmailVerified')->willReturn(false);
+
+        $this->userRepository
+            ->expects($this->once())
+            ->method('findByEmail')
+            ->with('unverified@signalist.app')
+            ->willReturn($user);
+
+        $this->passwordHasher
+            ->expects($this->once())
+            ->method('isPasswordValid')
+            ->with($user, 'password123')
+            ->willReturn(true);
+
+        $this->expectException(EmailNotVerifiedException::class);
+
+        ($this->handler)(new LoginCommand(
+            email: 'unverified@signalist.app',
             password: 'password123',
         ));
     }

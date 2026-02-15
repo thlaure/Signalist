@@ -75,6 +75,25 @@ export interface RegisterResponse {
   id: string;
 }
 
+export interface VerifyEmailInput {
+  userId: string;
+  email: string;
+  expiresAt: number;
+  signature: string;
+}
+
+export interface VerifyEmailResponse {
+  verified: boolean;
+}
+
+export interface ResendVerificationInput {
+  email: string;
+}
+
+export interface ResendVerificationResponse {
+  sent: boolean;
+}
+
 // Input Types
 
 export interface CreateCategoryInput {

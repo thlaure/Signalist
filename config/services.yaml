@@ -39,3 +39,14 @@ services:
 
     App\Domain\Bookmark\Port\BookmarkRepositoryInterface:
         alias: App\Infrastructure\Persistence\Bookmark\DoctrineBookmarkRepository
+
+    App\Domain\Auth\Port\UserRepositoryInterface:
+        alias: App\Infrastructure\Persistence\Auth\DoctrineUserRepository
+
+    App\Domain\Auth\Port\EmailVerificationTokenGeneratorInterface:
+        alias: App\Infrastructure\Auth\HmacEmailVerificationTokenGenerator
+
+    App\Infrastructure\Auth\HmacEmailVerificationTokenGenerator:
+        arguments:
+            $appSecret: '%env(APP_SECRET)%'
+            $frontendUrl: '%env(FRONTEND_URL)%'

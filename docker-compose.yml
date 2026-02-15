@@ -24,6 +24,8 @@ services:
       - DATABASE_URL_TEST=postgresql://signalist:signalist@postgres:5432/signalist_test?serverVersion=16&charset=utf8
       - REDIS_URL=redis://redis:6379
       - MESSENGER_TRANSPORT_DSN=redis://redis:6379/messages
+      - MAILER_DSN=smtp://mailpit:1025
+      - FRONTEND_URL=http://localhost:5173
       - FRANKENPHP_CONFIG=worker ./public/index.php
       - SERVER_NAME=:80
     depends_on:
@@ -53,11 +55,15 @@ services:
       - DATABASE_URL=postgresql://signalist:signalist@postgres:5432/signalist?serverVersion=16&charset=utf8
       - REDIS_URL=redis://redis:6379
       - MESSENGER_TRANSPORT_DSN=redis://redis:6379/messages
+      - MAILER_DSN=smtp://mailpit:1025
+      - FRONTEND_URL=http://localhost:5173
     depends_on:
       postgres:
         condition: service_healthy
       redis:
         condition: service_healthy
+      mailpit:
+        condition: service_started
     command: php bin/console messenger:consume async --time-limit=3600 --memory-limit=256M -vv
     networks:
       - signalist
@@ -80,6 +86,16 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - signalist
+
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: signalist-mailpit
+    restart: unless-stopped
+    ports:
+      - "8025:8025"
+      - "1025:1025"
     networks:
       - signalist
 

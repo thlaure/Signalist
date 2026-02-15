@@ -43,6 +43,9 @@ jobs:
       - name: Install Composer dependencies
         run: docker compose exec -T app composer install --no-interaction --no-progress --prefer-dist
 
+      - name: Generate JWT keys
+        run: docker compose exec -T app php bin/console lexik:jwt:generate-keypair --overwrite --no-interaction
+
       - name: Check HTTP reachability
         run: |
           for i in {1..30}; do
@@ -62,7 +65,28 @@ jobs:
         run: docker compose exec -T app php bin/console -e test doctrine:migrations:migrate --no-interaction
 
       - name: Run PHPUnit
-        run: docker compose exec -T app php bin/phpunit
+        run: docker compose exec -T app vendor/bin/phpunit
+
+      - name: Run PHPUnit with coverage
+        run: docker compose exec -T -e XDEBUG_MODE=coverage app vendor/bin/phpunit --testsuite=Unit --coverage-clover var/coverage/clover.xml --coverage-text
+
+      - name: Check coverage threshold (80%)
+        run: |
+          COVERAGE=$(docker compose exec -T app php -r "
+            \$xml = simplexml_load_file('var/coverage/clover.xml');
+            \$metrics = \$xml->project->metrics;
+            \$statements = (int)\$metrics['statements'];
+            \$covered = (int)\$metrics['coveredstatements'];
+            echo \$statements > 0 ? round((\$covered / \$statements) * 100, 2) : 0;
+          ")
+          echo "Line coverage: ${COVERAGE}%"
+          if [ "$(echo "${COVERAGE} < 80" | bc)" -eq 1 ]; then
+            echo "::error::Coverage ${COVERAGE}% is below the 80% threshold"
+            exit 1
+          fi
+
+      - name: Run Behat
+        run: docker compose exec -T app vendor/bin/behat --no-interaction --colors
 
       - name: Run CS Fixer (dry-run)
         run: docker compose exec -T app vendor/bin/php-cs-fixer fix --dry-run --diff

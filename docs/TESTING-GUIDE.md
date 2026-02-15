@@ -528,6 +528,100 @@ docker compose exec app php bin/console messenger:failed:retry
 
 ---
 
+## Authentication for API Requests
+
+All API endpoints (except `POST /api/v1/auth/login`) require JWT authentication.
+
+### Obtain a JWT Token
+```bash
+TOKEN=$(curl -s -X POST http://localhost:8000/api/v1/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email": "admin@signalist.app", "password": "password"}' | jq -r '.token')
+echo "Token: $TOKEN"
+```
+
+### Use the Token in Requests
+```bash
+curl -s http://localhost:8000/api/v1/categories \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Accept: application/ld+json" | jq .
+```
+
+All `curl` examples in earlier sections of this guide require the `-H "Authorization: Bearer $TOKEN"` header to work.
+
+---
+
+## Behat Acceptance Tests
+
+Behat tests cover the full HTTP flow for all API endpoints.
+
+### Run All Behat Tests
+```bash
+docker compose exec app vendor/bin/behat --suite=api
+```
+
+### Run a Specific Feature
+```bash
+docker compose exec app vendor/bin/behat --suite=api features/api/login.feature
+```
+
+### Available Feature Files
+
+| Feature | Scenarios | Covers |
+|---------|-----------|--------|
+| `features/api/login.feature` | 7 | Auth: success, bad credentials, validation |
+| `features/api/categories.feature` | 7 | CRUD, validation, conflicts |
+| `features/api/feeds.feature` | 6 | CRUD, validation, conflicts |
+| `features/api/articles.feature` | 4 | List, get, mark read/unread |
+| `features/api/bookmarks.feature` | 3 | Create, list, delete |
+
+### Behat Setup Notes
+- Test database is reset before each scenario (schema drop + recreate + migrations)
+- Fixtures are loaded via `Given there are default users` step
+- JWT auth is handled via `Given I am authenticated as "admin@signalist.app"` step
+- Test users: `admin@signalist.app` / `password` and `user@signalist.app` / `password`
+
+---
+
+## Test Coverage
+
+### Generate Coverage Report
+```bash
+make tests-coverage
+```
+This generates an HTML report in `var/coverage/` and prints a text summary.
+
+Coverage is scoped to `src/Domain/` (business logic layer). Current coverage: ~93%.
+
+### CI Coverage Threshold
+GitHub Actions enforces a minimum 80% line coverage. The check parses clover XML output and fails the build if coverage drops below the threshold.
+
+---
+
+## GrumPHP Pre-Commit Hooks
+
+GrumPHP runs automatically on every `git commit`. It executes:
+
+1. **PHP CS Fixer** - Code style
+2. **PHPStan** - Static analysis
+3. **Rector** - Automated refactoring checks
+4. **PHPUnit** - Unit test suite
+5. **Behat** - API acceptance tests
+6. **Commit message** - Conventional Commits format, 72-char line limit
+
+### Run Manually
+```bash
+make grumphp
+```
+
+### Commit Message Rules
+- Must follow Conventional Commits: `feat(scope): description`
+- Subject line max 72 characters
+- Body lines max 72 characters
+- Blank line between subject and body
+
+---
+
 ## Quick Verification Commands
 
 ```bash
@@ -536,12 +630,15 @@ docker compose exec app php bin/console cache:clear && \
 docker compose exec app vendor/bin/php-cs-fixer fix --dry-run && \
 docker compose exec app vendor/bin/phpstan analyse && \
 docker compose exec app vendor/bin/rector process --dry-run && \
-docker compose exec app php bin/phpunit
+docker compose exec app vendor/bin/phpunit --testsuite=Unit
 ```
 
 **Expected:** All commands complete without errors.
 
-Or use the Makefile shortcut:
+Or use the Makefile shortcuts:
 ```bash
-make quality && make tests
+make quality        # lint + analyse + rector
+make tests-unit     # PHPUnit unit tests
+make grumphp        # All pre-commit checks
+make tests-coverage # PHPUnit with coverage report
 ```

@@ -54,6 +54,46 @@ export interface Bookmark {
   categoryName: string;
 }
 
+// Auth Types
+
+export interface LoginInput {
+  email: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  token: string;
+  expiresIn: number;
+}
+
+export interface RegisterInput {
+  email: string;
+  password: string;
+}
+
+export interface RegisterResponse {
+  id: string;
+}
+
+export interface VerifyEmailInput {
+  userId: string;
+  email: string;
+  expiresAt: number;
+  signature: string;
+}
+
+export interface VerifyEmailResponse {
+  verified: boolean;
+}
+
+export interface ResendVerificationInput {
+  email: string;
+}
+
+export interface ResendVerificationResponse {
+  sent: boolean;
+}
+
 // Input Types
 
 export interface CreateCategoryInput {

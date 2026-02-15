@@ -85,6 +85,19 @@
 | `ListBookmarksQuery` | Not Started |
 | Bookmark output DTO | Not Started |
 
+#### Auth Domain
+
+| Task | Status |
+|------|--------|
+| `User` entity (email, password, roles, deletedAt) | Done |
+| `LoginInput` DTO (email + password validation) | Done |
+| `LoginHandler` (JWT token generation) | Done |
+| `LoginController` (`POST /api/v1/auth/login`) | Done |
+| `InvalidCredentialsException` | Done |
+| `DeletedAccountException` | Done |
+| LexikJWTAuthenticationBundle configuration | Done |
+| JWT firewall for `/api/v1/*` endpoints | Done |
+
 ### 1.3 Infrastructure Layer
 
 | Task | Status |
@@ -179,19 +192,29 @@
 | `MarkArticleReadHandlerTest` | Done |
 | `CreateBookmarkHandlerTest` | Done |
 | `DeleteBookmarkHandlerTest` | Done |
-| `UpdateFeedHandlerTest` | Not Started |
-| `GetFeedHandlerTest` | Not Started |
-| `ListFeedsHandlerTest` | Not Started |
-| `CreateCategoryHandlerTest` | Not Started |
-| `UpdateCategoryHandlerTest` | Not Started |
-| `DeleteCategoryHandlerTest` | Not Started |
-| `GetCategoryHandlerTest` | Not Started |
-| `ListCategoriesHandlerTest` | Not Started |
-| `GetArticleHandlerTest` | Not Started |
-| `GetBookmarkHandlerTest` | Not Started |
-| `ListBookmarksHandlerTest` | Not Started |
+| `UpdateFeedHandlerTest` | Done |
+| `GetFeedHandlerTest` | Done |
+| `ListFeedsHandlerTest` | Done |
+| `CreateCategoryHandlerTest` | Done |
+| `UpdateCategoryHandlerTest` | Done |
+| `DeleteCategoryHandlerTest` | Done |
+| `GetCategoryHandlerTest` | Done |
+| `ListCategoriesHandlerTest` | Done |
+| `GetArticleHandlerTest` | Done |
+| `GetBookmarkHandlerTest` | Done |
+| `ListBookmarksHandlerTest` | Done |
+| `LoginHandlerTest` | Done |
+| `LoginInputTest` (DTO validation) | Done |
+| Behat: categories.feature | Done |
+| Behat: feeds.feature | Done |
+| Behat: articles.feature | Done |
+| Behat: bookmarks.feature | Done |
+| Behat: login.feature (7 scenarios) | Done |
+| Behat JWT auth support in ApiContext | Done |
+| PHPUnit coverage reporting (93%+ on Domain) | Done |
+| CI coverage threshold enforcement (80%) | Done |
+| GrumPHP: phpunit + behat + rector tasks | Done |
 | Integration tests (Doctrine repositories) | Not Started |
-| Behat feature files (API scenarios) | Not Started |
 | Frontend component tests (Vitest) | Not Started |
 
 ### 1.9 Data Fixtures
@@ -202,6 +225,7 @@
 | `FeedFixture` | Done |
 | `ArticleFixture` | Done |
 | `BookmarkFixture` | Done |
+| `UserFixture` | Done |
 | Seed data population (realistic content) | Not Started |
 
 ---

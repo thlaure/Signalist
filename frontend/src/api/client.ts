@@ -9,10 +9,30 @@ const apiClient = axios.create({
   },
 });
 
+const AUTH_TOKEN_KEY = 'auth_token';
+
+// Request interceptor to inject JWT token
+apiClient.interceptors.request.use((config) => {
+  const token = localStorage.getItem(AUTH_TOKEN_KEY);
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
 // Response interceptor for RFC 7807 error handling
 apiClient.interceptors.response.use(
   (response) => response,
   (error: AxiosError<ProblemDetails>) => {
+    // Clear token and redirect on 401 (except for login endpoint)
+    if (
+      error.response?.status === 401 &&
+      !error.config?.url?.includes('/auth/login')
+    ) {
+      localStorage.removeItem(AUTH_TOKEN_KEY);
+      window.location.href = '/login';
+    }
+
     if (error.response?.data?.type) {
       // RFC 7807 Problem Details response
       const problem = error.response.data;

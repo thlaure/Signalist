@@ -54,6 +54,18 @@ export interface Bookmark {
   categoryName: string;
 }
 
+// Auth Types
+
+export interface LoginInput {
+  email: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  token: string;
+  expiresIn: number;
+}
+
 // Input Types
 
 export interface CreateCategoryInput {

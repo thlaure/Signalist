@@ -204,7 +204,7 @@ When working on this project, the agent MUST:
 - Changing LLM provider configurations
 
 ## 6.3 NEVER DO
-- Commit to `main` directly
+- Commit to `master` directly — always create a feature branch and PR
 - Hardcode API keys (use environment variables)
 - Perform blocking HTTP/AI calls in web request cycle
 - Add coupling between domains
@@ -606,6 +606,16 @@ The `@signalist-marketer` agent should reference `/docs/MARKETING-STRATEGY.md` f
 ---
 
 # 13. Git Conventions
+
+## 13.1 Branching Strategy
+
+- **Every new feature or fix MUST be developed on a dedicated branch** created from `master`
+- Branch naming: `feat/<short-description>`, `fix/<short-description>`, `refactor/<short-description>`
+- When the feature is complete and all checks pass, create a Pull Request via `gh pr create`
+- Wait for CI to pass, then merge when the user approves
+- **Never commit directly to `master`**
+
+## 13.2 Commit Messages
 
 Use **Conventional Commits v1.0.0**:
 

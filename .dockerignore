@@ -21,8 +21,14 @@
 **/docker-compose.yml
 **/Dockerfile
 **/Thumbs.db
+.ai-agents/
+.claude/
 .github/
 docs/
+features/
+frontend/dist/
+frontend/node_modules/
+frontend/.husky/
 public/bundles/
 tests/
 var/
@@ -32,3 +38,6 @@ vendor/
 .env.local
 .env.local.php
 .env.test
+CLAUDE.md
+grumphp.yml
+Makefile

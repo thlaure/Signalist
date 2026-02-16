@@ -34,6 +34,10 @@ final readonly class ListArticlesHandler
             $filters['isRead'] = $query->isRead;
         }
 
+        if ($query->search !== null) {
+            $filters['search'] = $query->search;
+        }
+
         return $this->articleRepository->findAll($filters);
     }
 }

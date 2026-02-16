@@ -76,6 +76,9 @@ export default function BookmarkList({
             py: 2,
             borderBottom: index < bookmarks.length - 1 ? '1px solid' : 'none',
             borderColor: 'divider',
+            flexDirection: { xs: 'column', sm: 'row' },
+            alignItems: { xs: 'flex-start', sm: 'center' },
+            gap: { xs: 1, sm: 0 },
           }}
         >
           <ListItemText

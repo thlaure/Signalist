@@ -20,25 +20,30 @@ use App\Infrastructure\ApiPlatform\State\CategoryStateProvider;
     operations: [
         new GetCollection(
             uriTemplate: '/categories',
+            description: 'Retrieve all categories belonging to the authenticated user, ordered by position.',
             provider: CategoryStateProvider::class,
         ),
         new Get(
             uriTemplate: '/categories/{id}',
+            description: 'Retrieve a single category by its UUID.',
             provider: CategoryStateProvider::class,
         ),
         new Post(
             uriTemplate: '/categories',
+            description: 'Create a new category for organizing feeds. Slug must be unique per user.',
             input: CreateCategoryInput::class,
             processor: CategoryStateProcessor::class,
         ),
         new Put(
             uriTemplate: '/categories/{id}',
+            description: 'Update an existing category. All fields are replaced.',
             input: UpdateCategoryInput::class,
             provider: CategoryStateProvider::class,
             processor: CategoryStateProcessor::class,
         ),
         new Delete(
             uriTemplate: '/categories/{id}',
+            description: 'Delete a category. Fails if the category still has feeds assigned.',
             provider: CategoryStateProvider::class,
             processor: CategoryStateProcessor::class,
         ),

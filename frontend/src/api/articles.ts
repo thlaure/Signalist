@@ -5,6 +5,7 @@ export interface ArticleFilters {
   feedId?: string;
   categoryId?: string;
   isRead?: boolean;
+  search?: string;
 }
 
 export async function getArticles(filters?: ArticleFilters): Promise<Article[]> {
@@ -18,6 +19,9 @@ export async function getArticles(filters?: ArticleFilters): Promise<Article[]> 
   }
   if (filters?.isRead !== undefined) {
     params.append('isRead', String(filters.isRead));
+  }
+  if (filters?.search) {
+    params.append('search', filters.search);
   }
 
   const queryString = params.toString();

@@ -28,6 +28,14 @@ final class BookmarkFixture extends Fixture implements OrderedFixtureInterface
             'article' => 'article-ux-planet-1',
             'notes' => 'Must read before the accessibility audit',
         ],
+        [
+            'article' => 'article-openai-1',
+            'notes' => 'Evaluate GPT-5 for summarization pipeline',
+        ],
+        [
+            'article' => 'article-cal-1',
+            'notes' => null,
+        ],
     ];
 
     public function load(ObjectManager $manager): void

@@ -16,20 +16,24 @@ use App\Infrastructure\ApiPlatform\State\ArticleStateProvider;
     operations: [
         new GetCollection(
             uriTemplate: '/articles',
+            description: 'List articles for the authenticated user. Filter by feedId, categoryId, isRead, or search.',
             provider: ArticleStateProvider::class,
         ),
         new Get(
             uriTemplate: '/articles/{id}',
+            description: 'Retrieve a single article with full content, metadata, and read status.',
             provider: ArticleStateProvider::class,
         ),
         new Patch(
             uriTemplate: '/articles/{id}/read',
+            description: 'Mark an article as read. No request body required.',
             name: 'mark_read',
             provider: ArticleStateProvider::class,
             processor: ArticleStateProcessor::class,
         ),
         new Patch(
             uriTemplate: '/articles/{id}/unread',
+            description: 'Mark an article as unread. No request body required.',
             name: 'mark_unread',
             provider: ArticleStateProvider::class,
             processor: ArticleStateProcessor::class,

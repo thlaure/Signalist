@@ -11,6 +11,7 @@ final readonly class ListArticlesQuery
         public ?string $feedId = null,
         public ?string $categoryId = null,
         public ?bool $isRead = null,
+        public ?string $search = null,
     ) {
     }
 }

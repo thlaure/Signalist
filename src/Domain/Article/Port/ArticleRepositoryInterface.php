@@ -13,7 +13,7 @@ interface ArticleRepositoryInterface
     public function find(string $id): ?Article;
 
     /**
-     * @param array{feedId?: string, categoryId?: string, isRead?: bool, ownerId?: string} $filters
+     * @param array{feedId?: string, categoryId?: string, isRead?: bool, ownerId?: string, search?: string} $filters
      *
      * @return Article[]
      */

@@ -98,7 +98,7 @@ final readonly class DoctrineArticleRepository implements ArticleRepositoryInter
     }
 
     /**
-     * @param array{feedId?: string, categoryId?: string, isRead?: bool, ownerId?: string} $filters
+     * @param array{feedId?: string, categoryId?: string, isRead?: bool, ownerId?: string, search?: string} $filters
      */
     private function applyFilters(QueryBuilder $qb, array $filters): void
     {
@@ -120,6 +120,11 @@ final readonly class DoctrineArticleRepository implements ArticleRepositoryInter
         if (isset($filters['isRead'])) {
             $qb->andWhere('a.isRead = :isRead')
                 ->setParameter('isRead', $filters['isRead']);
+        }
+
+        if (isset($filters['search']) && $filters['search'] !== '') {
+            $qb->andWhere('(LOWER(a.title) LIKE :search OR LOWER(a.summary) LIKE :search)')
+                ->setParameter('search', '%' . mb_strtolower($filters['search']) . '%');
         }
     }
 }

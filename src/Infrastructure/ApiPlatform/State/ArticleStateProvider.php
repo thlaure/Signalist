@@ -54,6 +54,7 @@ final readonly class ArticleStateProvider implements ProviderInterface
             $feedId = $request?->query->get('feedId');
             $categoryId = $request?->query->get('categoryId');
             $isReadParam = $request?->query->get('isRead');
+            $search = $request?->query->get('search');
 
             $isRead = null;
 
@@ -66,6 +67,7 @@ final readonly class ArticleStateProvider implements ProviderInterface
                 feedId: is_string($feedId) ? $feedId : null,
                 categoryId: is_string($categoryId) ? $categoryId : null,
                 isRead: $isRead,
+                search: is_string($search) ? $search : null,
             );
 
             $articles = ($this->listArticlesHandler)($query);

@@ -89,7 +89,7 @@ export default function ArticlePage() {
   }
 
   return (
-    <Box sx={{ maxWidth: 800, mx: 'auto' }}>
+    <Box sx={{ maxWidth: 800, mx: 'auto', px: { xs: 1, sm: 2, md: 0 } }}>
       {/* Back button */}
       <Button
         startIcon={<ArrowBackIcon />}
@@ -116,7 +116,7 @@ export default function ArticlePage() {
       )}
 
       {/* Title */}
-      <Typography variant="h4" fontWeight="bold" gutterBottom>
+      <Typography variant="h4" fontWeight="bold" gutterBottom sx={{ fontSize: { xs: '1.5rem', sm: '2.125rem' } }}>
         {article.title}
       </Typography>
 

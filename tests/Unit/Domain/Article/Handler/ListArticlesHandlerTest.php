@@ -109,4 +109,21 @@ final class ListArticlesHandlerTest extends TestCase
 
         $this->assertCount(0, $result);
     }
+
+    public function testInvokeWithSearchFilterPassesSearchToRepository(): void
+    {
+        $articles = [$this->createMock(Article::class)];
+
+        $this->articleRepository
+            ->expects($this->once())
+            ->method('findAll')
+            ->with(['ownerId' => $this->ownerId, 'search' => 'css grid'])
+            ->willReturn($articles);
+
+        $query = new ListArticlesQuery(ownerId: $this->ownerId, search: 'css grid');
+
+        $result = ($this->handler)($query);
+
+        $this->assertCount(1, $result);
+    }
 }

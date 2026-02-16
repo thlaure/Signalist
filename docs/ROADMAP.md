@@ -67,7 +67,7 @@
 | `ListArticlesQuery` + `ListArticlesHandler` | Done |
 | `ArticleRepositoryInterface` port | Done |
 | `ArticleNotFoundException` | Done |
-| Article input DTOs | Not Started |
+| Article input DTOs | Done (N/A — articles are created via RSS crawl, not user input) |
 | Article output DTO | Done |
 
 #### Bookmark Domain
@@ -182,10 +182,10 @@
 | `useBookmarks` hook | Done |
 | API modules (articles, categories, feeds, bookmarks) | Done |
 | TypeScript types for API models | Done |
-| Full-text search UI | Not Started |
+| Full-text search UI | Done |
 | Article detail view / reader | Done |
 | Feed management page (edit, pause, delete) | Done |
-| Responsive design polish | Not Started |
+| Responsive design polish | Done |
 
 ### 1.7 DevOps & Tooling
 
@@ -245,8 +245,8 @@
 | `ArticleOutputTest` | Done |
 | `BookmarkOutputTest` | Done |
 | GrumPHP: phpunit + behat + rector tasks | Done |
-| Integration tests (Doctrine repositories) | Not Started |
-| Frontend component tests (Vitest) | Not Started |
+| Integration tests (Doctrine repositories) | Done |
+| Frontend component tests (Vitest) | Done |
 
 ### 1.9 Data Fixtures
 
@@ -257,7 +257,7 @@
 | `ArticleFixture` | Done |
 | `BookmarkFixture` | Done |
 | `UserFixture` | Done |
-| Seed data population (realistic content) | Not Started |
+| Seed data population (realistic content) | Done |
 
 ---
 
@@ -471,5 +471,5 @@
 | `docs/TESTING-GUIDE.md` | Done |
 | `docs/ROADMAP.md` (this file) | Done |
 | AI agent definitions (`.ai-agents/`) | Done |
-| API documentation (OpenAPI / Swagger) | Not Started |
-| Architecture decision records (ADRs) | Not Started |
+| API documentation (OpenAPI / Swagger) | Done |
+| Architecture decision records (ADRs) | Done |

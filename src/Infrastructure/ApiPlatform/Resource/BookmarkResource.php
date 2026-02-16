@@ -18,19 +18,23 @@ use App\Infrastructure\ApiPlatform\State\BookmarkStateProvider;
     operations: [
         new GetCollection(
             uriTemplate: '/bookmarks',
+            description: 'List all bookmarks for the authenticated user, ordered by creation date.',
             provider: BookmarkStateProvider::class,
         ),
         new Get(
             uriTemplate: '/bookmarks/{id}',
+            description: 'Retrieve a single bookmark with its associated article details.',
             provider: BookmarkStateProvider::class,
         ),
         new Post(
             uriTemplate: '/bookmarks',
+            description: 'Bookmark an article. Each article can only be bookmarked once.',
             input: CreateBookmarkInput::class,
             processor: BookmarkStateProcessor::class,
         ),
         new Delete(
             uriTemplate: '/bookmarks/{id}',
+            description: 'Remove a bookmark. The article itself is not affected.',
             provider: BookmarkStateProvider::class,
             processor: BookmarkStateProcessor::class,
         ),

@@ -24,6 +24,10 @@ final readonly class MarkArticleReadHandler
             throw new ArticleNotFoundException($command->id);
         }
 
+        if ($article->getFeed()->getOwner()->getId()->toRfc4122() !== $command->ownerId) {
+            throw new ArticleNotFoundException($command->id);
+        }
+
         $article->setIsRead($command->isRead);
 
         $this->articleRepository->save($article);

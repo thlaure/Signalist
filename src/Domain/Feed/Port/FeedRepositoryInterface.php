@@ -14,13 +14,13 @@ interface FeedRepositoryInterface
 
     public function find(string $id): ?Feed;
 
-    public function findByUrl(string $url): ?Feed;
+    public function findByUrlAndOwner(string $url, string $ownerId): ?Feed;
 
     /** @return Feed[] */
-    public function findAll(): array;
+    public function findAllByOwner(string $ownerId): array;
 
     /** @return Feed[] */
-    public function findByCategory(string $categoryId): array;
+    public function findByCategoryAndOwner(string $categoryId, string $ownerId): array;
 
     /** @return Feed[] */
     public function findActiveFeedsForCrawling(): array;

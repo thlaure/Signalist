@@ -6,9 +6,11 @@ namespace App\Tests\Unit\Domain\Category\Handler;
 
 use App\Domain\Category\Handler\ListCategoriesHandler;
 use App\Domain\Category\Port\CategoryRepositoryInterface;
+use App\Domain\Category\Query\ListCategoriesQuery;
 use App\Entity\Category;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Uid\Uuid;
 
 final class ListCategoriesHandlerTest extends TestCase
 {
@@ -16,10 +18,13 @@ final class ListCategoriesHandlerTest extends TestCase
 
     private ListCategoriesHandler $handler;
 
+    private string $ownerId;
+
     protected function setUp(): void
     {
         $this->categoryRepository = $this->createMock(CategoryRepositoryInterface::class);
         $this->handler = new ListCategoriesHandler($this->categoryRepository);
+        $this->ownerId = Uuid::v7()->toRfc4122();
     }
 
     public function testInvokeReturnsAllCategories(): void
@@ -30,10 +35,11 @@ final class ListCategoriesHandlerTest extends TestCase
         ];
 
         $this->categoryRepository
-            ->method('findAll')
+            ->method('findAllByOwner')
+            ->with($this->ownerId)
             ->willReturn($categories);
 
-        $result = ($this->handler)();
+        $result = ($this->handler)(new ListCategoriesQuery($this->ownerId));
 
         $this->assertCount(2, $result);
         $this->assertSame($categories, $result);
@@ -42,10 +48,11 @@ final class ListCategoriesHandlerTest extends TestCase
     public function testInvokeNoCategoriesExistReturnsEmptyArray(): void
     {
         $this->categoryRepository
-            ->method('findAll')
+            ->method('findAllByOwner')
+            ->with($this->ownerId)
             ->willReturn([]);
 
-        $result = ($this->handler)();
+        $result = ($this->handler)(new ListCategoriesQuery($this->ownerId));
 
         $this->assertSame([], $result);
     }

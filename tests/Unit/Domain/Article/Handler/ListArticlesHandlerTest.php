@@ -18,10 +18,13 @@ final class ListArticlesHandlerTest extends TestCase
 
     private ListArticlesHandler $handler;
 
+    private string $ownerId;
+
     protected function setUp(): void
     {
         $this->articleRepository = $this->createMock(ArticleRepositoryInterface::class);
         $this->handler = new ListArticlesHandler($this->articleRepository);
+        $this->ownerId = Uuid::v7()->toRfc4122();
     }
 
     public function testInvokeWithNoFiltersReturnsAllArticles(): void
@@ -34,10 +37,10 @@ final class ListArticlesHandlerTest extends TestCase
         $this->articleRepository
             ->expects($this->once())
             ->method('findAll')
-            ->with([])
+            ->with(['ownerId' => $this->ownerId])
             ->willReturn($articles);
 
-        $query = new ListArticlesQuery();
+        $query = new ListArticlesQuery(ownerId: $this->ownerId);
 
         $result = ($this->handler)($query);
 
@@ -52,10 +55,10 @@ final class ListArticlesHandlerTest extends TestCase
         $this->articleRepository
             ->expects($this->once())
             ->method('findAll')
-            ->with(['feedId' => $feedId])
+            ->with(['ownerId' => $this->ownerId, 'feedId' => $feedId])
             ->willReturn($articles);
 
-        $query = new ListArticlesQuery(feedId: $feedId);
+        $query = new ListArticlesQuery(ownerId: $this->ownerId, feedId: $feedId);
 
         $result = ($this->handler)($query);
 
@@ -69,10 +72,10 @@ final class ListArticlesHandlerTest extends TestCase
         $this->articleRepository
             ->expects($this->once())
             ->method('findAll')
-            ->with(['isRead' => false])
+            ->with(['ownerId' => $this->ownerId, 'isRead' => false])
             ->willReturn($articles);
 
-        $query = new ListArticlesQuery(isRead: false);
+        $query = new ListArticlesQuery(ownerId: $this->ownerId, isRead: false);
 
         $result = ($this->handler)($query);
 
@@ -88,6 +91,7 @@ final class ListArticlesHandlerTest extends TestCase
             ->expects($this->once())
             ->method('findAll')
             ->with([
+                'ownerId' => $this->ownerId,
                 'feedId' => $feedId,
                 'categoryId' => $categoryId,
                 'isRead' => true,
@@ -95,6 +99,7 @@ final class ListArticlesHandlerTest extends TestCase
             ->willReturn([]);
 
         $query = new ListArticlesQuery(
+            ownerId: $this->ownerId,
             feedId: $feedId,
             categoryId: $categoryId,
             isRead: true,
@@ -103,5 +108,22 @@ final class ListArticlesHandlerTest extends TestCase
         $result = ($this->handler)($query);
 
         $this->assertCount(0, $result);
+    }
+
+    public function testInvokeWithSearchFilterPassesSearchToRepository(): void
+    {
+        $articles = [$this->createMock(Article::class)];
+
+        $this->articleRepository
+            ->expects($this->once())
+            ->method('findAll')
+            ->with(['ownerId' => $this->ownerId, 'search' => 'css grid'])
+            ->willReturn($articles);
+
+        $query = new ListArticlesQuery(ownerId: $this->ownerId, search: 'css grid');
+
+        $result = ($this->handler)($query);
+
+        $this->assertCount(1, $result);
     }
 }

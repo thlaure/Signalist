@@ -28,6 +28,10 @@ final readonly class CreateBookmarkHandler
             throw new ArticleNotFoundException($command->articleId);
         }
 
+        if ($article->getFeed()->getOwner()->getId()->toRfc4122() !== $command->ownerId) {
+            throw new ArticleNotFoundException($command->articleId);
+        }
+
         $existingBookmark = $this->bookmarkRepository->findByArticle($command->articleId);
 
         if ($existingBookmark instanceof Bookmark) {

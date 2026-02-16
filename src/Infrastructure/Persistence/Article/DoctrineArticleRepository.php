@@ -33,7 +33,7 @@ final readonly class DoctrineArticleRepository implements ArticleRepositoryInter
     }
 
     /**
-     * @param array{feedId?: string, categoryId?: string, isRead?: bool} $filters
+     * @param array{feedId?: string, categoryId?: string, isRead?: bool, ownerId?: string} $filters
      *
      * @return Article[]
      */
@@ -74,21 +74,39 @@ final readonly class DoctrineArticleRepository implements ArticleRepositoryInter
     /**
      * @return Article[]
      */
-    public function findUnread(): array
+    public function findUnreadByOwner(string $ownerId): array
     {
-        return $this->entityManager
-            ->getRepository(Article::class)
-            ->findBy(
-                ['isRead' => false],
-                ['publishedAt' => 'DESC', 'createdAt' => 'DESC'],
-            );
+        if (!Uuid::isValid($ownerId)) {
+            return [];
+        }
+
+        /** @var Article[] $result */
+        $result = $this->entityManager->createQueryBuilder()
+            ->select('a')
+            ->from(Article::class, 'a')
+            ->join('a.feed', 'f')
+            ->where('f.owner = :ownerId')
+            ->andWhere('a.isRead = :isRead')
+            ->setParameter('ownerId', Uuid::fromString($ownerId))
+            ->setParameter('isRead', false)
+            ->orderBy('a.publishedAt', 'DESC')
+            ->addOrderBy('a.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+
+        return $result;
     }
 
     /**
-     * @param array{feedId?: string, categoryId?: string, isRead?: bool} $filters
+     * @param array{feedId?: string, categoryId?: string, isRead?: bool, ownerId?: string, search?: string} $filters
      */
     private function applyFilters(QueryBuilder $qb, array $filters): void
     {
+        if (isset($filters['ownerId']) && Uuid::isValid($filters['ownerId'])) {
+            $qb->andWhere('f.owner = :ownerId')
+                ->setParameter('ownerId', Uuid::fromString($filters['ownerId']));
+        }
+
         if (isset($filters['feedId']) && Uuid::isValid($filters['feedId'])) {
             $qb->andWhere('a.feed = :feedId')
                 ->setParameter('feedId', Uuid::fromString($filters['feedId']));
@@ -102,6 +120,11 @@ final readonly class DoctrineArticleRepository implements ArticleRepositoryInter
         if (isset($filters['isRead'])) {
             $qb->andWhere('a.isRead = :isRead')
                 ->setParameter('isRead', $filters['isRead']);
+        }
+
+        if (isset($filters['search']) && $filters['search'] !== '') {
+            $qb->andWhere('(LOWER(a.title) LIKE :search OR LOWER(a.summary) LIKE :search)')
+                ->setParameter('search', '%' . mb_strtolower($filters['search']) . '%');
         }
     }
 }

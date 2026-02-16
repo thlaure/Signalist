@@ -37,32 +37,40 @@ final readonly class DoctrineFeedRepository implements FeedRepositoryInterface
         return $this->entityManager->find(Feed::class, Uuid::fromString($id));
     }
 
-    public function findByUrl(string $url): ?Feed
+    public function findByUrlAndOwner(string $url, string $ownerId): ?Feed
     {
+        if (!Uuid::isValid($ownerId)) {
+            return null;
+        }
+
         return $this->entityManager
             ->getRepository(Feed::class)
-            ->findOneBy(['url' => $url]);
+            ->findOneBy(['url' => $url, 'owner' => Uuid::fromString($ownerId)]);
     }
 
     /** @return Feed[] */
-    public function findAll(): array
+    public function findAllByOwner(string $ownerId): array
     {
+        if (!Uuid::isValid($ownerId)) {
+            return [];
+        }
+
         return $this->entityManager
             ->getRepository(Feed::class)
-            ->findBy([], ['title' => 'ASC']);
+            ->findBy(['owner' => Uuid::fromString($ownerId)], ['title' => 'ASC']);
     }
 
     /** @return Feed[] */
-    public function findByCategory(string $categoryId): array
+    public function findByCategoryAndOwner(string $categoryId, string $ownerId): array
     {
-        if (!Uuid::isValid($categoryId)) {
+        if (!Uuid::isValid($categoryId) || !Uuid::isValid($ownerId)) {
             return [];
         }
 
         return $this->entityManager
             ->getRepository(Feed::class)
             ->findBy(
-                ['category' => Uuid::fromString($categoryId)],
+                ['category' => Uuid::fromString($categoryId), 'owner' => Uuid::fromString($ownerId)],
                 ['title' => 'ASC'],
             );
     }

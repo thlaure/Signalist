@@ -15,6 +15,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ArticleList from '../components/Article/ArticleList';
+import SearchBar from '../components/Article/SearchBar';
 import AddFeedDialog from '../components/Feed/AddFeedDialog';
 import CategoryDialog from '../components/Category/CategoryDialog';
 import LoadingSpinner from '../components/Common/LoadingSpinner';
@@ -37,6 +38,7 @@ export default function CategoryPage() {
   const [addFeedOpen, setAddFeedOpen] = useState(false);
   const [editCategoryOpen, setEditCategoryOpen] = useState(false);
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
+  const [search, setSearch] = useState('');
 
   const {
     data: category,
@@ -54,7 +56,7 @@ export default function CategoryPage() {
     isError: articlesError,
     error: articlesErrorData,
     refetch: refetchArticles,
-  } = useArticles({ categoryId: id });
+  } = useArticles({ categoryId: id, ...(search ? { search } : {}) });
 
   const { data: feeds = [] } = useFeeds({ categoryId: id });
   const { data: bookmarks } = useBookmarks();
@@ -214,6 +216,10 @@ export default function CategoryPage() {
             </MenuItem>
           </Menu>
         </Box>
+      </Box>
+
+      <Box mb={2}>
+        <SearchBar value={search} onChange={setSearch} />
       </Box>
 
       <ArticleList

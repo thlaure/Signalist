@@ -12,6 +12,8 @@ use App\Domain\Bookmark\Handler\CreateBookmarkHandler;
 use App\Domain\Bookmark\Port\BookmarkRepositoryInterface;
 use App\Entity\Article;
 use App\Entity\Bookmark;
+use App\Entity\Feed;
+use App\Entity\User;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Uid\Uuid;
@@ -24,10 +26,13 @@ final class CreateBookmarkHandlerTest extends TestCase
 
     private CreateBookmarkHandler $handler;
 
+    private string $ownerId;
+
     protected function setUp(): void
     {
         $this->bookmarkRepository = $this->createMock(BookmarkRepositoryInterface::class);
         $this->articleRepository = $this->createMock(ArticleRepositoryInterface::class);
+        $this->ownerId = Uuid::v7()->toRfc4122();
 
         $this->handler = new CreateBookmarkHandler(
             $this->bookmarkRepository,
@@ -35,10 +40,22 @@ final class CreateBookmarkHandlerTest extends TestCase
         );
     }
 
+    private function createArticleWithOwner(string $ownerIdString): Article&MockObject
+    {
+        $article = $this->createMock(Article::class);
+        $owner = $this->createMock(User::class);
+        $owner->method('getId')->willReturn(Uuid::fromString($ownerIdString));
+        $feed = $this->createMock(Feed::class);
+        $feed->method('getOwner')->willReturn($owner);
+        $article->method('getFeed')->willReturn($feed);
+
+        return $article;
+    }
+
     public function testInvokeWithValidArticleCreatesBookmark(): void
     {
         $articleId = Uuid::v7()->toRfc4122();
-        $article = $this->createMock(Article::class);
+        $article = $this->createArticleWithOwner($this->ownerId);
 
         $this->articleRepository
             ->expects($this->once())
@@ -59,6 +76,7 @@ final class CreateBookmarkHandlerTest extends TestCase
 
         $command = new CreateBookmarkCommand(
             articleId: $articleId,
+            ownerId: $this->ownerId,
             notes: 'My notes',
         );
 
@@ -79,15 +97,27 @@ final class CreateBookmarkHandlerTest extends TestCase
 
         $this->expectException(ArticleNotFoundException::class);
 
-        $command = new CreateBookmarkCommand(articleId: $articleId);
+        $command = new CreateBookmarkCommand(articleId: $articleId, ownerId: $this->ownerId);
 
         ($this->handler)($command);
+    }
+
+    public function testInvokeWithArticleOwnedByDifferentUserThrowsException(): void
+    {
+        $articleId = Uuid::v7()->toRfc4122();
+        $article = $this->createArticleWithOwner(Uuid::v7()->toRfc4122());
+
+        $this->articleRepository->method('find')->willReturn($article);
+
+        $this->expectException(ArticleNotFoundException::class);
+
+        ($this->handler)(new CreateBookmarkCommand(articleId: $articleId, ownerId: $this->ownerId));
     }
 
     public function testInvokeWithAlreadyBookmarkedArticleThrowsException(): void
     {
         $articleId = Uuid::v7()->toRfc4122();
-        $article = $this->createMock(Article::class);
+        $article = $this->createArticleWithOwner($this->ownerId);
         $existingBookmark = $this->createMock(Bookmark::class);
 
         $this->articleRepository
@@ -104,7 +134,7 @@ final class CreateBookmarkHandlerTest extends TestCase
 
         $this->expectException(ArticleAlreadyBookmarkedException::class);
 
-        $command = new CreateBookmarkCommand(articleId: $articleId);
+        $command = new CreateBookmarkCommand(articleId: $articleId, ownerId: $this->ownerId);
 
         ($this->handler)($command);
     }

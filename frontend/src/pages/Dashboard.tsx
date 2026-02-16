@@ -6,6 +6,7 @@ import Grid from '@mui/material/Grid';
 import AddIcon from '@mui/icons-material/Add';
 import RssFeedIcon from '@mui/icons-material/RssFeed';
 import ArticleList from '../components/Article/ArticleList';
+import SearchBar from '../components/Article/SearchBar';
 import AddFeedDialog from '../components/Feed/AddFeedDialog';
 import CategoryDialog from '../components/Category/CategoryDialog';
 import { useArticles, useMarkArticleRead, useMarkArticleUnread } from '../hooks/useArticles';
@@ -17,6 +18,7 @@ import type { CreateCategoryInput, AddFeedInput } from '../types';
 export default function Dashboard() {
   const [addFeedOpen, setAddFeedOpen] = useState(false);
   const [addCategoryOpen, setAddCategoryOpen] = useState(false);
+  const [search, setSearch] = useState('');
 
   const {
     data: articles,
@@ -24,7 +26,7 @@ export default function Dashboard() {
     isError: articlesError,
     error: articlesErrorData,
     refetch: refetchArticles,
-  } = useArticles();
+  } = useArticles(search ? { search } : undefined);
 
   const { data: categories = [] } = useCategories();
   const { data: feeds = [] } = useFeeds();
@@ -75,7 +77,9 @@ export default function Dashboard() {
       <Box
         display="flex"
         justifyContent="space-between"
-        alignItems="center"
+        alignItems={{ xs: 'flex-start', sm: 'center' }}
+        flexDirection={{ xs: 'column', sm: 'row' }}
+        gap={2}
         mb={3}
       >
         <Box>
@@ -86,7 +90,7 @@ export default function Dashboard() {
             {unreadCount} unread article{unreadCount !== 1 ? 's' : ''}
           </Typography>
         </Box>
-        <Box display="flex" gap={1}>
+        <Box display="flex" gap={1} flexWrap="wrap">
           <Button
             variant="outlined"
             startIcon={<AddIcon />}
@@ -122,20 +126,25 @@ export default function Dashboard() {
           </Button>
         </Box>
       ) : (
-        <Grid container spacing={3}>
-          <Grid size={12}>
-            <ArticleList
-              articles={articles}
-              bookmarks={bookmarks}
-              isLoading={articlesLoading}
-              isError={articlesError}
-              error={articlesErrorData}
-              onRefetch={refetchArticles}
-              onToggleRead={handleToggleRead}
-              onToggleBookmark={handleToggleBookmark}
-            />
+        <>
+          <Box mb={2}>
+            <SearchBar value={search} onChange={setSearch} />
+          </Box>
+          <Grid container spacing={3}>
+            <Grid size={12}>
+              <ArticleList
+                articles={articles}
+                bookmarks={bookmarks}
+                isLoading={articlesLoading}
+                isError={articlesError}
+                error={articlesErrorData}
+                onRefetch={refetchArticles}
+                onToggleRead={handleToggleRead}
+                onToggleBookmark={handleToggleBookmark}
+              />
+            </Grid>
           </Grid>
-        </Grid>
+        </>
       )}
 
       <AddFeedDialog

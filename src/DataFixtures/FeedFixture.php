@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\DataFixtures;
 
 use App\Entity\Feed;
+use App\Entity\User;
 use DateTimeImmutable;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
@@ -56,10 +57,41 @@ final class FeedFixture extends Fixture implements OrderedFixtureInterface
             'lastFetchedAt' => '-1 day',
             'lastError' => 'Connection timeout after 30s',
         ],
+        'openai-blog' => [
+            'title' => 'OpenAI Blog',
+            'url' => 'https://openai.com/blog/rss/',
+            'status' => Feed::STATUS_ACTIVE,
+            'category' => 'category-ai',
+            'lastFetchedAt' => '-3 hours',
+        ],
+        'huggingface' => [
+            'title' => 'Hugging Face Blog',
+            'url' => 'https://huggingface.co/blog/feed.xml',
+            'status' => Feed::STATUS_ACTIVE,
+            'category' => 'category-ai',
+            'lastFetchedAt' => '-6 hours',
+        ],
+        'cal-newport' => [
+            'title' => 'Cal Newport',
+            'url' => 'https://calnewport.com/feed/',
+            'status' => Feed::STATUS_ACTIVE,
+            'category' => 'category-productivity',
+            'lastFetchedAt' => '-2 days',
+        ],
+        'ness-labs' => [
+            'title' => 'Ness Labs',
+            'url' => 'https://nesslabs.com/feed',
+            'status' => Feed::STATUS_ACTIVE,
+            'category' => 'category-productivity',
+            'lastFetchedAt' => '-8 hours',
+        ],
     ];
 
     public function load(ObjectManager $manager): void
     {
+        /** @var User $admin */
+        $admin = $this->getReference('user-admin', User::class);
+
         foreach (self::FEEDS as $key => $data) {
             $feed = new Feed();
             $feed->setTitle($data['title']);
@@ -67,6 +99,7 @@ final class FeedFixture extends Fixture implements OrderedFixtureInterface
             $feed->setStatus($data['status']);
             $feed->setCategory($this->getReference($data['category'], \App\Entity\Category::class));
             $feed->setLastFetchedAt(new DateTimeImmutable($data['lastFetchedAt']));
+            $feed->setOwner($admin);
 
             if (isset($data['lastError'])) {
                 $feed->setLastError($data['lastError']);

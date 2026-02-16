@@ -8,6 +8,7 @@ final readonly class CreateBookmarkCommand
 {
     public function __construct(
         public string $articleId,
+        public string $ownerId,
         public ?string $notes = null,
     ) {
     }

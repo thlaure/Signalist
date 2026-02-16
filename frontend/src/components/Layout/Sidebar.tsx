@@ -9,6 +9,7 @@ import ListItemText from '@mui/material/ListItemText';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
+import Avatar from '@mui/material/Avatar';
 import HomeIcon from '@mui/icons-material/Home';
 import RssFeedIcon from '@mui/icons-material/RssFeed';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
@@ -16,7 +17,19 @@ import FolderIcon from '@mui/icons-material/Folder';
 import CircleIcon from '@mui/icons-material/Circle';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import LogoutIcon from '@mui/icons-material/Logout';
 import { useCategories } from '../../hooks/useCategories';
+import { useAuth } from '../../hooks/useAuth';
+
+function getUserEmail(token: string | null): string | null {
+  if (!token) return null;
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return payload.username ?? payload.email ?? null;
+  } catch {
+    return null;
+  }
+}
 
 interface SidebarProps {
   drawerWidth: number;
@@ -38,6 +51,8 @@ export default function Sidebar({
   const navigate = useNavigate();
   const location = useLocation();
   const { data: categories = [] } = useCategories();
+  const { token, logout } = useAuth();
+  const email = getUserEmail(token);
 
   const handleNavigation = (path: string) => {
     navigate(path);
@@ -155,6 +170,50 @@ export default function Sidebar({
 
       {/* Spacer */}
       <Box sx={{ flexGrow: 1 }} />
+
+      {/* User section */}
+      {email && (
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1,
+            px: collapsed ? 0 : 2,
+            py: 1.5,
+            borderTop: '1px solid',
+            borderColor: 'divider',
+            justifyContent: collapsed ? 'center' : 'flex-start',
+          }}
+        >
+          <Tooltip title={collapsed ? email : ''} placement="right" arrow>
+            <Avatar sx={{ width: 32, height: 32, fontSize: 14, bgcolor: 'primary.main' }}>
+              {email[0].toUpperCase()}
+            </Avatar>
+          </Tooltip>
+          {!collapsed ? (
+            <>
+              <Typography
+                variant="body2"
+                noWrap
+                sx={{ flex: 1, minWidth: 0, color: 'text.secondary' }}
+              >
+                {email}
+              </Typography>
+              <Tooltip title="Logout" placement="top" arrow>
+                <IconButton size="small" onClick={logout}>
+                  <LogoutIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            </>
+          ) : (
+            <Tooltip title="Logout" placement="right" arrow>
+              <IconButton size="small" onClick={logout}>
+                <LogoutIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          )}
+        </Box>
+      )}
 
       {/* Collapse toggle */}
       <Box

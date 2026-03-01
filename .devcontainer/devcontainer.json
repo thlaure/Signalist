@@ -1,0 +1,66 @@
+{
+    "name": "Signalist",
+
+    // Reuse the existing docker-compose stack
+    "dockerComposeFile": "../docker-compose.yml",
+    "service": "app",
+    "workspaceFolder": "/app",
+
+    // Keep FrankenPHP running (do not replace CMD with sleep)
+    "overrideCommand": false,
+
+    // Add Node.js (LTS) into the app container for frontend tooling
+    "features": {
+        "ghcr.io/devcontainers/features/node:1": {
+            "version": "lts"
+        }
+    },
+
+    // Forward the ports you'll actually use during dev
+    "forwardPorts": [8000, 4443, 5173, 5432, 6379, 8025],
+    "portsAttributes": {
+        "8000": { "label": "FrankenPHP HTTP",    "onAutoForward": "notify" },
+        "4443": { "label": "FrankenPHP HTTPS",   "onAutoForward": "silent" },
+        "5173": { "label": "Vite Dev Server",    "onAutoForward": "notify" },
+        "5432": { "label": "PostgreSQL",          "onAutoForward": "silent" },
+        "6379": { "label": "Redis",               "onAutoForward": "silent" },
+        "8025": { "label": "Mailpit UI",          "onAutoForward": "notify" }
+    },
+
+    // Initial setup after container creation
+    "postCreateCommand": "composer install --no-interaction && cd frontend && npm install",
+
+    // Stop the whole compose stack when the devcontainer window is closed
+    "shutdownAction": "stopCompose",
+
+    "customizations": {
+        "vscode": {
+            "extensions": [
+            ],
+            "settings": {
+                // PHP
+                "php.validate.executablePath": "/usr/local/bin/php",
+                "intelephense.environment.phpVersion": "8.5",
+                "intelephense.files.maxSize": 5000000,
+                "[php]": {
+                    "editor.defaultFormatter": "junstyle.php-cs-fixer",
+                    "editor.formatOnSave": true
+                },
+                // TypeScript / React
+                "[typescript]": {
+                    "editor.defaultFormatter": "esbenp.prettier-vscode",
+                    "editor.formatOnSave": true
+                },
+                "[typescriptreact]": {
+                    "editor.defaultFormatter": "esbenp.prettier-vscode",
+                    "editor.formatOnSave": true
+                },
+                // Global
+                "editor.formatOnSave": true,
+                "editor.rulers": [120],
+                "files.eol": "\n",
+                "files.insertFinalNewline": true
+            }
+        }
+    }
+}

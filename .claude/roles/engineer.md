@@ -8,9 +8,9 @@
 ## Prerequisites
 
 Before starting any task:
-1. Read `shared/architecture.md` for CQRS and API Platform patterns
-2. Read `shared/conventions.md` for naming rules
-3. Read relevant `domains/{domain}/context.md`
+1. Read `.claude/shared/architecture.md` for CQRS and API Platform patterns
+2. Read `.claude/shared/conventions.md` for naming rules
+3. Read relevant `.claude/domains/{domain}/context.md`
 4. Check existing code in `src/Domain/{Domain}/` for style matching
 
 ---

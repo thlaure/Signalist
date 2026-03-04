@@ -8,7 +8,7 @@
 ## Prerequisites
 
 Before creating content:
-1. Read `shared/boundaries.md` for what you cannot do
+1. Read `.claude/shared/boundaries.md` for what you cannot do
 2. **Read `/docs/MARKETING-STRATEGY.md`** for pricing, communication roadmap, and templates
 3. Consult `@engineer` to verify technical claims
 4. Check current product roadmap

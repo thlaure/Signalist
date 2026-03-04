@@ -54,7 +54,7 @@ Use this template to ask the user:
 
 ### Read Domain Context
 ```
-.ai-agents/domains/{relevant-domain}/context.md
+.claude/domains/{relevant-domain}/context.md
 ```
 
 ### Check Existing Code

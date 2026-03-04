@@ -8,8 +8,8 @@
 ## Prerequisites
 
 Before starting any task:
-1. Read `shared/conventions.md` for naming rules
-2. Read `shared/boundaries.md` for what you can/cannot do
+1. Read `.claude/shared/conventions.md` for naming rules
+2. Read `.claude/shared/boundaries.md` for what you can/cannot do
 3. Check existing components in `frontend/src/components/`
 4. Verify API contracts with @engineer if needed
 

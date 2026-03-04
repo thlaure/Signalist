@@ -8,7 +8,7 @@
 ## Prerequisites
 
 Before starting any task:
-1. Read `shared/boundaries.md` for approval requirements
+1. Read `.claude/shared/boundaries.md` for approval requirements
 2. Check current Docker Compose configuration
 3. Review existing migrations in `migrations/`
 4. Understand current CI/CD pipeline

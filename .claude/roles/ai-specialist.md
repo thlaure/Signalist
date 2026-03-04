@@ -8,9 +8,9 @@
 ## Prerequisites
 
 Before starting any task:
-1. Read `shared/architecture.md` for async patterns
-2. Read `domains/search/context.md` for vector search specifics
-3. Read `domains/newsletter/context.md` for LLM synthesis
+1. Read `.claude/shared/architecture.md` for async patterns
+2. Read `.claude/domains/search/context.md` for vector search specifics
+3. Read `.claude/domains/newsletter/context.md` for LLM synthesis
 4. Check existing AI code in `src/Infrastructure/AI/`
 
 ---

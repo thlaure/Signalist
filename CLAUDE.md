@@ -584,15 +584,18 @@ Message → Handler → External API/AI → Repository update
 
 # 12. Agents
 
-This project uses specialized agents defined in `.ai-agents/`:
+This project uses specialized agents defined in `.claude/`:
 
 | Agent | File | Purpose |
 |-------|------|---------|
-| `@signalist-engineer` | `engineering.md` | Backend development, CQRS, Symfony |
-| `@signalist-frontend` | `frontend.md` | React, TypeScript, MUI components |
-| `@signalist-ai` | `ai-integration.md` | Symfony AI, MCP, embeddings |
-| `@signalist-infra` | `infrastructure.md` | Docker, PostgreSQL, Redis |
-| `@signalist-marketer` | `marketing.md` | Content, growth, positioning |
+| `@engineer` | `.claude/roles/engineer.md` | Backend development, CQRS, Symfony |
+| `@frontend` | `.claude/roles/frontend.md` | React, TypeScript, MUI components |
+| `@ai-specialist` | `.claude/roles/ai-specialist.md` | Symfony AI, MCP, embeddings |
+| `@infra` | `.claude/roles/infra.md` | Docker, PostgreSQL, Redis |
+| `@reviewer` | `.claude/roles/reviewer.md` | Code quality, security, architecture |
+| `@marketer` | `.claude/roles/marketer.md` | Content, growth, positioning |
+
+See `.claude/AGENTS.md` for routing, coordination protocol, and domain contexts.
 
 ## 12.1 Marketing Resources
 

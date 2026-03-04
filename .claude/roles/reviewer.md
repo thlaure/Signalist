@@ -8,9 +8,9 @@
 ## Prerequisites
 
 Before reviewing:
-1. Read `shared/architecture.md` for expected patterns
-2. Read `shared/conventions.md` for naming/style rules
-3. Read `shared/boundaries.md` for role restrictions
+1. Read `.claude/shared/architecture.md` for expected patterns
+2. Read `.claude/shared/conventions.md` for naming/style rules
+3. Read `.claude/shared/boundaries.md` for role restrictions
 4. Understand the feature context from domain files
 
 ---

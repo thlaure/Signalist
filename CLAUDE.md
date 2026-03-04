@@ -196,6 +196,7 @@ When working on this project, the agent MUST:
 - Ensure AI summaries retain source URLs (factual integrity)
 - Use Conventional Commits for git messages
 - After implementing a feature that passes `make quality` and tests, update `docs/ROADMAP.md` to mark the corresponding task(s) as `Done`
+- **Document every new route** directly in its controller file using the `#[ApiDoc]` attribute (see `src/Attribute/ApiDoc.php`) above the `#[Route]` attribute: method, path, auth requirement, request body fields, and response status codes
 
 ## 6.2 ASK FIRST
 - Adding new composer/npm packages
@@ -501,7 +502,7 @@ final readonly class AddFeedHandler
 
 ### 10.4 Controller
 ```php
-#[Route('/api/v1/feeds', methods: ['POST'])]
+#[Route('/api/v1/feeds', methods: [Request::METHOD_POST])]
 final readonly class AddFeedController
 {
     public function __construct(

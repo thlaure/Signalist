@@ -8,6 +8,7 @@ use App\Domain\Auth\Command\RegisterCommand;
 use App\Domain\Auth\DTO\Input\RegisterInput;
 use App\Domain\Auth\Handler\RegisterHandler;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
@@ -19,7 +20,7 @@ final readonly class RegisterController
     ) {
     }
 
-    #[Route('/api/v1/auth/register', methods: ['POST'])]
+    #[Route('/api/v1/auth/register', methods: [Request::METHOD_POST])]
     public function __invoke(#[MapRequestPayload] RegisterInput $input): JsonResponse
     {
         $id = ($this->handler)(new RegisterCommand(

@@ -52,6 +52,7 @@ Before starting any task:
 - [ ] Write unit tests for processors/providers
 - [ ] Write API tests using API Platform test client
 - [ ] Run `make lint && make analyse && make tests`
+- [ ] Document every new route in its controller file using the `#[ApiDoc]` attribute (see `src/Attribute/ApiDoc.php`) above the `#[Route]` attribute
 
 ### New Custom Endpoint (CQRS)
 
@@ -65,6 +66,7 @@ Before starting any task:
 - [ ] Write unit tests for handler
 - [ ] Write web tests for endpoint
 - [ ] Run `make lint && make analyse && make tests`
+- [ ] Document every new route in its controller file using the `#[ApiDoc]` attribute (see `src/Attribute/ApiDoc.php`) above the `#[Route]` attribute
 
 ### New Domain
 
@@ -220,15 +222,33 @@ declare(strict_types=1);
 
 namespace App\UI\Controller\{Domain};
 
+use App\Attribute\ApiDoc;
 use App\Domain\{Domain}\Command\{Verb}{Noun}Command;
 use App\Domain\{Domain}\DTO\Input\{Verb}{Noun}Input;
 use App\Domain\{Domain}\Handler\{Verb}{Noun}Handler;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/api/v1/{resources}', methods: ['POST'])]
+#[ApiDoc(
+    method: 'POST',
+    path: '/api/v1/{resources}',
+    description: '{Brief description of what this endpoint does}',
+    auth: true,
+    request: [
+        'param1' => 'string',
+        'param2' => 'string (UUID)',
+    ],
+    responses: [
+        201 => '{ id: string (UUID) }',
+        400 => 'Validation error',
+        401 => 'Unauthenticated',
+        422 => 'Unprocessable entity',
+    ],
+)]
+#[Route('/api/v1/{resources}', methods: [Request::METHOD_POST])]
 final readonly class {Verb}{Noun}Controller
 {
     public function __construct(

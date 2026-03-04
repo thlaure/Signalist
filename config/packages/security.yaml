@@ -28,6 +28,10 @@ security:
             pattern: ^/api/v1/auth/resend-verification$
             stateless: true
             security: false
+        api_docs:
+            pattern: ^/api/v1/docs
+            stateless: true
+            security: false
         api:
             pattern: ^/api/
             stateless: true
@@ -39,6 +43,7 @@ security:
         - { path: ^/api/v1/auth/register$, roles: PUBLIC_ACCESS }
         - { path: ^/api/v1/auth/verify-email$, roles: PUBLIC_ACCESS }
         - { path: ^/api/v1/auth/resend-verification$, roles: PUBLIC_ACCESS }
+        - { path: ^/api/v1/docs, roles: PUBLIC_ACCESS }
         - { path: ^/api/, roles: IS_AUTHENTICATED_FULLY }
 
 when@test:

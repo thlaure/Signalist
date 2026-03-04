@@ -501,7 +501,7 @@ final readonly class AddFeedHandler
 
 ### 10.4 Controller
 ```php
-#[Route('/api/v1/feeds', methods: ['POST'])]
+#[Route('/api/v1/feeds', methods: [Request::METHOD_POST])]
 final readonly class AddFeedController
 {
     public function __construct(

@@ -224,11 +224,12 @@ use App\Domain\{Domain}\Command\{Verb}{Noun}Command;
 use App\Domain\{Domain}\DTO\Input\{Verb}{Noun}Input;
 use App\Domain\{Domain}\Handler\{Verb}{Noun}Handler;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/api/v1/{resources}', methods: ['POST'])]
+#[Route('/api/v1/{resources}', methods: [Request::METHOD_POST])]
 final readonly class {Verb}{Noun}Controller
 {
     public function __construct(

@@ -1,4 +1,5 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
@@ -28,6 +29,7 @@ export default function FeedManagementPage() {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editingFeed, setEditingFeed] = useState<Feed | null>(null);
 
+  const location = useLocation();
   const { data: feeds, isLoading, isError, error, refetch } = useFeeds();
   const { data: categories = [] } = useCategories();
   const addFeed = useAddFeed();
@@ -36,13 +38,20 @@ export default function FeedManagementPage() {
 
   const feedsByCategory = useMemo(() => {
     if (!feeds) return {};
-    return feeds.reduce<Record<string, Feed[]>>((acc, feed) => {
-      const key = feed.categoryName;
-      if (!acc[key]) acc[key] = [];
-      acc[key].push(feed);
+    return feeds.reduce<Record<string, { name: string; feeds: Feed[] }>>((acc, feed) => {
+      const key = feed.categoryId;
+      if (!acc[key]) acc[key] = { name: feed.categoryName, feeds: [] };
+      acc[key].feeds.push(feed);
       return acc;
     }, {});
   }, [feeds]);
+
+  useEffect(() => {
+    if (!location.hash || isLoading) return;
+    const id = location.hash.slice(1);
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, [location.hash, isLoading, feedsByCategory]);
 
   const handleAddFeed = (data: AddFeedInput) => {
     addFeed.mutate(data, {
@@ -134,12 +143,12 @@ export default function FeedManagementPage() {
         />
       ) : (
         Object.entries(feedsByCategory)
-          .sort(([a], [b]) => a.localeCompare(b))
-          .map(([categoryName, categoryFeeds]) => (
-            <Paper key={categoryName} sx={{ mb: 3 }}>
+          .sort(([, a], [, b]) => a.name.localeCompare(b.name))
+          .map(([categoryId, { name, feeds: categoryFeeds }]) => (
+            <Paper key={categoryId} id={categoryId} sx={{ mb: 3 }}>
               <Box sx={{ px: 2, pt: 2, pb: 1 }}>
                 <Typography variant="subtitle2" color="text.secondary" textTransform="uppercase">
-                  {categoryName}
+                  {name}
                 </Typography>
               </Box>
               <List disablePadding>
@@ -153,6 +162,8 @@ export default function FeedManagementPage() {
                     }}
                   >
                     <ListItemText
+                      primaryTypographyProps={{ component: 'div' }}
+                      secondaryTypographyProps={{ component: 'div' }}
                       primary={
                         <Box display="flex" alignItems="center" gap={1}>
                           <Typography variant="subtitle1" fontWeight={500}>

@@ -8,7 +8,6 @@ import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Tooltip from '@mui/material/Tooltip';
-import DeleteIcon from '@mui/icons-material/Delete';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import LoadingSpinner from '../Common/LoadingSpinner';
@@ -93,6 +92,7 @@ export default function BookmarkList({
                 {bookmark.articleTitle}
               </Link>
             }
+            secondaryTypographyProps={{ component: 'div' }}
             secondary={
               <Box mt={0.5}>
                 <Typography variant="caption" color="text.secondary">
@@ -124,9 +124,9 @@ export default function BookmarkList({
               <IconButton
                 edge="end"
                 onClick={() => onDelete(bookmark.id)}
-                color="error"
+                color="primary"
               >
-                <DeleteIcon />
+                <BookmarkIcon />
               </IconButton>
             </Tooltip>
           </ListItemSecondaryAction>

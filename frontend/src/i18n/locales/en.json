@@ -10,7 +10,7 @@
     "never": "Never"
   },
   "nav": {
-    "dashboard": "Dashboard",
+    "feed": "Inbox",
     "feeds": "Feeds",
     "bookmarks": "Bookmarks",
     "categories": "Categories",
@@ -48,8 +48,8 @@
     "resendButton": "Resend verification email",
     "backToSignIn": "Back to sign in"
   },
-  "dashboard": {
-    "title": "Dashboard",
+  "feed": {
+    "title": "Inbox",
     "unread": "{{count}} unread",
     "addCategory": "Category",
     "addFeed": "Add Feed",

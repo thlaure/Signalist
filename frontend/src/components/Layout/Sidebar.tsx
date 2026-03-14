@@ -72,7 +72,7 @@ export default function Sidebar({
   };
 
   const navItems = [
-    { label: t('nav.dashboard'), icon: <HomeIcon />, path: '/' },
+    { label: t('nav.feed'), icon: <HomeIcon />, path: '/' },
     { label: t('nav.feeds'), icon: <RssFeedIcon />, path: '/feeds' },
     { label: t('nav.bookmarks'), icon: <BookmarkIcon />, path: '/bookmarks' },
   ];

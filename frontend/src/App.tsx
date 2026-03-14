@@ -1,7 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 import AppLayout from './components/Layout/AppLayout';
 import ProtectedRoute from './components/Auth/ProtectedRoute';
-import Dashboard from './pages/Dashboard';
+import Feed from './pages/Feed';
 import CategoryPage from './pages/CategoryPage';
 import BookmarksPage from './pages/BookmarksPage';
 import ArticlePage from './pages/ArticlePage';
@@ -20,7 +20,7 @@ function App() {
       <Route path="/verify-email" element={<VerifyEmailPage />} />
       <Route element={<ProtectedRoute />}>
         <Route element={<AppLayout />}>
-          <Route path="/" element={<Dashboard />} />
+          <Route path="/" element={<Feed />} />
           <Route path="/articles/:id" element={<ArticlePage />} />
           <Route path="/feeds" element={<FeedManagementPage />} />
           <Route path="/categories/:id" element={<CategoryPage />} />

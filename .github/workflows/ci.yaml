@@ -88,6 +88,9 @@ jobs:
       - name: Run Behat
         run: docker compose exec -T app vendor/bin/behat --no-interaction --colors
 
+      - name: Audit PHP dependencies
+        run: docker compose exec -T app composer audit
+
       - name: Run CS Fixer (dry-run)
         run: docker compose exec -T app vendor/bin/php-cs-fixer fix --dry-run --diff
 
@@ -102,6 +105,20 @@ jobs:
 
       - name: Doctrine Schema Validator
         run: docker compose exec -T app php bin/console -e test doctrine:schema:validate --skip-sync || true
+
+  secret-scan:
+    name: Secret Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Scan for secrets
+        uses: trufflesecurity/trufflehog@main
+        with:
+          extra_args: --only-verified
 
   lint:
     name: Docker Lint
@@ -156,11 +173,15 @@ jobs:
 
       - name: Type check
         if: steps.check_frontend.outputs.exists == 'true'
-        run: npm run typecheck || true
+        run: npm run typecheck
 
       - name: Lint
         if: steps.check_frontend.outputs.exists == 'true'
-        run: npm run lint || true
+        run: npm run lint
+
+      - name: Audit JS dependencies
+        if: steps.check_frontend.outputs.exists == 'true'
+        run: npm audit --audit-level=high
 
       - name: Run tests
         if: steps.check_frontend.outputs.exists == 'true'

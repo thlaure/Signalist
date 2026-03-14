@@ -1,4 +1,3 @@
-import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import ArticleCard from './ArticleCard';
 import LoadingSpinner from '../Common/LoadingSpinner';
@@ -60,18 +59,15 @@ export default function ArticleList({
 
   return (
     <Box>
-      <Grid container spacing={3}>
-        {articles.map((article) => (
-          <Grid size={{ xs: 12, sm: 6, md: 4 }} key={article.id}>
-            <ArticleCard
-              article={article}
-              isBookmarked={bookmarkedArticleIds.has(article.id)}
-              onToggleRead={onToggleRead}
-              onToggleBookmark={onToggleBookmark}
-            />
-          </Grid>
-        ))}
-      </Grid>
+      {articles.map((article) => (
+        <ArticleCard
+          key={article.id}
+          article={article}
+          isBookmarked={bookmarkedArticleIds.has(article.id)}
+          onToggleRead={onToggleRead}
+          onToggleBookmark={onToggleBookmark}
+        />
+      ))}
     </Box>
   );
 }

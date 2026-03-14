@@ -81,6 +81,9 @@ export default function ArticleCard({
             <Typography variant="overline" sx={{ color: 'text.secondary', lineHeight: 1 }}>
               {article.feedTitle}
             </Typography>
+            {isBookmarked && (
+              <BookmarkIcon sx={{ fontSize: 14, color: 'primary.main', ml: 'auto' }} />
+            )}
           </Box>
 
           <Typography

@@ -1,3 +1,13 @@
+// Pagination
+
+export interface PaginatedArticles {
+  items: Article[];
+  total: number;
+  page: number;
+  limit: number;
+  pages: number;
+}
+
 // API Response Types
 
 export interface Category {

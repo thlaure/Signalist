@@ -14,6 +14,7 @@ import RssFeedIcon from '@mui/icons-material/RssFeed';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
+import { useTranslation } from 'react-i18next';
 import AddFeedDialog from '../components/Feed/AddFeedDialog';
 import EditFeedDialog from '../components/Feed/EditFeedDialog';
 import FeedStatusChip from '../components/Feed/FeedStatusChip';
@@ -25,6 +26,7 @@ import { useCategories } from '../hooks/useCategories';
 import type { Feed, AddFeedInput, UpdateFeedInput } from '../types';
 
 export default function FeedManagementPage() {
+  const { t, i18n } = useTranslation();
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editingFeed, setEditingFeed] = useState<Feed | null>(null);
@@ -78,30 +80,33 @@ export default function FeedManagementPage() {
   };
 
   const handleDeleteFeed = (feed: Feed) => {
-    if (window.confirm(`Delete feed "${feed.title}"? This will also delete all its articles.`)) {
+    if (window.confirm(t('feeds.deleteConfirm', { title: feed.title }))) {
       deleteFeed.mutate(feed.id);
     }
   };
 
   const formatDate = (dateString: string | null) => {
-    if (!dateString) return 'Never';
-    return new Date(dateString).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
+    if (!dateString) return t('common.never');
+    return new Date(dateString).toLocaleDateString(
+      i18n.language === 'fr' ? 'fr-FR' : 'en-US',
+      {
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      }
+    );
   };
 
   if (isLoading) {
-    return <LoadingSpinner message="Loading feeds..." />;
+    return <LoadingSpinner message={t('feeds.loading')} />;
   }
 
   if (isError) {
     return (
       <ErrorAlert
-        title="Failed to load feeds"
-        message={error?.message || 'An error occurred'}
+        title={t('feeds.failedToLoad')}
+        message={error?.message || t('feeds.anErrorOccurred')}
         onRetry={refetch}
       />
     );
@@ -119,10 +124,10 @@ export default function FeedManagementPage() {
       >
         <Box>
           <Typography variant="h4" fontWeight="bold">
-            Feeds
+            {t('feeds.title')}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            {feeds?.length ?? 0} feed{feeds?.length !== 1 ? 's' : ''}
+            {t('feeds.count', { count: feeds?.length ?? 0 })}
           </Typography>
         </Box>
         <Button
@@ -131,15 +136,15 @@ export default function FeedManagementPage() {
           onClick={() => setAddDialogOpen(true)}
           disabled={categories.length === 0}
         >
-          Add Feed
+          {t('feeds.addFeed')}
         </Button>
       </Box>
 
       {!feeds || feeds.length === 0 ? (
         <EmptyState
           icon={<RssFeedIcon fontSize="inherit" />}
-          title="No feeds yet"
-          description="Add your first RSS feed to get started"
+          title={t('feeds.noFeeds')}
+          description={t('feeds.addFirst')}
         />
       ) : (
         Object.entries(feedsByCategory)
@@ -178,7 +183,7 @@ export default function FeedManagementPage() {
                             {feed.url}
                           </Typography>
                           <Typography variant="caption" color="text.secondary" component="div">
-                            Last fetched: {formatDate(feed.lastFetchedAt)}
+                            {t('feeds.lastFetched', { date: formatDate(feed.lastFetchedAt) })}
                           </Typography>
                           {feed.lastError && (
                             <Typography variant="caption" color="error" component="div">
@@ -189,12 +194,12 @@ export default function FeedManagementPage() {
                       }
                     />
                     <ListItemSecondaryAction>
-                      <Tooltip title="Edit">
+                      <Tooltip title={t('feeds.edit')}>
                         <IconButton onClick={() => handleEditFeed(feed)}>
                           <EditIcon />
                         </IconButton>
                       </Tooltip>
-                      <Tooltip title="Delete">
+                      <Tooltip title={t('feeds.delete')}>
                         <IconButton onClick={() => handleDeleteFeed(feed)} color="error">
                           <DeleteIcon />
                         </IconButton>

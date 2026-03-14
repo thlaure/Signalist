@@ -6,6 +6,7 @@ import Chip from '@mui/material/Chip';
 import Grid from '@mui/material/Grid';
 import AddIcon from '@mui/icons-material/Add';
 import RssFeedIcon from '@mui/icons-material/RssFeed';
+import { useTranslation } from 'react-i18next';
 import ArticleList from '../components/Article/ArticleList';
 import SearchBar from '../components/Article/SearchBar';
 import AddFeedDialog from '../components/Feed/AddFeedDialog';
@@ -17,10 +18,12 @@ import { useBookmarks, useCreateBookmark, useDeleteBookmark } from '../hooks/use
 import type { CreateCategoryInput, AddFeedInput } from '../types';
 
 export default function Dashboard() {
+  const { t } = useTranslation();
   const [addFeedOpen, setAddFeedOpen] = useState(false);
   const [addCategoryOpen, setAddCategoryOpen] = useState(false);
   const [search, setSearch] = useState('');
   const [unreadOnly, setUnreadOnly] = useState(false);
+  const [page, setPage] = useState(1);
 
   const {
     data: articles,
@@ -28,7 +31,7 @@ export default function Dashboard() {
     isError: articlesError,
     error: articlesErrorData,
     refetch: refetchArticles,
-  } = useArticles({ ...(search ? { search } : {}), ...(unreadOnly ? { isRead: false } : {}) });
+  } = useArticles({ ...(search ? { search } : {}), ...(unreadOnly ? { isRead: false } : {}), page });
 
   const { data: categories = [] } = useCategories();
   const { data: feeds = [] } = useFeeds();
@@ -72,7 +75,7 @@ export default function Dashboard() {
     }
   };
 
-  const unreadCount = articles?.filter((a) => !a.isRead).length ?? 0;
+  const unreadCount = articles?.items.filter((a) => !a.isRead).length ?? 0;
 
   return (
     <Box>
@@ -86,16 +89,16 @@ export default function Dashboard() {
       >
         <Box>
           <Typography variant="h4" fontWeight="bold">
-            Dashboard
+            {t('dashboard.title')}
           </Typography>
           <Box display="flex" gap={1} mt={0.5}>
             <Chip
-              label={`${unreadCount} unread`}
+              label={t('dashboard.unread', { count: unreadCount })}
               size="small"
               color={unreadOnly ? 'primary' : unreadCount > 0 ? 'primary' : 'default'}
               variant={unreadOnly ? 'filled' : 'outlined'}
               clickable
-              onClick={() => setUnreadOnly((prev) => !prev)}
+              onClick={() => { setUnreadOnly((prev) => !prev); setPage(1); }}
             />
           </Box>
         </Box>
@@ -105,7 +108,7 @@ export default function Dashboard() {
             startIcon={<AddIcon />}
             onClick={() => setAddCategoryOpen(true)}
           >
-            Category
+            {t('dashboard.addCategory')}
           </Button>
           <Button
             variant="contained"
@@ -113,7 +116,7 @@ export default function Dashboard() {
             onClick={() => setAddFeedOpen(true)}
             disabled={categories.length === 0}
           >
-            Add Feed
+            {t('dashboard.addFeed')}
           </Button>
         </Box>
       </Box>
@@ -121,28 +124,28 @@ export default function Dashboard() {
       {categories.length === 0 && feeds.length === 0 ? (
         <Box textAlign="center" py={8}>
           <Typography variant="h6" color="text.secondary" gutterBottom>
-            Welcome to Signalist
+            {t('dashboard.welcome')}
           </Typography>
           <Typography variant="body2" color="text.secondary" mb={3}>
-            Get started by creating a category and adding your first RSS feed.
+            {t('dashboard.welcomeMessage')}
           </Typography>
           <Button
             variant="contained"
             startIcon={<AddIcon />}
             onClick={() => setAddCategoryOpen(true)}
           >
-            Create Your First Category
+            {t('dashboard.createFirstCategory')}
           </Button>
         </Box>
       ) : (
         <>
           <Box mb={2}>
-            <SearchBar value={search} onChange={setSearch} />
+            <SearchBar value={search} onChange={(v) => { setSearch(v); setPage(1); }} />
           </Box>
           <Grid container spacing={3}>
             <Grid size={12}>
               <ArticleList
-                articles={articles}
+                data={articles}
                 bookmarks={bookmarks}
                 isLoading={articlesLoading}
                 isError={articlesError}
@@ -150,6 +153,7 @@ export default function Dashboard() {
                 onRefetch={refetchArticles}
                 onToggleRead={handleToggleRead}
                 onToggleBookmark={handleToggleBookmark}
+                onPageChange={setPage}
               />
             </Grid>
           </Grid>

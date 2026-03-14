@@ -15,6 +15,7 @@ use App\Domain\Article\Query\ListArticlesQuery;
 use App\Entity\Article;
 use App\Entity\User;
 use App\Infrastructure\ApiPlatform\Resource\ArticleResource;
+use App\Infrastructure\ApiPlatform\Resource\PaginatedArticlesResponse;
 
 use function assert;
 
@@ -27,7 +28,7 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
- * @implements ProviderInterface<ArticleResource>
+ * @implements ProviderInterface<ArticleResource|PaginatedArticlesResponse>
  */
 final readonly class ArticleStateProvider implements ProviderInterface
 {
@@ -39,10 +40,7 @@ final readonly class ArticleStateProvider implements ProviderInterface
     ) {
     }
 
-    /**
-     * @return ArticleResource|array<int, ArticleResource>
-     */
-    public function provide(Operation $operation, array $uriVariables = [], array $context = []): ArticleResource|array
+    public function provide(Operation $operation, array $uriVariables = [], array $context = []): ArticleResource|PaginatedArticlesResponse
     {
         $user = $this->security->getUser();
         assert($user instanceof User);
@@ -55,6 +53,8 @@ final readonly class ArticleStateProvider implements ProviderInterface
             $categoryId = $request?->query->get('categoryId');
             $isReadParam = $request?->query->get('isRead');
             $search = $request?->query->get('search');
+            $pageParam = $request?->query->get('page');
+            $limitParam = $request?->query->get('limit');
 
             $isRead = null;
 
@@ -62,17 +62,28 @@ final readonly class ArticleStateProvider implements ProviderInterface
                 $isRead = filter_var($isReadParam, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
             }
 
+            $page = max(1, (int) ($pageParam ?? 1));
+            $limit = min(100, max(1, (int) ($limitParam ?? 20)));
+
             $query = new ListArticlesQuery(
                 ownerId: $ownerId,
                 feedId: is_string($feedId) ? $feedId : null,
                 categoryId: is_string($categoryId) ? $categoryId : null,
                 isRead: $isRead,
                 search: is_string($search) ? $search : null,
+                page: $page,
+                limit: $limit,
             );
 
-            $articles = ($this->listArticlesHandler)($query);
+            $result = ($this->listArticlesHandler)($query);
 
-            return array_map(self::toResource(...), $articles);
+            return new PaginatedArticlesResponse(
+                items: array_map(self::toResource(...), $result->items),
+                total: $result->total,
+                page: $result->page,
+                limit: $result->limit,
+                pages: $result->pages,
+            );
         }
 
         $id = $uriVariables['id'] ?? '';

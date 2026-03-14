@@ -35,6 +35,7 @@ return RectorConfig::configure()
         SymfonySetList::SYMFONY_74,
         SymfonySetList::SYMFONY_CODE_QUALITY,
         SymfonySetList::SYMFONY_CONSTRUCTOR_INJECTION,
+        SymfonySetList::CONFIGS,
         DoctrineSetList::DOCTRINE_CODE_QUALITY,
         PHPUnitSetList::PHPUNIT_100,
     ]);

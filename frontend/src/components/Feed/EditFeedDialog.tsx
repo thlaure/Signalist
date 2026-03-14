@@ -10,6 +10,7 @@ import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
+import { useTranslation } from 'react-i18next';
 import type { Feed, Category, UpdateFeedInput } from '../../types';
 
 interface EditFeedDialogProps {
@@ -29,6 +30,7 @@ export default function EditFeedDialog({
   categories,
   isLoading = false,
 }: EditFeedDialogProps) {
+  const { t } = useTranslation();
   const [title, setTitle] = useState(feed.title);
   const [categoryId, setCategoryId] = useState(feed.categoryId);
   const [status, setStatus] = useState<'active' | 'paused'>(
@@ -43,11 +45,11 @@ export default function EditFeedDialog({
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <form onSubmit={handleSubmit}>
-        <DialogTitle>Edit Feed</DialogTitle>
+        <DialogTitle>{t('editFeedDialog.title')}</DialogTitle>
         <DialogContent>
           <Box display="flex" flexDirection="column" gap={2} mt={1}>
             <TextField
-              label="Title"
+              label={t('editFeedDialog.titleLabel')}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               required
@@ -55,10 +57,10 @@ export default function EditFeedDialog({
               autoFocus
             />
             <FormControl fullWidth required>
-              <InputLabel>Category</InputLabel>
+              <InputLabel>{t('editFeedDialog.categoryLabel')}</InputLabel>
               <Select
                 value={categoryId}
-                label="Category"
+                label={t('editFeedDialog.categoryLabel')}
                 onChange={(e) => setCategoryId(e.target.value)}
               >
                 {categories.map((category) => (
@@ -69,24 +71,24 @@ export default function EditFeedDialog({
               </Select>
             </FormControl>
             <FormControl fullWidth>
-              <InputLabel>Status</InputLabel>
+              <InputLabel>{t('editFeedDialog.statusLabel')}</InputLabel>
               <Select
                 value={status}
-                label="Status"
+                label={t('editFeedDialog.statusLabel')}
                 onChange={(e) => setStatus(e.target.value as 'active' | 'paused')}
               >
-                <MenuItem value="active">Active</MenuItem>
-                <MenuItem value="paused">Paused</MenuItem>
+                <MenuItem value="active">{t('editFeedDialog.active')}</MenuItem>
+                <MenuItem value="paused">{t('editFeedDialog.paused')}</MenuItem>
               </Select>
             </FormControl>
           </Box>
         </DialogContent>
         <DialogActions>
           <Button onClick={onClose} disabled={isLoading}>
-            Cancel
+            {t('editFeedDialog.cancel')}
           </Button>
           <Button type="submit" variant="contained" disabled={isLoading}>
-            {isLoading ? 'Saving...' : 'Update'}
+            {isLoading ? t('editFeedDialog.saving') : t('editFeedDialog.update')}
           </Button>
         </DialogActions>
       </form>

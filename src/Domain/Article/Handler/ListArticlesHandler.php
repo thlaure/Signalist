@@ -6,7 +6,9 @@ namespace App\Domain\Article\Handler;
 
 use App\Domain\Article\Port\ArticleRepositoryInterface;
 use App\Domain\Article\Query\ListArticlesQuery;
-use App\Entity\Article;
+use App\Domain\Article\Query\PaginatedArticlesResult;
+
+use function max;
 
 final readonly class ListArticlesHandler
 {
@@ -15,10 +17,7 @@ final readonly class ListArticlesHandler
     ) {
     }
 
-    /**
-     * @return Article[]
-     */
-    public function __invoke(ListArticlesQuery $query): array
+    public function __invoke(ListArticlesQuery $query): PaginatedArticlesResult
     {
         $filters = ['ownerId' => $query->ownerId];
 
@@ -38,6 +37,16 @@ final readonly class ListArticlesHandler
             $filters['search'] = $query->search;
         }
 
-        return $this->articleRepository->findAll($filters);
+        $total = $this->articleRepository->countAll($filters);
+        $items = $this->articleRepository->findAll($filters, $query->page, $query->limit);
+        $pages = max(1, (int) ceil($total / $query->limit));
+
+        return new PaginatedArticlesResult(
+            items: $items,
+            total: $total,
+            page: $query->page,
+            limit: $query->limit,
+            pages: $pages,
+        );
     }
 }

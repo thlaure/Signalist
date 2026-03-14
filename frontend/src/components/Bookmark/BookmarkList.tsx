@@ -10,6 +10,7 @@ import Box from '@mui/material/Box';
 import Tooltip from '@mui/material/Tooltip';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
+import { useTranslation } from 'react-i18next';
 import LoadingSpinner from '../Common/LoadingSpinner';
 import ErrorAlert from '../Common/ErrorAlert';
 import EmptyState from '../Common/EmptyState';
@@ -33,24 +34,28 @@ export default function BookmarkList({
   onDelete,
 }: BookmarkListProps) {
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    });
+    return new Date(dateString).toLocaleDateString(
+      i18n.language === 'fr' ? 'fr-FR' : 'en-US',
+      {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      }
+    );
   };
 
   if (isLoading) {
-    return <LoadingSpinner message="Loading bookmarks..." />;
+    return <LoadingSpinner message={t('bookmarks.loading')} />;
   }
 
   if (isError) {
     return (
       <ErrorAlert
-        title="Failed to load bookmarks"
-        message={error?.message || 'An error occurred'}
+        title={t('bookmarks.failedToLoad')}
+        message={error?.message || t('common.error')}
         onRetry={onRefetch}
       />
     );
@@ -60,8 +65,8 @@ export default function BookmarkList({
     return (
       <EmptyState
         icon={<BookmarkIcon fontSize="inherit" />}
-        title="No bookmarks yet"
-        description="Bookmark articles to save them for later"
+        title={t('bookmarks.noBookmarks')}
+        description={t('bookmarks.saveForLater')}
       />
     );
   }
@@ -104,13 +109,13 @@ export default function BookmarkList({
                   </Typography>
                 )}
                 <Typography variant="caption" color="text.secondary" component="div" mt={0.5}>
-                  Bookmarked on {formatDate(bookmark.createdAt)}
+                  {t('bookmarks.bookmarkedOn', { date: formatDate(bookmark.createdAt) })}
                 </Typography>
               </Box>
             }
           />
           <ListItemSecondaryAction>
-            <Tooltip title="Open article">
+            <Tooltip title={t('bookmarks.openArticle')}>
               <IconButton
                 component="a"
                 href={bookmark.articleUrl}
@@ -120,7 +125,7 @@ export default function BookmarkList({
                 <OpenInNewIcon />
               </IconButton>
             </Tooltip>
-            <Tooltip title="Remove bookmark">
+            <Tooltip title={t('bookmarks.removeBookmark')}>
               <IconButton
                 edge="end"
                 onClick={() => onDelete(bookmark.id)}

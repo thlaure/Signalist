@@ -7,6 +7,7 @@ namespace App\Tests\Unit\Domain\Article\Handler;
 use App\Domain\Article\Handler\ListArticlesHandler;
 use App\Domain\Article\Port\ArticleRepositoryInterface;
 use App\Domain\Article\Query\ListArticlesQuery;
+use App\Domain\Article\Query\PaginatedArticlesResult;
 use App\Entity\Article;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -36,15 +37,26 @@ final class ListArticlesHandlerTest extends TestCase
 
         $this->articleRepository
             ->expects($this->once())
-            ->method('findAll')
+            ->method('countAll')
             ->with(['ownerId' => $this->ownerId])
+            ->willReturn(2);
+
+        $this->articleRepository
+            ->expects($this->once())
+            ->method('findAll')
+            ->with(['ownerId' => $this->ownerId], 1, 20)
             ->willReturn($articles);
 
         $query = new ListArticlesQuery(ownerId: $this->ownerId);
 
         $result = ($this->handler)($query);
 
-        $this->assertCount(2, $result);
+        $this->assertInstanceOf(PaginatedArticlesResult::class, $result);
+        $this->assertCount(2, $result->items);
+        $this->assertSame(2, $result->total);
+        $this->assertSame(1, $result->page);
+        $this->assertSame(20, $result->limit);
+        $this->assertSame(1, $result->pages);
     }
 
     public function testInvokeWithFeedIdFilterReturnsFilteredArticles(): void
@@ -54,15 +66,21 @@ final class ListArticlesHandlerTest extends TestCase
 
         $this->articleRepository
             ->expects($this->once())
-            ->method('findAll')
+            ->method('countAll')
             ->with(['ownerId' => $this->ownerId, 'feedId' => $feedId])
+            ->willReturn(1);
+
+        $this->articleRepository
+            ->expects($this->once())
+            ->method('findAll')
+            ->with(['ownerId' => $this->ownerId, 'feedId' => $feedId], 1, 20)
             ->willReturn($articles);
 
         $query = new ListArticlesQuery(ownerId: $this->ownerId, feedId: $feedId);
 
         $result = ($this->handler)($query);
 
-        $this->assertCount(1, $result);
+        $this->assertCount(1, $result->items);
     }
 
     public function testInvokeWithIsReadFilterReturnsFilteredArticles(): void
@@ -71,15 +89,21 @@ final class ListArticlesHandlerTest extends TestCase
 
         $this->articleRepository
             ->expects($this->once())
-            ->method('findAll')
+            ->method('countAll')
             ->with(['ownerId' => $this->ownerId, 'isRead' => false])
+            ->willReturn(1);
+
+        $this->articleRepository
+            ->expects($this->once())
+            ->method('findAll')
+            ->with(['ownerId' => $this->ownerId, 'isRead' => false], 1, 20)
             ->willReturn($articles);
 
         $query = new ListArticlesQuery(ownerId: $this->ownerId, isRead: false);
 
         $result = ($this->handler)($query);
 
-        $this->assertCount(1, $result);
+        $this->assertCount(1, $result->items);
     }
 
     public function testInvokeWithMultipleFiltersAppliesAllFilters(): void
@@ -89,13 +113,24 @@ final class ListArticlesHandlerTest extends TestCase
 
         $this->articleRepository
             ->expects($this->once())
-            ->method('findAll')
+            ->method('countAll')
             ->with([
                 'ownerId' => $this->ownerId,
                 'feedId' => $feedId,
                 'categoryId' => $categoryId,
                 'isRead' => true,
             ])
+            ->willReturn(0);
+
+        $this->articleRepository
+            ->expects($this->once())
+            ->method('findAll')
+            ->with([
+                'ownerId' => $this->ownerId,
+                'feedId' => $feedId,
+                'categoryId' => $categoryId,
+                'isRead' => true,
+            ], 1, 20)
             ->willReturn([]);
 
         $query = new ListArticlesQuery(
@@ -107,7 +142,7 @@ final class ListArticlesHandlerTest extends TestCase
 
         $result = ($this->handler)($query);
 
-        $this->assertCount(0, $result);
+        $this->assertCount(0, $result->items);
     }
 
     public function testInvokeWithSearchFilterPassesSearchToRepository(): void
@@ -116,14 +151,44 @@ final class ListArticlesHandlerTest extends TestCase
 
         $this->articleRepository
             ->expects($this->once())
-            ->method('findAll')
+            ->method('countAll')
             ->with(['ownerId' => $this->ownerId, 'search' => 'css grid'])
+            ->willReturn(1);
+
+        $this->articleRepository
+            ->expects($this->once())
+            ->method('findAll')
+            ->with(['ownerId' => $this->ownerId, 'search' => 'css grid'], 1, 20)
             ->willReturn($articles);
 
         $query = new ListArticlesQuery(ownerId: $this->ownerId, search: 'css grid');
 
         $result = ($this->handler)($query);
 
-        $this->assertCount(1, $result);
+        $this->assertCount(1, $result->items);
+    }
+
+    public function testInvokeWithPageAndLimitPaginatesCorrectly(): void
+    {
+        $this->articleRepository
+            ->expects($this->once())
+            ->method('countAll')
+            ->with(['ownerId' => $this->ownerId])
+            ->willReturn(45);
+
+        $this->articleRepository
+            ->expects($this->once())
+            ->method('findAll')
+            ->with(['ownerId' => $this->ownerId], 2, 20)
+            ->willReturn([]);
+
+        $query = new ListArticlesQuery(ownerId: $this->ownerId, page: 2, limit: 20);
+
+        $result = ($this->handler)($query);
+
+        $this->assertSame(45, $result->total);
+        $this->assertSame(2, $result->page);
+        $this->assertSame(20, $result->limit);
+        $this->assertSame(3, $result->pages);
     }
 }

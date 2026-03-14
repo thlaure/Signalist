@@ -6,7 +6,7 @@ import {
   markArticleUnread,
   type ArticleFilters,
 } from '../api/articles';
-import type { Article } from '../types';
+import type { Article, PaginatedArticles } from '../types';
 
 export const ARTICLES_QUERY_KEY = ['articles'];
 
@@ -26,10 +26,14 @@ export function useArticle(id: string) {
 }
 
 function updateArticleInCache(queryClient: ReturnType<typeof useQueryClient>, updated: Article) {
-  queryClient.setQueriesData<Article[]>(
+  queryClient.setQueriesData<PaginatedArticles>(
     { queryKey: ARTICLES_QUERY_KEY },
-    (old) => old?.map((a) => (a.id === updated.id ? updated : a)),
+    (old) => {
+      if (!old || !('items' in old)) return old;
+      return { ...old, items: old.items.map((a) => (a.id === updated.id ? updated : a)) };
+    },
   );
+  queryClient.setQueryData<Article>([...ARTICLES_QUERY_KEY, updated.id], updated);
 }
 
 export function useMarkArticleRead() {

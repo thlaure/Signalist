@@ -1,0 +1,163 @@
+{
+  "common": {
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "retry": "Réessayer",
+    "cancel": "Annuler",
+    "saving": "Enregistrement...",
+    "create": "Créer",
+    "update": "Mettre à jour",
+    "never": "Jamais"
+  },
+  "nav": {
+    "dashboard": "Tableau de bord",
+    "feeds": "Flux",
+    "bookmarks": "Favoris",
+    "categories": "Catégories",
+    "noCategories": "Aucune catégorie",
+    "logout": "Déconnexion"
+  },
+  "auth": {
+    "signIn": "Se connecter",
+    "signUp": "S'inscrire",
+    "signInToAccount": "Connectez-vous à votre compte",
+    "createAccount": "Créer votre compte",
+    "email": "E-mail",
+    "password": "Mot de passe",
+    "confirmPassword": "Confirmer le mot de passe",
+    "noAccount": "Pas encore de compte ?",
+    "haveAccount": "Déjà un compte ?",
+    "unexpectedError": "Une erreur inattendue s'est produite. Veuillez réessayer.",
+    "passwordsMismatch": "Les mots de passe ne correspondent pas",
+    "resendVerification": "Renvoyer l'e-mail de vérification"
+  },
+  "checkEmail": {
+    "title": "Vérifiez vos e-mails",
+    "message": "Nous avons envoyé un lien de vérification à <strong>{{email}}</strong>. Cliquez sur le lien pour activer votre compte.",
+    "messageNoEmail": "Nous avons envoyé un lien de vérification à votre adresse e-mail. Cliquez sur le lien pour activer votre compte.",
+    "resent": "E-mail de vérification renvoyé.",
+    "resendButton": "Renvoyer l'e-mail",
+    "alreadyVerified": "Déjà vérifié ?"
+  },
+  "verifyEmail": {
+    "verifying": "Vérification de votre e-mail...",
+    "success": "Votre e-mail a été vérifié !",
+    "invalidLink": "Lien de vérification invalide.",
+    "failed": "Échec de la vérification. Veuillez réessayer.",
+    "resent": "E-mail de vérification renvoyé.",
+    "resendButton": "Renvoyer l'e-mail de vérification",
+    "backToSignIn": "Retour à la connexion"
+  },
+  "dashboard": {
+    "title": "Tableau de bord",
+    "unread": "{{count}} non lu",
+    "addCategory": "Catégorie",
+    "addFeed": "Ajouter un flux",
+    "welcome": "Bienvenue sur Signalist",
+    "welcomeMessage": "Commencez par créer une catégorie et ajouter votre premier flux RSS.",
+    "createFirstCategory": "Créer votre première catégorie"
+  },
+  "article": {
+    "markAsUnread": "Marquer comme non lu",
+    "markAsRead": "Marquer comme lu",
+    "removeBookmark": "Retirer le favori",
+    "addBookmark": "Ajouter aux favoris",
+    "openOriginal": "Ouvrir l'article original",
+    "openOriginalButton": "Ouvrir l'original",
+    "readOnOriginal": "Lire sur le site original",
+    "noContent": "Aucun contenu disponible.",
+    "loading": "Chargement de l'article...",
+    "failedToLoad": "Impossible de charger l'article",
+    "notFound": "Article introuvable",
+    "back": "Retour"
+  },
+  "articleList": {
+    "loading": "Chargement des articles...",
+    "failedToLoad": "Impossible de charger les articles",
+    "noArticles": "Aucun article trouvé",
+    "willAppear": "Les articles apparaîtront ici une fois les flux récupérés"
+  },
+  "searchBar": {
+    "placeholder": "Rechercher des articles..."
+  },
+  "bookmarks": {
+    "title": "Favoris",
+    "count_one": "{{count}} article sauvegardé",
+    "count_other": "{{count}} articles sauvegardés",
+    "removeConfirm": "Retirer ce favori ?",
+    "loading": "Chargement des favoris...",
+    "failedToLoad": "Impossible de charger les favoris",
+    "noBookmarks": "Aucun favori pour l'instant",
+    "saveForLater": "Ajoutez des articles en favoris pour les retrouver plus tard",
+    "openArticle": "Ouvrir l'article",
+    "removeBookmark": "Retirer le favori",
+    "bookmarkedOn": "Ajouté le {{date}}"
+  },
+  "category": {
+    "feeds_one": "{{count}} flux",
+    "feeds_other": "{{count}} flux",
+    "unread": "{{count}} non lu",
+    "addFeed": "Ajouter un flux",
+    "editCategory": "Modifier la catégorie",
+    "deleteCategory": "Supprimer la catégorie",
+    "deleteConfirm": "Voulez-vous vraiment supprimer cette catégorie ? Tous les flux seront supprimés.",
+    "loading": "Chargement de la catégorie...",
+    "failedToLoad": "Impossible de charger la catégorie",
+    "notFound": "Catégorie introuvable"
+  },
+  "categoryDialog": {
+    "addTitle": "Ajouter une catégorie",
+    "editTitle": "Modifier la catégorie",
+    "name": "Nom",
+    "slug": "Identifiant",
+    "slugHelper": "Identifiant compatible avec les URLs",
+    "description": "Description",
+    "color": "Couleur",
+    "cancel": "Annuler",
+    "saving": "Enregistrement...",
+    "create": "Créer",
+    "update": "Mettre à jour"
+  },
+  "feeds": {
+    "title": "Flux",
+    "count_one": "{{count}} flux",
+    "count_other": "{{count}} flux",
+    "addFeed": "Ajouter un flux",
+    "noFeeds": "Aucun flux pour l'instant",
+    "addFirst": "Ajoutez votre premier flux RSS pour commencer",
+    "lastFetched": "Dernière récupération : {{date}}",
+    "loading": "Chargement des flux...",
+    "failedToLoad": "Impossible de charger les flux",
+    "anErrorOccurred": "Une erreur s'est produite",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "deleteConfirm": "Supprimer le flux « {{title}} » ? Tous ses articles seront également supprimés."
+  },
+  "addFeedDialog": {
+    "title": "Ajouter un flux",
+    "urlLabel": "URL du flux",
+    "urlPlaceholder": "https://exemple.com/flux.xml",
+    "titleLabel": "Titre (optionnel)",
+    "titleHelper": "Laisser vide pour détecter automatiquement depuis le flux",
+    "categoryLabel": "Catégorie",
+    "cancel": "Annuler",
+    "adding": "Ajout en cours...",
+    "addFeed": "Ajouter le flux"
+  },
+  "editFeedDialog": {
+    "title": "Modifier le flux",
+    "titleLabel": "Titre",
+    "categoryLabel": "Catégorie",
+    "statusLabel": "Statut",
+    "active": "Actif",
+    "paused": "En pause",
+    "cancel": "Annuler",
+    "saving": "Enregistrement...",
+    "update": "Mettre à jour"
+  },
+  "feedStatus": {
+    "active": "Actif",
+    "paused": "En pause",
+    "error": "Erreur"
+  }
+}

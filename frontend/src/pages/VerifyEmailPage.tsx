@@ -8,6 +8,7 @@ import Alert from '@mui/material/Alert';
 import CircularProgress from '@mui/material/CircularProgress';
 import Button from '@mui/material/Button';
 import Link from '@mui/material/Link';
+import { useTranslation } from 'react-i18next';
 import { verifyEmail, resendVerification } from '../api/auth';
 import { isProblemError } from '../api/client';
 
@@ -19,6 +20,7 @@ export default function VerifyEmailPage() {
   const [errorMessage, setErrorMessage] = useState('');
   const [resending, setResending] = useState(false);
   const [resent, setResent] = useState(false);
+  const { t } = useTranslation();
 
   const email = searchParams.get('email') ?? '';
 
@@ -29,14 +31,14 @@ export default function VerifyEmailPage() {
 
     if (!userId || !email || !expiresAtParam || !signature) {
       setStatus('error');
-      setErrorMessage('Invalid verification link.');
+      setErrorMessage(t('verifyEmail.invalidLink'));
       return;
     }
 
     const expiresAt = parseInt(expiresAtParam, 10);
     if (isNaN(expiresAt)) {
       setStatus('error');
-      setErrorMessage('Invalid verification link.');
+      setErrorMessage(t('verifyEmail.invalidLink'));
       return;
     }
 
@@ -47,10 +49,10 @@ export default function VerifyEmailPage() {
         if (isProblemError(err)) {
           setErrorMessage(err.problem.detail);
         } else {
-          setErrorMessage('Verification failed. Please try again.');
+          setErrorMessage(t('verifyEmail.failed'));
         }
       });
-  }, [searchParams, email]);
+  }, [searchParams, email]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleResend = async () => {
     if (!email) return;
@@ -82,14 +84,14 @@ export default function VerifyEmailPage() {
           {status === 'loading' && (
             <>
               <CircularProgress sx={{ mb: 2 }} />
-              <Typography>Verifying your email...</Typography>
+              <Typography>{t('verifyEmail.verifying')}</Typography>
             </>
           )}
 
           {status === 'success' && (
             <>
               <Alert severity="success" sx={{ mb: 3 }}>
-                Your email has been verified!
+                {t('verifyEmail.success')}
               </Alert>
               <Button
                 component={RouterLink}
@@ -98,7 +100,7 @@ export default function VerifyEmailPage() {
                 fullWidth
                 size="large"
               >
-                Sign in
+                {t('auth.signIn')}
               </Button>
             </>
           )}
@@ -118,18 +120,18 @@ export default function VerifyEmailPage() {
                   {resending ? (
                     <CircularProgress size={20} />
                   ) : (
-                    'Resend verification email'
+                    t('verifyEmail.resendButton')
                   )}
                 </Button>
               )}
               {resent && (
                 <Alert severity="success" sx={{ mb: 2 }}>
-                  Verification email resent.
+                  {t('verifyEmail.resent')}
                 </Alert>
               )}
               <Typography variant="body2" color="text.secondary">
                 <Link component={RouterLink} to="/login">
-                  Back to sign in
+                  {t('verifyEmail.backToSignIn')}
                 </Link>
               </Typography>
             </>

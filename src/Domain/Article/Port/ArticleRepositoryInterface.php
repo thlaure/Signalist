@@ -17,7 +17,12 @@ interface ArticleRepositoryInterface
      *
      * @return Article[]
      */
-    public function findAll(array $filters = []): array;
+    public function findAll(array $filters = [], int $page = 1, int $limit = 20): array;
+
+    /**
+     * @param array{feedId?: string, categoryId?: string, isRead?: bool, ownerId?: string, search?: string} $filters
+     */
+    public function countAll(array $filters = []): int;
 
     /**
      * @return Article[]

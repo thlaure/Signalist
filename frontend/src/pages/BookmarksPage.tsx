@@ -1,9 +1,11 @@
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import { useTranslation } from 'react-i18next';
 import BookmarkList from '../components/Bookmark/BookmarkList';
 import { useBookmarks, useDeleteBookmark } from '../hooks/useBookmarks';
 
 export default function BookmarksPage() {
+  const { t } = useTranslation();
   const {
     data: bookmarks,
     isLoading,
@@ -15,7 +17,7 @@ export default function BookmarksPage() {
   const deleteBookmark = useDeleteBookmark();
 
   const handleDelete = (id: string) => {
-    if (window.confirm('Remove this bookmark?')) {
+    if (window.confirm(t('bookmarks.removeConfirm'))) {
       deleteBookmark.mutate(id);
     }
   };
@@ -24,11 +26,10 @@ export default function BookmarksPage() {
     <Box>
       <Box mb={3}>
         <Typography variant="h4" fontWeight="bold">
-          Bookmarks
+          {t('bookmarks.title')}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          {bookmarks?.length ?? 0} saved article
-          {bookmarks?.length !== 1 ? 's' : ''}
+          {t('bookmarks.count', { count: bookmarks?.length ?? 0 })}
         </Typography>
       </Box>
 

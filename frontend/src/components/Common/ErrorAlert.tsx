@@ -2,6 +2,7 @@ import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
+import { useTranslation } from 'react-i18next';
 
 interface ErrorAlertProps {
   title?: string;
@@ -10,10 +11,12 @@ interface ErrorAlertProps {
 }
 
 export default function ErrorAlert({
-  title = 'Error',
+  title,
   message,
   onRetry,
 }: ErrorAlertProps) {
+  const { t } = useTranslation();
+
   return (
     <Box p={2}>
       <Alert
@@ -21,12 +24,12 @@ export default function ErrorAlert({
         action={
           onRetry && (
             <Button color="inherit" size="small" onClick={onRetry}>
-              Retry
+              {t('common.retry')}
             </Button>
           )
         }
       >
-        <AlertTitle>{title}</AlertTitle>
+        <AlertTitle>{title ?? t('common.error')}</AlertTitle>
         {message}
       </Alert>
     </Box>

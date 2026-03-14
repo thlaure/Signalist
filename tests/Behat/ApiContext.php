@@ -263,6 +263,22 @@ final class ApiContext implements Context
     {
         $data = $this->getJsonResponse();
 
+        // Handle paginated envelope format {items, total, page, limit, pages}
+        if (isset($data['items'])) {
+            $items = $data['items'];
+            // items may itself be a Hydra collection
+            /** @var array<mixed> $collection */
+            $collection = is_array($items) && isset($items['member']) && is_array($items['member'])
+                ? $items['member']
+                : (is_array($items) && !isset($items['@type']) ? $items : []);
+
+            if ($collection !== []) {
+                throw new RuntimeException('Expected empty collection, got: ' . json_encode($collection));
+            }
+
+            return;
+        }
+
         // Handle Hydra collection format
         if (isset($data['member'])) {
             if ($data['member'] !== []) {
@@ -285,8 +301,16 @@ final class ApiContext implements Context
     {
         $data = $this->getJsonResponse();
 
-        // Handle Hydra collection format
-        $actual = isset($data['member']) && is_array($data['member']) ? count($data['member']) : count($data);
+        // Handle paginated envelope format {items, total, page, limit, pages}
+        if (isset($data['items'])) {
+            $items = $data['items'];
+            $actual = is_array($items) && isset($items['member']) && is_array($items['member'])
+                ? count($items['member'])
+                : (is_array($items) && !isset($items['@type']) ? count($items) : 0);
+        } else {
+            // Handle Hydra collection format
+            $actual = isset($data['member']) && is_array($data['member']) ? count($data['member']) : count($data);
+        }
 
         if ($actual !== $count) {
             throw new RuntimeException(sprintf('Expected %d items, got %d', $count, $actual));

@@ -9,12 +9,14 @@ import Typography from '@mui/material/Typography';
 import Alert from '@mui/material/Alert';
 import CircularProgress from '@mui/material/CircularProgress';
 import Link from '@mui/material/Link';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../hooks/useAuth';
 import { isProblemError } from '../api/client';
 
 export default function LoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -37,7 +39,7 @@ export default function LoginPage() {
         }
         setError(err.problem.detail);
       } else {
-        setError('An unexpected error occurred. Please try again.');
+        setError(t('auth.unexpectedError'));
       }
     } finally {
       setLoading(false);
@@ -65,7 +67,7 @@ export default function LoginPage() {
             textAlign="center"
             mb={4}
           >
-            Sign in to your account
+            {t('auth.signInToAccount')}
           </Typography>
 
           {error && (
@@ -81,14 +83,14 @@ export default function LoginPage() {
                 to="/check-email"
                 state={{ email }}
               >
-                Resend verification email
+                {t('auth.resendVerification')}
               </Link>
             </Typography>
           )}
 
           <Box component="form" onSubmit={handleSubmit} noValidate>
             <TextField
-              label="Email"
+              label={t('auth.email')}
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -99,7 +101,7 @@ export default function LoginPage() {
               sx={{ mb: 2 }}
             />
             <TextField
-              label="Password"
+              label={t('auth.password')}
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -115,7 +117,7 @@ export default function LoginPage() {
               size="large"
               disabled={loading || !email || !password}
             >
-              {loading ? <CircularProgress size={24} /> : 'Sign in'}
+              {loading ? <CircularProgress size={24} /> : t('auth.signIn')}
             </Button>
           </Box>
 
@@ -125,9 +127,9 @@ export default function LoginPage() {
             textAlign="center"
             mt={3}
           >
-            Don't have an account?{' '}
+            {t('auth.noAccount')}{' '}
             <Link component={RouterLink} to="/register">
-              Sign up
+              {t('auth.signUp')}
             </Link>
           </Typography>
         </CardContent>

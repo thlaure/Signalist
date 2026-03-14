@@ -6,6 +6,7 @@ import DialogActions from '@mui/material/DialogActions';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
+import { useTranslation } from 'react-i18next';
 import type { Category, CreateCategoryInput } from '../../types';
 
 interface CategoryDialogProps {
@@ -23,6 +24,7 @@ export default function CategoryDialog({
   category,
   isLoading = false,
 }: CategoryDialogProps) {
+  const { t } = useTranslation();
   const [name, setName] = useState('');
   const [slug, setSlug] = useState('');
   const [description, setDescription] = useState('');
@@ -30,6 +32,7 @@ export default function CategoryDialog({
 
   useEffect(() => {
     if (category) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setName(category.name);
       setSlug(category.slug);
       setDescription(category.description || '');
@@ -45,7 +48,6 @@ export default function CategoryDialog({
   const handleNameChange = (value: string) => {
     setName(value);
     if (!category) {
-      // Auto-generate slug for new categories
       setSlug(
         value
           .toLowerCase()
@@ -69,12 +71,12 @@ export default function CategoryDialog({
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <form onSubmit={handleSubmit}>
         <DialogTitle>
-          {category ? 'Edit Category' : 'Add Category'}
+          {category ? t('categoryDialog.editTitle') : t('categoryDialog.addTitle')}
         </DialogTitle>
         <DialogContent>
           <Box display="flex" flexDirection="column" gap={2} mt={1}>
             <TextField
-              label="Name"
+              label={t('categoryDialog.name')}
               value={name}
               onChange={(e) => handleNameChange(e.target.value)}
               required
@@ -82,15 +84,15 @@ export default function CategoryDialog({
               autoFocus
             />
             <TextField
-              label="Slug"
+              label={t('categoryDialog.slug')}
               value={slug}
               onChange={(e) => setSlug(e.target.value)}
               required
               fullWidth
-              helperText="URL-friendly identifier"
+              helperText={t('categoryDialog.slugHelper')}
             />
             <TextField
-              label="Description"
+              label={t('categoryDialog.description')}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               fullWidth
@@ -99,7 +101,7 @@ export default function CategoryDialog({
             />
             <Box display="flex" alignItems="center" gap={2}>
               <TextField
-                label="Color"
+                label={t('categoryDialog.color')}
                 type="color"
                 value={color}
                 onChange={(e) => setColor(e.target.value)}
@@ -121,10 +123,14 @@ export default function CategoryDialog({
         </DialogContent>
         <DialogActions>
           <Button onClick={onClose} disabled={isLoading}>
-            Cancel
+            {t('categoryDialog.cancel')}
           </Button>
           <Button type="submit" variant="contained" disabled={isLoading}>
-            {isLoading ? 'Saving...' : category ? 'Update' : 'Create'}
+            {isLoading
+              ? t('categoryDialog.saving')
+              : category
+                ? t('categoryDialog.update')
+                : t('categoryDialog.create')}
           </Button>
         </DialogActions>
       </form>

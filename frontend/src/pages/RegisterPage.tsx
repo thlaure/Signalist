@@ -9,11 +9,13 @@ import Typography from '@mui/material/Typography';
 import Alert from '@mui/material/Alert';
 import CircularProgress from '@mui/material/CircularProgress';
 import Link from '@mui/material/Link';
+import { useTranslation } from 'react-i18next';
 import { register } from '../api/auth';
 import { isProblemError } from '../api/client';
 
 export default function RegisterPage() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -27,7 +29,7 @@ export default function RegisterPage() {
     setError(null);
 
     if (!passwordsMatch) {
-      setError('Passwords do not match.');
+      setError(t('auth.passwordsMismatch'));
       return;
     }
 
@@ -40,7 +42,7 @@ export default function RegisterPage() {
       if (isProblemError(err)) {
         setError(err.problem.detail);
       } else {
-        setError('An unexpected error occurred. Please try again.');
+        setError(t('auth.unexpectedError'));
       }
     } finally {
       setLoading(false);
@@ -68,7 +70,7 @@ export default function RegisterPage() {
             textAlign="center"
             mb={4}
           >
-            Create your account
+            {t('auth.createAccount')}
           </Typography>
 
           {error && (
@@ -79,7 +81,7 @@ export default function RegisterPage() {
 
           <Box component="form" onSubmit={handleSubmit} noValidate>
             <TextField
-              label="Email"
+              label={t('auth.email')}
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -90,7 +92,7 @@ export default function RegisterPage() {
               sx={{ mb: 2 }}
             />
             <TextField
-              label="Password"
+              label={t('auth.password')}
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -100,7 +102,7 @@ export default function RegisterPage() {
               sx={{ mb: 2 }}
             />
             <TextField
-              label="Confirm password"
+              label={t('auth.confirmPassword')}
               type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
@@ -110,7 +112,7 @@ export default function RegisterPage() {
               error={confirmPassword.length > 0 && !passwordsMatch}
               helperText={
                 confirmPassword.length > 0 && !passwordsMatch
-                  ? 'Passwords do not match'
+                  ? t('auth.passwordsMismatch')
                   : undefined
               }
               sx={{ mb: 3 }}
@@ -124,7 +126,7 @@ export default function RegisterPage() {
                 loading || !email || !password || !confirmPassword
               }
             >
-              {loading ? <CircularProgress size={24} /> : 'Sign up'}
+              {loading ? <CircularProgress size={24} /> : t('auth.signUp')}
             </Button>
           </Box>
 
@@ -134,9 +136,9 @@ export default function RegisterPage() {
             textAlign="center"
             mt={3}
           >
-            Already have an account?{' '}
+            {t('auth.haveAccount')}{' '}
             <Link component={RouterLink} to="/login">
-              Sign in
+              {t('auth.signIn')}
             </Link>
           </Typography>
         </CardContent>

@@ -17,7 +17,7 @@ import { useFeeds, useAddFeed } from '../hooks/useFeeds';
 import { useBookmarks, useCreateBookmark, useDeleteBookmark } from '../hooks/useBookmarks';
 import type { CreateCategoryInput, AddFeedInput } from '../types';
 
-export default function Dashboard() {
+export default function Feed() {
   const { t } = useTranslation();
   const [addFeedOpen, setAddFeedOpen] = useState(false);
   const [addCategoryOpen, setAddCategoryOpen] = useState(false);
@@ -89,11 +89,11 @@ export default function Dashboard() {
       >
         <Box>
           <Typography variant="h4" fontWeight="bold">
-            {t('dashboard.title')}
+            {t('feed.title')}
           </Typography>
           <Box display="flex" gap={1} mt={0.5}>
             <Chip
-              label={t('dashboard.unread', { count: unreadCount })}
+              label={t('feed.unread', { count: unreadCount })}
               size="small"
               color={unreadOnly ? 'primary' : unreadCount > 0 ? 'primary' : 'default'}
               variant={unreadOnly ? 'filled' : 'outlined'}
@@ -108,7 +108,7 @@ export default function Dashboard() {
             startIcon={<AddIcon />}
             onClick={() => setAddCategoryOpen(true)}
           >
-            {t('dashboard.addCategory')}
+            {t('feed.addCategory')}
           </Button>
           <Button
             variant="contained"
@@ -116,7 +116,7 @@ export default function Dashboard() {
             onClick={() => setAddFeedOpen(true)}
             disabled={categories.length === 0}
           >
-            {t('dashboard.addFeed')}
+            {t('feed.addFeed')}
           </Button>
         </Box>
       </Box>
@@ -124,17 +124,17 @@ export default function Dashboard() {
       {categories.length === 0 && feeds.length === 0 ? (
         <Box textAlign="center" py={8}>
           <Typography variant="h6" color="text.secondary" gutterBottom>
-            {t('dashboard.welcome')}
+            {t('feed.welcome')}
           </Typography>
           <Typography variant="body2" color="text.secondary" mb={3}>
-            {t('dashboard.welcomeMessage')}
+            {t('feed.welcomeMessage')}
           </Typography>
           <Button
             variant="contained"
             startIcon={<AddIcon />}
             onClick={() => setAddCategoryOpen(true)}
           >
-            {t('dashboard.createFirstCategory')}
+            {t('feed.createFirstCategory')}
           </Button>
         </Box>
       ) : (

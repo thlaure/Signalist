@@ -10,7 +10,7 @@
     "never": "Jamais"
   },
   "nav": {
-    "dashboard": "Tableau de bord",
+    "feed": "Feed",
     "feeds": "Flux",
     "bookmarks": "Favoris",
     "categories": "Catégories",
@@ -48,8 +48,8 @@
     "resendButton": "Renvoyer l'e-mail de vérification",
     "backToSignIn": "Retour à la connexion"
   },
-  "dashboard": {
-    "title": "Tableau de bord",
+  "feed": {
+    "title": "Feed",
     "unread": "{{count}} non lu",
     "addCategory": "Catégorie",
     "addFeed": "Ajouter un flux",

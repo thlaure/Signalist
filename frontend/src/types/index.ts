@@ -39,6 +39,7 @@ export interface Article {
   feedTitle: string;
   categoryId: string;
   categoryName: string;
+  categoryColor: string | null;
 }
 
 export interface Bookmark {

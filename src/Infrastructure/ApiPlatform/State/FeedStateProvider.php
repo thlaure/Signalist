@@ -20,6 +20,7 @@ use function assert;
 use function is_string;
 
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * @implements ProviderInterface<FeedResource>
@@ -29,6 +30,7 @@ final readonly class FeedStateProvider implements ProviderInterface
     public function __construct(
         private GetFeedHandler $getFeedHandler,
         private ListFeedsHandler $listFeedsHandler,
+        private RequestStack $requestStack,
         private Security $security,
     ) {
     }
@@ -43,7 +45,13 @@ final readonly class FeedStateProvider implements ProviderInterface
         $ownerId = $user->getId()->toRfc4122();
 
         if ($operation instanceof CollectionOperationInterface) {
-            $feeds = ($this->listFeedsHandler)(new ListFeedsQuery($ownerId));
+            $request = $this->requestStack->getCurrentRequest();
+            $categoryId = $request?->query->get('categoryId');
+
+            $feeds = ($this->listFeedsHandler)(new ListFeedsQuery(
+                ownerId: $ownerId,
+                categoryId: is_string($categoryId) ? $categoryId : null,
+            ));
 
             return array_map(self::toResource(...), $feeds);
         }

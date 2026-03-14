@@ -7,6 +7,10 @@ namespace App\Infrastructure\RSS;
 use App\Domain\Feed\Port\RssFetcherInterface;
 use DateTimeImmutable;
 use DateTimeInterface;
+
+use const ENT_HTML5;
+use const ENT_QUOTES;
+
 use Exception;
 
 use function is_array;
@@ -67,10 +71,10 @@ final readonly class LaminasFeedRssFetcher implements RssFetcherInterface
                 guid: $guid,
                 title: $entry->getTitle() ?? 'Untitled',
                 url: $link,
-                summary: $entry->getDescription(),
+                summary: $this->cleanText($entry->getDescription()),
                 content: $entry->getContent(),
                 author: $this->extractAuthor($entry),
-                imageUrl: $this->extractImageUrl($entry),
+                imageUrl: null,
                 publishedAt: $publishedAt,
             );
         }
@@ -79,6 +83,23 @@ final readonly class LaminasFeedRssFetcher implements RssFetcherInterface
             feedTitle: $feedTitle,
             articles: $articles,
         );
+    }
+
+    private function cleanText(?string $text): ?string
+    {
+        if ($text === null) {
+            return null;
+        }
+
+        $stripped = strip_tags($text);
+        $decoded = html_entity_decode($stripped, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $normalized = trim((string) preg_replace('/\s+/u', ' ', $decoded));
+
+        if ($normalized === '' || mb_strlen($normalized) < 30) {
+            return null;
+        }
+
+        return $normalized;
     }
 
     private function extractAuthor(EntryInterface $entry): ?string
@@ -105,17 +126,5 @@ final readonly class LaminasFeedRssFetcher implements RssFetcherInterface
         $name = $firstAuthor['name'] ?? null;
 
         return is_string($name) ? $name : null;
-    }
-
-    private function extractImageUrl(EntryInterface $entry): ?string
-    {
-        // Try to extract image from enclosure
-        $enclosure = $entry->getEnclosure();
-
-        if ($enclosure !== null && isset($enclosure->url) && str_starts_with($enclosure->type ?? '', 'image/')) {
-            return $enclosure->url;
-        }
-
-        return null;
     }
 }

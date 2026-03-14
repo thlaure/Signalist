@@ -39,6 +39,7 @@ export default function CategoryPage() {
   const [editCategoryOpen, setEditCategoryOpen] = useState(false);
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
   const [search, setSearch] = useState('');
+  const [unreadOnly, setUnreadOnly] = useState(false);
 
   const {
     data: category,
@@ -56,7 +57,7 @@ export default function CategoryPage() {
     isError: articlesError,
     error: articlesErrorData,
     refetch: refetchArticles,
-  } = useArticles({ categoryId: id, ...(search ? { search } : {}) });
+  } = useArticles({ categoryId: id, ...(search ? { search } : {}), ...(unreadOnly ? { isRead: false } : {}) });
 
   const { data: feeds = [] } = useFeeds({ categoryId: id });
   const { data: bookmarks } = useBookmarks();
@@ -171,12 +172,16 @@ export default function CategoryPage() {
               label={`${feeds.length} feed${feeds.length !== 1 ? 's' : ''}`}
               size="small"
               variant="outlined"
+              clickable
+              onClick={() => navigate(`/feeds#${id}`)}
             />
             <Chip
               label={`${unreadCount} unread`}
               size="small"
-              color={unreadCount > 0 ? 'primary' : 'default'}
-              variant="outlined"
+              color={unreadOnly ? 'primary' : unreadCount > 0 ? 'primary' : 'default'}
+              variant={unreadOnly ? 'filled' : 'outlined'}
+              clickable
+              onClick={() => setUnreadOnly((prev) => !prev)}
             />
           </Box>
         </Box>

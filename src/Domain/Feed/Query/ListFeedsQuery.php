@@ -8,6 +8,7 @@ final readonly class ListFeedsQuery
 {
     public function __construct(
         public string $ownerId,
+        public ?string $categoryId = null,
     ) {
     }
 }

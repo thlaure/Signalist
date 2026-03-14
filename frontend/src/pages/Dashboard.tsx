@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
+import Chip from '@mui/material/Chip';
 import Grid from '@mui/material/Grid';
 import AddIcon from '@mui/icons-material/Add';
 import RssFeedIcon from '@mui/icons-material/RssFeed';
@@ -19,6 +20,7 @@ export default function Dashboard() {
   const [addFeedOpen, setAddFeedOpen] = useState(false);
   const [addCategoryOpen, setAddCategoryOpen] = useState(false);
   const [search, setSearch] = useState('');
+  const [unreadOnly, setUnreadOnly] = useState(false);
 
   const {
     data: articles,
@@ -26,7 +28,7 @@ export default function Dashboard() {
     isError: articlesError,
     error: articlesErrorData,
     refetch: refetchArticles,
-  } = useArticles(search ? { search } : undefined);
+  } = useArticles({ ...(search ? { search } : {}), ...(unreadOnly ? { isRead: false } : {}) });
 
   const { data: categories = [] } = useCategories();
   const { data: feeds = [] } = useFeeds();
@@ -86,9 +88,16 @@ export default function Dashboard() {
           <Typography variant="h4" fontWeight="bold">
             Dashboard
           </Typography>
-          <Typography variant="body2" color="text.secondary">
-            {unreadCount} unread article{unreadCount !== 1 ? 's' : ''}
-          </Typography>
+          <Box display="flex" gap={1} mt={0.5}>
+            <Chip
+              label={`${unreadCount} unread`}
+              size="small"
+              color={unreadOnly ? 'primary' : unreadCount > 0 ? 'primary' : 'default'}
+              variant={unreadOnly ? 'filled' : 'outlined'}
+              clickable
+              onClick={() => setUnreadOnly((prev) => !prev)}
+            />
+          </Box>
         </Box>
         <Box display="flex" gap={1} flexWrap="wrap">
           <Button

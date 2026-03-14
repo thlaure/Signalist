@@ -89,10 +89,9 @@ jobs:
         run: docker compose exec -T app vendor/bin/behat --no-interaction --colors
 
       - name: Audit PHP dependencies
+        # Exit 1 = vulnerabilities (blocking), exit 2 = abandoned packages (non-blocking)
         run: |
-          docker compose exec -T app composer audit; code=$?
-          # Exit 1 = vulnerabilities (blocking), exit 2 = abandoned packages (non-blocking)
-          [ $code -ne 1 ] || exit 1
+          docker compose exec -T app composer audit || { code=$?; [ "$code" -eq 2 ] || exit "$code"; }
 
       - name: Run CS Fixer (dry-run)
         run: docker compose exec -T app vendor/bin/php-cs-fixer fix --dry-run --diff

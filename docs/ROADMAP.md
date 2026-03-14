@@ -261,9 +261,42 @@
 
 ---
 
-## Phase 2 — AI Layer: Summaries, Embeddings & Semantic Search
+## Phase 2 — Landing Page
 
-### 2.1 Symfony AI Integration
+### 2.1 Design & Content
+
+| Task | Status |
+|------|--------|
+| Value proposition copywriting | Not Started |
+| Wireframes / mockup (Figma or equivalent) | Not Started |
+| Pricing tiers definition (free, team, enterprise) | Not Started |
+
+### 2.2 Implementation
+
+| Task | Status |
+|------|--------|
+| Landing page setup (separate from app) | Not Started |
+| Hero section (headline, subheadline, CTA) | Not Started |
+| Features section | Not Started |
+| Pricing section | Not Started |
+| Social proof / testimonials section | Not Started |
+| Waitlist / early access form | Not Started |
+| SEO meta tags + Open Graph | Not Started |
+| Responsive design (mobile + desktop) | Not Started |
+
+### 2.3 Infrastructure
+
+| Task | Status |
+|------|--------|
+| Domain configuration | Not Started |
+| Deploy to production (Vercel / Netlify / other) | Not Started |
+| Analytics (privacy-friendly, e.g. Plausible) | Not Started |
+
+---
+
+## Phase 3 — AI Layer: Summaries, Embeddings & Semantic Search
+
+### 3.1 Symfony AI Integration
 
 | Task | Status |
 |------|--------|
@@ -272,7 +305,7 @@
 | Environment variables for API keys | Not Started |
 | AI client adapter (`Infrastructure/AI/`) | Not Started |
 
-### 2.2 Article Embeddings (pgvector)
+### 3.2 Article Embeddings (pgvector)
 
 | Task | Status |
 |------|--------|
@@ -285,7 +318,7 @@
 | Embedding generation adapter (OpenAI / Mistral) | Not Started |
 | Unit tests for embedding pipeline | Not Started |
 
-### 2.3 Semantic Search
+### 3.3 Semantic Search
 
 | Task | Status |
 |------|--------|
@@ -299,7 +332,7 @@
 | Frontend search UI with results | Not Started |
 | Unit + integration tests | Not Started |
 
-### 2.4 LLM Summarization
+### 3.4 LLM Summarization
 
 | Task | Status |
 |------|--------|
@@ -311,7 +344,7 @@
 | Frontend summary display | Not Started |
 | Unit tests for summarization | Not Started |
 
-### 2.5 Auto-Tagging
+### 3.5 Auto-Tagging
 
 | Task | Status |
 |------|--------|
@@ -324,7 +357,7 @@
 | Frontend tag display + filtering | Not Started |
 | Unit tests | Not Started |
 
-### 2.6 Data Anonymization (GDPR)
+### 3.6 Data Anonymization (GDPR)
 
 | Task | Status |
 |------|--------|
@@ -336,9 +369,9 @@
 
 ---
 
-## Phase 3 — Automation: Newsletters, Scheduling & Sync
+## Phase 4 — Automation: Newsletters, Scheduling & Sync
 
-### 3.1 Newsletter Domain
+### 4.1 Newsletter Domain
 
 | Task | Status |
 |------|--------|
@@ -354,7 +387,7 @@
 | Newsletter API Platform resource | Not Started |
 | Unit tests for all handlers | Not Started |
 
-### 3.2 Newsletter Content Generation
+### 4.2 Newsletter Content Generation
 
 | Task | Status |
 |------|--------|
@@ -366,7 +399,7 @@
 | HTML email template | Not Started |
 | Unit tests | Not Started |
 
-### 3.3 Newsletter Scheduling
+### 4.3 Newsletter Scheduling
 
 | Task | Status |
 |------|--------|
@@ -379,7 +412,7 @@
 | Schedule management UI (frontend) | Not Started |
 | Unit + integration tests | Not Started |
 
-### 3.4 Raindrop.io Sync
+### 4.4 Raindrop.io Sync
 
 | Task | Status |
 |------|--------|
@@ -394,9 +427,49 @@
 
 ---
 
-## Phase 4 — Ecosystem: Spotlight, MCP Server & Social Sharing
+## Phase 5 — Team: Multi-User Workspace & Collaborative Curation
 
-### 4.1 Spotlight Command Interface
+### 5.1 Organization & Roles
+
+| Task | Status |
+|------|--------|
+| `Organization` entity + migration | Not Started |
+| `OrganizationMember` entity (userId, orgId, role) + migration | Not Started |
+| Roles: `admin`, `curator`, `reader` | Not Started |
+| `InviteMemberCommand` + `InviteMemberHandler` | Not Started |
+| `RemoveMemberCommand` + `RemoveMemberHandler` | Not Started |
+| `UpdateMemberRoleCommand` + `UpdateMemberRoleHandler` | Not Started |
+| Organization API endpoints | Not Started |
+| Role-based access control (Symfony voters) | Not Started |
+| Unit tests | Not Started |
+
+### 5.2 Shared Workspace
+
+| Task | Status |
+|------|--------|
+| Feeds and categories scoped to organization | Not Started |
+| Shared bookmarks with curator attribution | Not Started |
+| Collaborative annotations on bookmarks | Not Started |
+| Activity feed (who curated what, when) | Not Started |
+| Per-member read status (independent of shared articles) | Not Started |
+| Frontend team workspace UI | Not Started |
+| Unit + integration tests | Not Started |
+
+### 5.3 Billing & Plans
+
+| Task | Status |
+|------|--------|
+| Plan model (free, team, enterprise) | Not Started |
+| Per-seat pricing logic | Not Started |
+| Usage limits per plan (feeds, members, AI calls) | Not Started |
+| Stripe integration (subscriptions) | Not Started |
+| Plan management UI | Not Started |
+
+---
+
+## Phase 6 — Ecosystem: Spotlight, MCP Server & Social Sharing
+
+### 6.1 Spotlight Command Interface
 
 | Task | Status |
 |------|--------|
@@ -409,7 +482,7 @@
 | Frontend + backend integration | Not Started |
 | Unit tests for command parser | Not Started |
 
-### 4.2 MCP Server (Model Context Protocol)
+### 6.2 MCP Server (Model Context Protocol)
 
 | Task | Status |
 |------|--------|
@@ -423,7 +496,7 @@
 | Authentication for MCP endpoints | Not Started |
 | Integration tests | Not Started |
 
-### 4.3 Social Sharing
+### 6.3 Social Sharing
 
 | Task | Status |
 |------|--------|

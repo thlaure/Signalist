@@ -19,6 +19,7 @@ use function is_string;
 use function str_ends_with;
 
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * @implements ProcessorInterface<mixed, ArticleResource|null>
@@ -35,7 +36,10 @@ final readonly class ArticleStateProcessor implements ProcessorInterface
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): ?ArticleResource
     {
         $user = $this->security->getUser();
-        assert($user instanceof User);
+
+        if (!$user instanceof User) {
+            throw new AccessDeniedException();
+        }
         $ownerId = $user->getId()->toRfc4122();
 
         if ($operation instanceof Patch) {

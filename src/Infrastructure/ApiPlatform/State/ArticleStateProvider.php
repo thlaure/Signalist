@@ -26,6 +26,7 @@ use function is_string;
 
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * @implements ProviderInterface<ArticleResource|PaginatedArticlesResponse>
@@ -43,7 +44,10 @@ final readonly class ArticleStateProvider implements ProviderInterface
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): ArticleResource|PaginatedArticlesResponse
     {
         $user = $this->security->getUser();
-        assert($user instanceof User);
+
+        if (!$user instanceof User) {
+            throw new AccessDeniedException();
+        }
         $ownerId = $user->getId()->toRfc4122();
 
         if ($operation instanceof CollectionOperationInterface) {

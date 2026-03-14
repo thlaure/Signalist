@@ -15,6 +15,7 @@ final readonly class RegisterInput
 
         #[Assert\NotBlank]
         #[Assert\Length(min: 8)]
+        #[Assert\PasswordStrength(minScore: Assert\PasswordStrength::STRENGTH_MEDIUM)]
         public string $password,
     ) {
     }

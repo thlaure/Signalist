@@ -23,11 +23,14 @@ final readonly class RegisterController
     #[Route('/api/v1/auth/register', methods: [Request::METHOD_POST])]
     public function __invoke(#[MapRequestPayload] RegisterInput $input): JsonResponse
     {
-        $id = ($this->handler)(new RegisterCommand(
+        ($this->handler)(new RegisterCommand(
             email: $input->email,
             password: $input->password,
         ));
 
-        return new JsonResponse(['id' => $id], Response::HTTP_CREATED);
+        return new JsonResponse(
+            ['message' => 'If this email address is not already registered, you will receive a verification email shortly.'],
+            Response::HTTP_CREATED,
+        );
     }
 }

@@ -1,3 +1,16 @@
+---
+name: quality
+description: >
+  Runs the full quality check suite (lint, static analysis, rector, unit tests)
+  and reports results for Signalist.
+  Trigger this whenever the user wants to verify code quality before committing
+  or opening a PR, after finishing an implementation, when CI is failing, or
+  when they ask about linting, PHPStan errors, test results, or code style.
+  Signals: "run quality", "check the code", "does it pass?", "run the tests",
+  "any lint errors?", "is it ready to commit?", "make quality". Use this skill
+  proactively after any implementation session to catch issues early.
+---
+
 Run the full quality check suite and report results.
 
 Execute in order:

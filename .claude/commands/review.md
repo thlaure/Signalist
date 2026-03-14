@@ -1,3 +1,16 @@
+---
+name: review
+description: >
+  Performs a structured code review of current changes against Signalist's
+  architecture, quality, security, and testing standards.
+  Trigger this whenever the user wants feedback on code they've written or
+  that was just implemented — before opening a PR, after finishing a feature,
+  when they ask "does this look right?", "is this correct?", "can you review
+  this?", or "check my changes". Also trigger when the user explicitly says
+  "review" or asks whether the code follows the project's conventions.
+  Use this skill proactively at the end of any feature or fix session.
+---
+
 Perform a code review of the current changes. Context: $ARGUMENTS
 
 If no context is given, run `git diff HEAD` and `git diff --staged` to get changes.

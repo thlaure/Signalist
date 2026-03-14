@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'CMD=$(echo \"$CLAUDE_TOOL_INPUT\" | python3 -c \"import sys,json; print(json.load(sys.stdin).get(\\\"command\\\",\\\"\\\"))\" 2>/dev/null || true); if echo \"$CMD\" | grep -qE \"(git commit|git push)\"; then echo \"Reminder: ensure make quality passed before this commit\" >&2; fi'"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -52,11 +52,6 @@ Use this template to ask the user:
 
 ## Step 2: Explore Context
 
-### Read Domain Context
-```
-.claude/domains/{relevant-domain}/context.md
-```
-
 ### Check Existing Code
 - [ ] Related entities in `src/Entity/`
 - [ ] Similar handlers in `src/Domain/`
@@ -200,47 +195,27 @@ test(x): add CreateXHandler unit tests
 
 ### Test Naming
 ```
-test{Method}_{Scenario}_{Expected}
+test{Method}{Scenario}{Expected}
 ```
+> camelCase only — no underscores (PHP CS Fixer enforces this)
 
 ### Run Tests
 ```bash
-make tests          # All tests
-make tests-unit     # Unit only
-make analyse        # Static analysis
-make lint           # Code style
+make tests-unit     # Unit tests
+make quality        # lint + analyse + rector
+docker compose exec app vendor/bin/behat --suite=api  # API tests
 ```
 
 ---
 
 ## Step 7: Review
 
-### Hand Off to @reviewer
-```markdown
-## Ready for Review
-
-### Feature
-[Name]
-
-### PR/Changes
-- [List of files]
-
-### Test Coverage
-- Unit: X tests
-- Web: Y tests
-- Coverage: Z%
-
-### Review Focus
-- [ ] CQRS compliance
-- [ ] Error handling
-- [ ] Input validation
-- [ ] Test coverage
-```
+Use `/review` to run a self-contained code review against architecture, quality, security, and test criteria.
 
 ### Address Feedback
 - Fix issues raised
-- Run tests again
-- Request re-review
+- Run `make quality` again
+- Re-run tests
 
 ---
 
@@ -284,9 +259,8 @@ Present to user for final approval:
 [How to test/verify the feature]
 
 ### Documentation Updated
-- [ ] Domain context updated (if behavior changed)
-- [ ] API docs reflect new endpoints
-- [ ] README updated (if needed)
+- [ ] `docs/ROADMAP.md` updated to mark tasks as Done
+- [ ] API docs reflect new endpoints (OpenAPI auto-generated)
 
 **Does this match what you requested?**
 ```
@@ -310,44 +284,7 @@ Present to user for final approval:
 
 ### Merge
 ```bash
-git checkout main
-git pull
-git merge feature/x --no-ff
-git push
-```
-
----
-
-## Multi-Agent Coordination
-
-If feature spans multiple agents:
-
-### Coordination Template
-```markdown
-## Feature: [Name]
-
-### @engineer
-- [ ] Backend API
-- [ ] Domain logic
-
-### @frontend
-- [ ] UI components
-- [ ] API integration
-
-### @ai-specialist (if needed)
-- [ ] LLM integration
-- [ ] Embeddings
-
-### @infra (if needed)
-- [ ] Schema migration
-- [ ] Index optimization
-
-### Handoff Order
-1. @engineer creates API contract
-2. @frontend builds UI in parallel
-3. @ai-specialist integrates AI features
-4. @infra optimizes if needed
-5. @reviewer reviews all changes
+gh pr create  # create PR, wait for CI to pass, then merge
 ```
 
 ---

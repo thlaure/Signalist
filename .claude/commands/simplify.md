@@ -1,0 +1,1 @@
+Review the recently changed code for clarity, consistency, and maintainability, then fix any issues found. Focus on: removing duplication, improving readability, applying project conventions from `.claude/CLAUDE.md`. Do not change behavior or add features.

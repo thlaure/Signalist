@@ -217,7 +217,7 @@ try {
  * Regression test for bug: [description]
  * @see [Issue link if exists]
  */
-public function testMethodName_BugScenario_CorrectBehavior(): void
+public function testMethodNameBugScenarioCorrectBehavior(): void
 {
     // Arrange: Set up the exact conditions that caused the bug
 
@@ -256,31 +256,7 @@ git stash pop
 - [ ] All existing tests pass
 - [ ] Code follows conventions
 
-### Hand Off to @reviewer
-```markdown
-## Bug Fix Review
-
-### Bug
-[Summary]
-
-### Root Cause
-[Brief explanation]
-
-### Fix
-[What was changed]
-
-### Regression Test
-`tests/Unit/Domain/X/XHandlerTest::testMethodName_BugScenario_CorrectBehavior`
-
-### Files Changed
-- `src/Domain/X/Handler/XHandler.php` (fix)
-- `tests/Unit/Domain/X/XHandlerTest.php` (test)
-
-### Testing Done
-- [ ] Bug no longer reproduces
-- [ ] New test passes
-- [ ] All existing tests pass
-```
+Use `/review` for a structured code review of the fix before merging.
 
 ---
 

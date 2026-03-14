@@ -467,9 +467,6 @@
 |------|--------|
 | `CLAUDE.md` (project guide) | Done |
 | `README.md` | Done |
-| `docs/MARKETING-STRATEGY.md` | Done |
-| `docs/TESTING-GUIDE.md` | Done |
 | `docs/ROADMAP.md` (this file) | Done |
-| AI agent definitions (`.ai-agents/`) | Done |
+| `.claude/` (slash commands + workflows) | Done |
 | API documentation (OpenAPI / Swagger) | Done |
-| Architecture decision records (ADRs) | Done |

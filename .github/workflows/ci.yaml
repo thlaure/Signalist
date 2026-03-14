@@ -48,12 +48,12 @@ jobs:
 
       - name: Check HTTP reachability
         run: |
-          for i in {1..30}; do
+          for i in {1.10}; do
             if curl -s -f http://localhost:8000/api/v1 > /dev/null 2>&1; then
               echo "App is ready"
               break
             fi
-            echo "Waiting for app... ($i/30)"
+            echo "Waiting for app... ($i/10)"
             sleep 2
           done
           curl -v --fail-with-body http://localhost:8000/api/v1 || true

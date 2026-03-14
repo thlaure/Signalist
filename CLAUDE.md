@@ -50,10 +50,12 @@ docker compose up -d --build
 
 ## 1.2 Project Phases
 
-1. **Phase 1 (MVP):** Core RSS engine, PostgreSQL schema, Dashboard UI ✅
-2. **Phase 2 (AI Layer):** Symfony AI for summaries and auto-tagging
-3. **Phase 3 (Automation):** Newsletter scheduler, Raindrop.io sync
-4. **Phase 4 (Ecosystem):** Spotlight command engine, MCP server
+1. **Phase 1 (MVP):** Core RSS engine, PostgreSQL schema, Inbox UI ✅
+2. **Phase 2 (Landing Page):** Marketing site, waitlist, pricing
+3. **Phase 3 (AI Layer):** Symfony AI for summaries and auto-tagging
+4. **Phase 4 (Automation):** Newsletter scheduler, Raindrop.io sync
+5. **Phase 5 (Team):** Multi-user workspace, roles, billing
+6. **Phase 6 (Ecosystem):** Spotlight command engine, MCP server, social sharing
 
 ---
 

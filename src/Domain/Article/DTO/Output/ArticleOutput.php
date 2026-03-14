@@ -24,6 +24,7 @@ final readonly class ArticleOutput
         public string $feedTitle,
         public string $categoryId,
         public string $categoryName,
+        public ?string $categoryColor,
     ) {
     }
 
@@ -47,6 +48,7 @@ final readonly class ArticleOutput
             feedTitle: $feed->getTitle(),
             categoryId: $category->getId()->toRfc4122(),
             categoryName: $category->getName(),
+            categoryColor: $category->getColor(),
         );
     }
 }

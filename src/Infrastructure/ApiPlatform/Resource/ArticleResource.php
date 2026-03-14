@@ -57,6 +57,7 @@ final readonly class ArticleResource
         public string $feedTitle,
         public string $categoryId,
         public string $categoryName,
+        public ?string $categoryColor,
     ) {
     }
 }

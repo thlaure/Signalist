@@ -102,6 +102,7 @@ final readonly class ArticleStateProvider implements ProviderInterface
             feedTitle: $output->feedTitle,
             categoryId: $output->categoryId,
             categoryName: $output->categoryName,
+            categoryColor: $output->categoryColor,
         );
     }
 }

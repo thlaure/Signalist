@@ -79,7 +79,7 @@ final readonly class CrawlFeedMessageHandler
             ]);
         } catch (Exception $e) {
             $feed->setStatus(Feed::STATUS_ERROR);
-            $feed->setLastError($e->getMessage());
+            $feed->setLastError('Feed could not be fetched. Check the URL and try again.');
             $feed->setUpdatedAt(new DateTimeImmutable());
 
             $this->feedRepository->save($feed);

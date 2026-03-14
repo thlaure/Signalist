@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import DOMPurify from 'dompurify';
 import { useParams, useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -178,7 +179,7 @@ export default function ArticlePage() {
             lineHeight: 1.8,
             fontSize: '1.1rem',
           }}
-          dangerouslySetInnerHTML={{ __html: article.content }}
+          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(article.content) }}
         />
       ) : article.summary ? (
         <Typography variant="body1" sx={{ lineHeight: 1.8, fontSize: '1.1rem' }}>

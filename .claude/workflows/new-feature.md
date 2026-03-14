@@ -13,9 +13,10 @@ Use this workflow when adding new functionality to Signalist.
 4. APPROVE     → Get user sign-off
 5. IMPLEMENT   → Build incrementally
 6. TEST        → Write and run tests
-7. REVIEW      → Code review
-8. ACCEPT      → Verify against original request
-9. MERGE       → Complete
+7. SECURITY    → Security checklist
+8. REVIEW      → Code review
+9. ACCEPT      → Verify against original request
+10. MERGE      → Complete
 ```
 
 ---
@@ -208,7 +209,50 @@ docker compose exec app vendor/bin/behat --suite=api  # API tests
 
 ---
 
-## Step 7: Review
+## Step 7: Security
+
+Run this checklist against every feature before code review. Tick only what is relevant — skip rows that don't apply.
+
+### Input & Output
+- [ ] All user-supplied input validated via InputDTO constraints (`#[Assert\*]`)
+- [ ] No raw user content rendered as HTML without sanitization (DOMPurify / HTMLPurifier)
+- [ ] URL fields validated against SSRF-safe constraint (`#[SsrfSafeUrl]`) if the app fetches the URL
+- [ ] Article/external content stored sanitized; URLs validated as `http/https` only
+
+### Authentication & Authorization
+- [ ] All new endpoints are behind JWT firewall (no `PUBLIC_ACCESS` unless intentional)
+- [ ] State processors/providers use `if (!$user instanceof User) throw new AccessDeniedException()` — never `assert()`
+- [ ] No user can access another user's resources (ownerId scope enforced in queries)
+
+### Sensitive Data & GDPR
+- [ ] No secrets, tokens, or credentials hardcoded — use environment variables
+- [ ] No personal data logged in plain text
+- [ ] New entities containing personal data have `deletedAt` soft-delete column
+- [ ] Data sent to external AI services is anonymized
+
+### API Design
+- [ ] New endpoints return RFC 7807 problem details on error
+- [ ] No internal error messages exposed to API consumers (generic messages only)
+- [ ] Rate limiting considered if endpoint is public or auth-related
+
+### Dependency & Supply Chain
+- [ ] Any new composer package checked: `composer audit`
+- [ ] Any new npm package checked: `npm audit --audit-level=high`
+
+### Quick Commands
+```bash
+# Check PHP dependencies for known vulnerabilities
+docker compose exec app composer audit
+
+# Check JS dependencies
+cd frontend && npm audit --audit-level=high
+```
+
+If any checklist item raises a concern, fix it before proceeding to review.
+
+---
+
+## Step 8: Review
 
 Use `/review` to run a self-contained code review against architecture, quality, security, and test criteria.
 
@@ -219,7 +263,7 @@ Use `/review` to run a self-contained code review against architecture, quality,
 
 ---
 
-## Step 8: Acceptance Check
+## Step 9: Acceptance Check
 
 **Before marking complete, verify the implementation matches the original request.**
 
@@ -272,7 +316,7 @@ Present to user for final approval:
 
 ---
 
-## Step 9: Merge
+## Step 10: Merge
 
 ### Pre-Merge Checklist
 - [ ] All tests passing

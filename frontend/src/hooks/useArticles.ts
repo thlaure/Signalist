@@ -6,6 +6,7 @@ import {
   markArticleUnread,
   type ArticleFilters,
 } from '../api/articles';
+import type { Article } from '../types';
 
 export const ARTICLES_QUERY_KEY = ['articles'];
 
@@ -24,14 +25,19 @@ export function useArticle(id: string) {
   });
 }
 
+function updateArticleInCache(queryClient: ReturnType<typeof useQueryClient>, updated: Article) {
+  queryClient.setQueriesData<Article[]>(
+    { queryKey: ARTICLES_QUERY_KEY },
+    (old) => old?.map((a) => (a.id === updated.id ? updated : a)),
+  );
+}
+
 export function useMarkArticleRead() {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (id: string) => markArticleRead(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ARTICLES_QUERY_KEY });
-    },
+    onSuccess: (updated) => updateArticleInCache(queryClient, updated),
   });
 }
 
@@ -40,9 +46,7 @@ export function useMarkArticleUnread() {
 
   return useMutation({
     mutationFn: (id: string) => markArticleUnread(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ARTICLES_QUERY_KEY });
-    },
+    onSuccess: (updated) => updateArticleInCache(queryClient, updated),
   });
 }
 
@@ -52,8 +56,6 @@ export function useToggleArticleRead() {
   return useMutation({
     mutationFn: ({ id, isRead }: { id: string; isRead: boolean }) =>
       isRead ? markArticleUnread(id) : markArticleRead(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ARTICLES_QUERY_KEY });
-    },
+    onSuccess: (updated) => updateArticleInCache(queryClient, updated),
   });
 }

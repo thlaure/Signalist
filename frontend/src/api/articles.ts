@@ -36,12 +36,14 @@ export async function getArticle(id: string): Promise<Article> {
   return response.data;
 }
 
+const PATCH_HEADERS = { headers: { 'Content-Type': 'application/merge-patch+json' } };
+
 export async function markArticleRead(id: string): Promise<Article> {
-  const response = await apiClient.patch<Article>(`/articles/${id}/read`);
+  const response = await apiClient.patch<Article>(`/articles/${id}/read`, {}, PATCH_HEADERS);
   return response.data;
 }
 
 export async function markArticleUnread(id: string): Promise<Article> {
-  const response = await apiClient.patch<Article>(`/articles/${id}/unread`);
+  const response = await apiClient.patch<Article>(`/articles/${id}/unread`, {}, PATCH_HEADERS);
   return response.data;
 }

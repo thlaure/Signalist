@@ -10,7 +10,7 @@
     "never": "Never"
   },
   "nav": {
-    "feed": "Feed",
+    "feed": "Inbox",
     "feeds": "Feeds",
     "bookmarks": "Bookmarks",
     "categories": "Categories",
@@ -49,7 +49,7 @@
     "backToSignIn": "Back to sign in"
   },
   "feed": {
-    "title": "Feed",
+    "title": "Inbox",
     "unread": "{{count}} unread",
     "addCategory": "Category",
     "addFeed": "Add Feed",

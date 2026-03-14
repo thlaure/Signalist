@@ -10,7 +10,7 @@
     "never": "Jamais"
   },
   "nav": {
-    "feed": "Feed",
+    "feed": "Inbox",
     "feeds": "Flux",
     "bookmarks": "Favoris",
     "categories": "Catégories",
@@ -49,7 +49,7 @@
     "backToSignIn": "Retour à la connexion"
   },
   "feed": {
-    "title": "Feed",
+    "title": "Inbox",
     "unread": "{{count}} non lu",
     "addCategory": "Catégorie",
     "addFeed": "Ajouter un flux",

@@ -14,6 +14,7 @@ import RssFeedIcon from '@mui/icons-material/RssFeed';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { useTranslation } from 'react-i18next';
 import ArticleList from '../components/Article/ArticleList';
 import SearchBar from '../components/Article/SearchBar';
 import AddFeedDialog from '../components/Feed/AddFeedDialog';
@@ -34,12 +35,14 @@ import type { CreateCategoryInput, AddFeedInput } from '../types';
 export default function CategoryPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const [addFeedOpen, setAddFeedOpen] = useState(false);
   const [editCategoryOpen, setEditCategoryOpen] = useState(false);
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
   const [search, setSearch] = useState('');
   const [unreadOnly, setUnreadOnly] = useState(false);
+  const [page, setPage] = useState(1);
 
   const {
     data: category,
@@ -57,7 +60,7 @@ export default function CategoryPage() {
     isError: articlesError,
     error: articlesErrorData,
     refetch: refetchArticles,
-  } = useArticles({ categoryId: id, ...(search ? { search } : {}), ...(unreadOnly ? { isRead: false } : {}) });
+  } = useArticles({ categoryId: id, ...(search ? { search } : {}), ...(unreadOnly ? { isRead: false } : {}), page });
 
   const { data: feeds = [] } = useFeeds({ categoryId: id });
   const { data: bookmarks } = useBookmarks();
@@ -91,11 +94,7 @@ export default function CategoryPage() {
 
   const handleDeleteCategory = () => {
     if (!id) return;
-    if (
-      window.confirm(
-        'Are you sure you want to delete this category? All feeds will be removed.'
-      )
-    ) {
+    if (window.confirm(t('category.deleteConfirm'))) {
       deleteCategory.mutate(id, {
         onSuccess: () => navigate('/'),
       });
@@ -123,20 +122,20 @@ export default function CategoryPage() {
   };
 
   if (categoryLoading) {
-    return <LoadingSpinner message="Loading category..." />;
+    return <LoadingSpinner message={t('category.loading')} />;
   }
 
   if (categoryError || !category) {
     return (
       <ErrorAlert
-        title="Failed to load category"
-        message={categoryErrorData?.message || 'Category not found'}
+        title={t('category.failedToLoad')}
+        message={categoryErrorData?.message || t('category.notFound')}
         onRetry={refetchCategory}
       />
     );
   }
 
-  const unreadCount = articles?.filter((a) => !a.isRead).length ?? 0;
+  const unreadCount = articles?.items.filter((a) => !a.isRead).length ?? 0;
 
   return (
     <Box>
@@ -169,19 +168,19 @@ export default function CategoryPage() {
           )}
           <Box display="flex" gap={1}>
             <Chip
-              label={`${feeds.length} feed${feeds.length !== 1 ? 's' : ''}`}
+              label={t('category.feeds', { count: feeds.length })}
               size="small"
               variant="outlined"
               clickable
               onClick={() => navigate(`/feeds#${id}`)}
             />
             <Chip
-              label={`${unreadCount} unread`}
+              label={t('category.unread', { count: unreadCount })}
               size="small"
               color={unreadOnly ? 'primary' : unreadCount > 0 ? 'primary' : 'default'}
               variant={unreadOnly ? 'filled' : 'outlined'}
               clickable
-              onClick={() => setUnreadOnly((prev) => !prev)}
+              onClick={() => { setUnreadOnly((prev) => !prev); setPage(1); }}
             />
           </Box>
         </Box>
@@ -191,7 +190,7 @@ export default function CategoryPage() {
             startIcon={<RssFeedIcon />}
             onClick={() => setAddFeedOpen(true)}
           >
-            Add Feed
+            {t('category.addFeed')}
           </Button>
           <IconButton onClick={(e) => setMenuAnchor(e.currentTarget)}>
             <MoreVertIcon />
@@ -210,25 +209,25 @@ export default function CategoryPage() {
               <ListItemIcon>
                 <EditIcon fontSize="small" />
               </ListItemIcon>
-              <ListItemText>Edit Category</ListItemText>
+              <ListItemText>{t('category.editCategory')}</ListItemText>
             </MenuItem>
             <Divider />
             <MenuItem onClick={handleDeleteCategory} sx={{ color: 'error.main' }}>
               <ListItemIcon>
                 <DeleteIcon fontSize="small" color="error" />
               </ListItemIcon>
-              <ListItemText>Delete Category</ListItemText>
+              <ListItemText>{t('category.deleteCategory')}</ListItemText>
             </MenuItem>
           </Menu>
         </Box>
       </Box>
 
       <Box mb={2}>
-        <SearchBar value={search} onChange={setSearch} />
+        <SearchBar value={search} onChange={(v) => { setSearch(v); setPage(1); }} />
       </Box>
 
       <ArticleList
-        articles={articles}
+        data={articles}
         bookmarks={bookmarks}
         isLoading={articlesLoading}
         isError={articlesError}
@@ -236,6 +235,7 @@ export default function CategoryPage() {
         onRefetch={refetchArticles}
         onToggleRead={handleToggleRead}
         onToggleBookmark={handleToggleBookmark}
+        onPageChange={setPage}
       />
 
       <AddFeedDialog

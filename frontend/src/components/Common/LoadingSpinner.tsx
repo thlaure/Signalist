@@ -1,12 +1,15 @@
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
+import { useTranslation } from 'react-i18next';
 
 interface LoadingSpinnerProps {
   message?: string;
 }
 
-export default function LoadingSpinner({ message = 'Loading...' }: LoadingSpinnerProps) {
+export default function LoadingSpinner({ message }: LoadingSpinnerProps) {
+  const { t } = useTranslation();
+
   return (
     <Box
       display="flex"
@@ -18,7 +21,7 @@ export default function LoadingSpinner({ message = 'Loading...' }: LoadingSpinne
     >
       <CircularProgress />
       <Typography variant="body2" color="text.secondary">
-        {message}
+        {message ?? t('common.loading')}
       </Typography>
     </Box>
   );

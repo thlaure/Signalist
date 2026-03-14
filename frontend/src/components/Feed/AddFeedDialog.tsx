@@ -10,6 +10,7 @@ import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
+import { useTranslation } from 'react-i18next';
 import type { Category, AddFeedInput } from '../../types';
 
 interface AddFeedDialogProps {
@@ -27,6 +28,7 @@ export default function AddFeedDialog({
   categories,
   isLoading = false,
 }: AddFeedDialogProps) {
+  const { t } = useTranslation();
   const [url, setUrl] = useState('');
   const [title, setTitle] = useState('');
   const [categoryId, setCategoryId] = useState('');
@@ -50,31 +52,31 @@ export default function AddFeedDialog({
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
       <form onSubmit={handleSubmit}>
-        <DialogTitle>Add Feed</DialogTitle>
+        <DialogTitle>{t('addFeedDialog.title')}</DialogTitle>
         <DialogContent>
           <Box display="flex" flexDirection="column" gap={2} mt={1}>
             <TextField
-              label="Feed URL"
+              label={t('addFeedDialog.urlLabel')}
               value={url}
               onChange={(e) => setUrl(e.target.value)}
               required
               fullWidth
               autoFocus
-              placeholder="https://example.com/feed.xml"
+              placeholder={t('addFeedDialog.urlPlaceholder')}
               type="url"
             />
             <TextField
-              label="Title (optional)"
+              label={t('addFeedDialog.titleLabel')}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               fullWidth
-              helperText="Leave empty to auto-detect from feed"
+              helperText={t('addFeedDialog.titleHelper')}
             />
             <FormControl fullWidth required>
-              <InputLabel>Category</InputLabel>
+              <InputLabel>{t('addFeedDialog.categoryLabel')}</InputLabel>
               <Select
                 value={categoryId}
-                label="Category"
+                label={t('addFeedDialog.categoryLabel')}
                 onChange={(e) => setCategoryId(e.target.value)}
               >
                 {categories.map((category) => (
@@ -88,10 +90,10 @@ export default function AddFeedDialog({
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} disabled={isLoading}>
-            Cancel
+            {t('addFeedDialog.cancel')}
           </Button>
           <Button type="submit" variant="contained" disabled={isLoading}>
-            {isLoading ? 'Adding...' : 'Add Feed'}
+            {isLoading ? t('addFeedDialog.adding') : t('addFeedDialog.addFeed')}
           </Button>
         </DialogActions>
       </form>

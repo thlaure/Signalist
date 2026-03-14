@@ -13,6 +13,7 @@ import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import { useTranslation } from 'react-i18next';
 import LoadingSpinner from '../components/Common/LoadingSpinner';
 import ErrorAlert from '../components/Common/ErrorAlert';
 import { useArticle, useMarkArticleRead, useMarkArticleUnread } from '../hooks/useArticles';
@@ -21,6 +22,7 @@ import { useBookmarks, useCreateBookmark, useDeleteBookmark } from '../hooks/use
 export default function ArticlePage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
 
   const {
     data: article,
@@ -66,23 +68,26 @@ export default function ArticlePage() {
 
   const formatDate = (dateString: string | null) => {
     if (!dateString) return '';
-    return new Date(dateString).toLocaleDateString('en-US', {
-      weekday: 'long',
-      month: 'long',
-      day: 'numeric',
-      year: 'numeric',
-    });
+    return new Date(dateString).toLocaleDateString(
+      i18n.language === 'fr' ? 'fr-FR' : 'en-US',
+      {
+        weekday: 'long',
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric',
+      }
+    );
   };
 
   if (isLoading) {
-    return <LoadingSpinner message="Loading article..." />;
+    return <LoadingSpinner message={t('article.loading')} />;
   }
 
   if (isError || !article) {
     return (
       <ErrorAlert
-        title="Failed to load article"
-        message={error?.message || 'Article not found'}
+        title={t('article.failedToLoad')}
+        message={error?.message || t('article.notFound')}
         onRetry={refetch}
       />
     );
@@ -96,7 +101,7 @@ export default function ArticlePage() {
         onClick={() => navigate(-1)}
         sx={{ mb: 2 }}
       >
-        Back
+        {t('article.back')}
       </Button>
 
       {/* Banner image */}
@@ -138,12 +143,12 @@ export default function ArticlePage() {
 
       {/* Action bar */}
       <Box display="flex" alignItems="center" gap={1} mb={3}>
-        <Tooltip title={article.isRead ? 'Mark as unread' : 'Mark as read'}>
+        <Tooltip title={article.isRead ? t('article.markAsUnread') : t('article.markAsRead')}>
           <IconButton onClick={handleToggleRead} color={article.isRead ? 'primary' : 'default'}>
             {article.isRead ? <CheckCircleIcon /> : <CheckCircleOutlineIcon />}
           </IconButton>
         </Tooltip>
-        <Tooltip title={isBookmarked ? 'Remove bookmark' : 'Add bookmark'}>
+        <Tooltip title={isBookmarked ? t('article.removeBookmark') : t('article.addBookmark')}>
           <IconButton onClick={handleToggleBookmark} color={isBookmarked ? 'primary' : 'default'}>
             {isBookmarked ? <BookmarkIcon /> : <BookmarkBorderIcon />}
           </IconButton>
@@ -157,7 +162,7 @@ export default function ArticlePage() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Open Original
+          {t('article.openOriginalButton')}
         </Button>
       </Box>
 
@@ -182,7 +187,7 @@ export default function ArticlePage() {
       ) : (
         <Box textAlign="center" py={4}>
           <Typography variant="body1" color="text.secondary">
-            No content available.
+            {t('article.noContent')}
           </Typography>
           <Button
             variant="contained"
@@ -193,7 +198,7 @@ export default function ArticlePage() {
             rel="noopener noreferrer"
             sx={{ mt: 2 }}
           >
-            Read on Original Site
+            {t('article.readOnOriginal')}
           </Button>
         </Box>
       )}

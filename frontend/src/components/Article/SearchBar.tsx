@@ -4,6 +4,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
+import { useTranslation } from 'react-i18next';
 
 interface SearchBarProps {
   value: string;
@@ -14,8 +15,9 @@ interface SearchBarProps {
 export default function SearchBar({
   value,
   onChange,
-  placeholder = 'Search articles...',
+  placeholder,
 }: SearchBarProps) {
+  const { t } = useTranslation();
   const [localValue, setLocalValue] = useState(value);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -52,7 +54,7 @@ export default function SearchBar({
     <TextField
       value={localValue}
       onChange={(e) => handleChange(e.target.value)}
-      placeholder={placeholder}
+      placeholder={placeholder ?? t('searchBar.placeholder')}
       size="small"
       fullWidth
       slotProps={{

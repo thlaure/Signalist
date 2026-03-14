@@ -1,13 +1,15 @@
 import Box from '@mui/material/Box';
+import Pagination from '@mui/material/Pagination';
+import { useTranslation } from 'react-i18next';
 import ArticleCard from './ArticleCard';
 import LoadingSpinner from '../Common/LoadingSpinner';
 import ErrorAlert from '../Common/ErrorAlert';
 import EmptyState from '../Common/EmptyState';
-import type { Article, Bookmark } from '../../types';
+import type { Article, Bookmark, PaginatedArticles } from '../../types';
 import ArticleIcon from '@mui/icons-material/Article';
 
 interface ArticleListProps {
-  articles: Article[] | undefined;
+  data: PaginatedArticles | undefined;
   bookmarks: Bookmark[] | undefined;
   isLoading: boolean;
   isError: boolean;
@@ -15,11 +17,12 @@ interface ArticleListProps {
   onRefetch: () => void;
   onToggleRead: (id: string, isRead: boolean) => void;
   onToggleBookmark: (id: string, isBookmarked: boolean) => void;
+  onPageChange: (page: number) => void;
   emptyMessage?: string;
 }
 
 export default function ArticleList({
-  articles,
+  data,
   bookmarks,
   isLoading,
   isError,
@@ -27,32 +30,36 @@ export default function ArticleList({
   onRefetch,
   onToggleRead,
   onToggleBookmark,
-  emptyMessage = 'No articles found',
+  onPageChange,
+  emptyMessage,
 }: ArticleListProps) {
+  const { t } = useTranslation();
   const bookmarkedArticleIds = new Set(
     bookmarks?.map((b) => b.articleId) || []
   );
 
   if (isLoading) {
-    return <LoadingSpinner message="Loading articles..." />;
+    return <LoadingSpinner message={t('articleList.loading')} />;
   }
 
   if (isError) {
     return (
       <ErrorAlert
-        title="Failed to load articles"
-        message={error?.message || 'An error occurred'}
+        title={t('articleList.failedToLoad')}
+        message={error?.message || t('common.error')}
         onRetry={onRefetch}
       />
     );
   }
 
-  if (!articles || articles.length === 0) {
+  const articles: Article[] = data?.items ?? [];
+
+  if (articles.length === 0) {
     return (
       <EmptyState
         icon={<ArticleIcon fontSize="inherit" />}
-        title={emptyMessage}
-        description="Articles will appear here once feeds are crawled"
+        title={emptyMessage ?? t('articleList.noArticles')}
+        description={t('articleList.willAppear')}
       />
     );
   }
@@ -68,6 +75,18 @@ export default function ArticleList({
           onToggleBookmark={onToggleBookmark}
         />
       ))}
+
+      {data && data.pages > 1 && (
+        <Box display="flex" justifyContent="center" mt={3}>
+          <Pagination
+            count={data.pages}
+            page={data.page}
+            onChange={(_, page) => onPageChange(page)}
+            color="primary"
+            shape="rounded"
+          />
+        </Box>
+      )}
     </Box>
   );
 }

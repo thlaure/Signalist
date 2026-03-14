@@ -33,18 +33,20 @@ final readonly class DoctrineArticleRepository implements ArticleRepositoryInter
     }
 
     /**
-     * @param array{feedId?: string, categoryId?: string, isRead?: bool, ownerId?: string} $filters
+     * @param array{feedId?: string, categoryId?: string, isRead?: bool, ownerId?: string, search?: string} $filters
      *
      * @return Article[]
      */
-    public function findAll(array $filters = []): array
+    public function findAll(array $filters = [], int $page = 1, int $limit = 20): array
     {
         $qb = $this->entityManager->createQueryBuilder()
             ->select('a')
             ->from(Article::class, 'a')
             ->join('a.feed', 'f')
             ->orderBy('a.publishedAt', 'DESC')
-            ->addOrderBy('a.createdAt', 'DESC');
+            ->addOrderBy('a.createdAt', 'DESC')
+            ->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit);
 
         $this->applyFilters($qb, $filters);
 
@@ -52,6 +54,21 @@ final readonly class DoctrineArticleRepository implements ArticleRepositoryInter
         $result = $qb->getQuery()->getResult();
 
         return $result;
+    }
+
+    /**
+     * @param array{feedId?: string, categoryId?: string, isRead?: bool, ownerId?: string, search?: string} $filters
+     */
+    public function countAll(array $filters = []): int
+    {
+        $qb = $this->entityManager->createQueryBuilder()
+            ->select('COUNT(a.id)')
+            ->from(Article::class, 'a')
+            ->join('a.feed', 'f');
+
+        $this->applyFilters($qb, $filters);
+
+        return (int) $qb->getQuery()->getSingleScalarResult();
     }
 
     /**

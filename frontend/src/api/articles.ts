@@ -1,14 +1,16 @@
 import apiClient from './client';
-import type { Article } from '../types';
+import type { Article, PaginatedArticles } from '../types';
 
 export interface ArticleFilters {
   feedId?: string;
   categoryId?: string;
   isRead?: boolean;
   search?: string;
+  page?: number;
+  limit?: number;
 }
 
-export async function getArticles(filters?: ArticleFilters): Promise<Article[]> {
+export async function getArticles(filters?: ArticleFilters): Promise<PaginatedArticles> {
   const params = new URLSearchParams();
 
   if (filters?.feedId) {
@@ -23,11 +25,17 @@ export async function getArticles(filters?: ArticleFilters): Promise<Article[]> 
   if (filters?.search) {
     params.append('search', filters.search);
   }
+  if (filters?.page) {
+    params.append('page', String(filters.page));
+  }
+  if (filters?.limit) {
+    params.append('limit', String(filters.limit));
+  }
 
   const queryString = params.toString();
   const url = queryString ? `/articles?${queryString}` : '/articles';
 
-  const response = await apiClient.get<Article[]>(url);
+  const response = await apiClient.get<PaginatedArticles>(url);
   return response.data;
 }
 

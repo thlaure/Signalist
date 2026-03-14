@@ -18,6 +18,7 @@ import CircleIcon from '@mui/icons-material/Circle';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import LogoutIcon from '@mui/icons-material/Logout';
+import { useTranslation } from 'react-i18next';
 import { useCategories } from '../../hooks/useCategories';
 import { useAuth } from '../../hooks/useAuth';
 
@@ -53,6 +54,7 @@ export default function Sidebar({
   const { data: categories = [] } = useCategories();
   const { token, logout } = useAuth();
   const email = getUserEmail(token);
+  const { t, i18n } = useTranslation();
 
   const handleNavigation = (path: string) => {
     navigate(path);
@@ -63,17 +65,25 @@ export default function Sidebar({
 
   const currentWidth = collapsed ? collapsedWidth : drawerWidth;
 
+  const toggleLanguage = () => {
+    const next = i18n.language === 'fr' ? 'en' : 'fr';
+    i18n.changeLanguage(next);
+    localStorage.setItem('language', next);
+  };
+
   const navItems = [
-    { label: 'Dashboard', icon: <HomeIcon />, path: '/' },
-    { label: 'Feeds', icon: <RssFeedIcon />, path: '/feeds' },
-    { label: 'Bookmarks', icon: <BookmarkIcon />, path: '/bookmarks' },
+    { label: t('nav.dashboard'), icon: <HomeIcon />, path: '/' },
+    { label: t('nav.feeds'), icon: <RssFeedIcon />, path: '/feeds' },
+    { label: t('nav.bookmarks'), icon: <BookmarkIcon />, path: '/bookmarks' },
   ];
 
   const drawerContent = (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       {/* Logo */}
-      <Box sx={{ p: 2, display: 'flex', alignItems: 'center', minHeight: 48 }}>
-        {!collapsed && (
+      <Box sx={{ p: 2, display: 'flex', alignItems: 'center', justifyContent: collapsed ? 'center' : 'flex-start', minHeight: 48 }}>
+        {collapsed ? (
+          <Box component="img" src="/favicon.svg" alt="Signalist" sx={{ width: 28, height: 28 }} />
+        ) : (
           <Typography variant="h6" color="primary" fontWeight="bold">
             Signalist
           </Typography>
@@ -92,6 +102,7 @@ export default function Sidebar({
                   minHeight: 44,
                   justifyContent: collapsed ? 'center' : 'initial',
                   px: collapsed ? 2 : 2.5,
+                  borderRadius: 0,
                 }}
               >
                 <ListItemIcon
@@ -119,7 +130,7 @@ export default function Sidebar({
               color="text.secondary"
               sx={{ textTransform: 'uppercase', fontWeight: 600, letterSpacing: '0.05em' }}
             >
-              Categories
+              {t('nav.categories')}
             </Typography>
           </Box>
         )}
@@ -140,6 +151,7 @@ export default function Sidebar({
                       minHeight: 40,
                       justifyContent: collapsed ? 'center' : 'initial',
                       px: collapsed ? 2 : 2.5,
+                      borderRadius: 0,
                     }}
                   >
                     <ListItemIcon
@@ -160,7 +172,7 @@ export default function Sidebar({
           {categories.length === 0 && !collapsed && (
             <ListItem>
               <ListItemText
-                secondary="No categories yet"
+                secondary={t('nav.noCategories')}
                 sx={{ textAlign: 'center' }}
               />
             </ListItem>
@@ -176,13 +188,14 @@ export default function Sidebar({
         <Box
           sx={{
             display: 'flex',
+            flexDirection: collapsed ? 'column' : 'row',
             alignItems: 'center',
-            gap: 1,
+            gap: collapsed ? 0.5 : 1,
             px: collapsed ? 0 : 2,
             py: 1.5,
             borderTop: '1px solid',
             borderColor: 'divider',
-            justifyContent: collapsed ? 'center' : 'flex-start',
+            justifyContent: 'center',
           }}
         >
           <Tooltip title={collapsed ? email : ''} placement="right" arrow>
@@ -199,18 +212,61 @@ export default function Sidebar({
               >
                 {email}
               </Typography>
-              <Tooltip title="Logout" placement="top" arrow>
+              <Tooltip title={i18n.language === 'fr' ? 'Switch to English' : 'Passer en français'} placement="top" arrow>
+                <Box
+                  onClick={toggleLanguage}
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 0.25,
+                    cursor: 'pointer',
+                    borderRadius: 1,
+                    px: 0.75,
+                    py: 0.25,
+                    '&:hover': { bgcolor: 'action.hover' },
+                  }}
+                >
+                  <Typography
+                    variant="caption"
+                    fontWeight={i18n.language === 'en' ? 700 : 400}
+                    color={i18n.language === 'en' ? 'primary.main' : 'text.secondary'}
+                  >
+                    EN
+                  </Typography>
+                  <Typography variant="caption" color="text.disabled">|</Typography>
+                  <Typography
+                    variant="caption"
+                    fontWeight={i18n.language === 'fr' ? 700 : 400}
+                    color={i18n.language === 'fr' ? 'primary.main' : 'text.secondary'}
+                  >
+                    FR
+                  </Typography>
+                </Box>
+              </Tooltip>
+              <Tooltip title={t('nav.logout')} placement="top" arrow>
                 <IconButton size="small" onClick={logout}>
                   <LogoutIcon fontSize="small" />
                 </IconButton>
               </Tooltip>
             </>
           ) : (
-            <Tooltip title="Logout" placement="right" arrow>
-              <IconButton size="small" onClick={logout}>
-                <LogoutIcon fontSize="small" />
-              </IconButton>
-            </Tooltip>
+            <>
+              <Tooltip title={i18n.language === 'fr' ? 'Switch to English' : 'Passer en français'} placement="right" arrow>
+                <Box
+                  onClick={toggleLanguage}
+                  sx={{ cursor: 'pointer', borderRadius: 1, px: 0.5, '&:hover': { bgcolor: 'action.hover' } }}
+                >
+                  <Typography variant="caption" fontWeight={700} color="primary.main">
+                    {i18n.language.toUpperCase()}
+                  </Typography>
+                </Box>
+              </Tooltip>
+              <Tooltip title={t('nav.logout')} placement="right" arrow>
+                <IconButton size="small" onClick={logout}>
+                  <LogoutIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            </>
           )}
         </Box>
       )}

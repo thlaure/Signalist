@@ -9,6 +9,7 @@ import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import { useTranslation } from 'react-i18next';
 import type { Article } from '../../types';
 
 interface ArticleCardProps {
@@ -25,14 +26,18 @@ export default function ArticleCard({
   onToggleBookmark,
 }: ArticleCardProps) {
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
 
   const formatDate = (dateString: string | null) => {
     if (!dateString) return '';
-    return new Date(dateString).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    });
+    return new Date(dateString).toLocaleDateString(
+      i18n.language === 'fr' ? 'fr-FR' : 'en-US',
+      {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      }
+    );
   };
 
   return (
@@ -57,7 +62,7 @@ export default function ArticleCard({
           },
         }}
       >
-<Box sx={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+        <Box sx={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 0.5 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <Typography
               variant="overline"
@@ -123,7 +128,7 @@ export default function ArticleCard({
             className="article-actions"
             sx={{ display: 'flex', gap: 0.5, mt: 'auto', opacity: 0, transition: 'opacity 0.15s ease' }}
           >
-            <Tooltip title={article.isRead ? 'Mark as unread' : 'Mark as read'}>
+            <Tooltip title={article.isRead ? t('article.markAsUnread') : t('article.markAsRead')}>
               <IconButton
                 size="small"
                 onClick={(e) => { e.stopPropagation(); onToggleRead(article.id, article.isRead); }}
@@ -132,7 +137,7 @@ export default function ArticleCard({
                 {article.isRead ? <CheckCircleIcon fontSize="small" /> : <CheckCircleOutlineIcon fontSize="small" />}
               </IconButton>
             </Tooltip>
-            <Tooltip title={isBookmarked ? 'Remove bookmark' : 'Add bookmark'}>
+            <Tooltip title={isBookmarked ? t('article.removeBookmark') : t('article.addBookmark')}>
               <IconButton
                 size="small"
                 onClick={(e) => { e.stopPropagation(); onToggleBookmark(article.id, isBookmarked); }}
@@ -141,7 +146,7 @@ export default function ArticleCard({
                 {isBookmarked ? <BookmarkIcon fontSize="small" /> : <BookmarkBorderIcon fontSize="small" />}
               </IconButton>
             </Tooltip>
-            <Tooltip title="Open original article">
+            <Tooltip title={t('article.openOriginal')}>
               <IconButton
                 size="small"
                 component="a"

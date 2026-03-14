@@ -12,6 +12,8 @@ final readonly class ListArticlesQuery
         public ?string $categoryId = null,
         public ?bool $isRead = null,
         public ?string $search = null,
+        public int $page = 1,
+        public int $limit = 20,
     ) {
     }
 }

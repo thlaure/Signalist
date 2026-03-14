@@ -8,6 +8,7 @@ import Button from '@mui/material/Button';
 import Alert from '@mui/material/Alert';
 import Link from '@mui/material/Link';
 import CircularProgress from '@mui/material/CircularProgress';
+import { useTranslation } from 'react-i18next';
 import { resendVerification } from '../api/auth';
 
 export default function CheckEmailPage() {
@@ -15,6 +16,7 @@ export default function CheckEmailPage() {
   const email = (location.state as { email?: string })?.email ?? '';
   const [resending, setResending] = useState(false);
   const [resent, setResent] = useState(false);
+  const { t } = useTranslation();
 
   const handleResend = async () => {
     if (!email) return;
@@ -43,17 +45,17 @@ export default function CheckEmailPage() {
             Signalist
           </Typography>
           <Typography variant="h6" mb={2}>
-            Check your email
+            {t('checkEmail.title')}
           </Typography>
           <Typography variant="body1" color="text.secondary" mb={3}>
-            We sent a verification link to{' '}
-            {email ? <strong>{email}</strong> : 'your email address'}. Click the
-            link to activate your account.
+            {email
+              ? t('checkEmail.message', { email })
+              : t('checkEmail.messageNoEmail')}
           </Typography>
 
           {resent && (
             <Alert severity="success" sx={{ mb: 2 }}>
-              Verification email resent.
+              {t('checkEmail.resent')}
             </Alert>
           )}
 
@@ -64,14 +66,14 @@ export default function CheckEmailPage() {
               disabled={resending || resent}
               sx={{ mb: 3 }}
             >
-              {resending ? <CircularProgress size={20} /> : 'Resend email'}
+              {resending ? <CircularProgress size={20} /> : t('checkEmail.resendButton')}
             </Button>
           )}
 
           <Typography variant="body2" color="text.secondary">
-            Already verified?{' '}
+            {t('checkEmail.alreadyVerified')}{' '}
             <Link component={RouterLink} to="/login">
-              Sign in
+              {t('auth.signIn')}
             </Link>
           </Typography>
         </CardContent>

@@ -8,6 +8,7 @@ import theme from './theme';
 import { AuthProvider } from './contexts/AuthContext';
 import App from './App';
 import './index.css';
+import './i18n';
 
 const queryClient = new QueryClient({
   defaultOptions: {

@@ -12,7 +12,7 @@ Feature: Authentication - Register
       """
       {
         "email": "newuser@signalist.app",
-        "password": "Tr0ub4dour!&Signal"
+        "password": "Fixture_Only!NotAReal#Pw9"
       }
       """
     Then the response status code should be 201
@@ -24,7 +24,7 @@ Feature: Authentication - Register
       """
       {
         "email": "admin@signalist.app",
-        "password": "Tr0ub4dour!&Signal"
+        "password": "Fixture_Only!NotAReal#Pw9"
       }
       """
     Then the response status code should be 201
@@ -58,7 +58,7 @@ Feature: Authentication - Register
       """
       {
         "email": "not-an-email",
-        "password": "Tr0ub4dour!&Signal"
+        "password": "Fixture_Only!NotAReal#Pw9"
       }
       """
     Then the response status code should be 422

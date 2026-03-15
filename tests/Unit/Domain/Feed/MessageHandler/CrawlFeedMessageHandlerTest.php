@@ -155,7 +155,7 @@ final class CrawlFeedMessageHandlerTest extends TestCase
             ->willThrowException(new RuntimeException('Network error'));
 
         $feed->expects($this->once())->method('setStatus')->with(Feed::STATUS_ERROR);
-        $feed->expects($this->once())->method('setLastError')->with('Network error');
+        $feed->expects($this->once())->method('setLastError')->with('Feed could not be fetched. Check the URL and try again.');
         $feed->expects($this->once())->method('setUpdatedAt');
 
         $this->feedRepository

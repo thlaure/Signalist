@@ -22,6 +22,7 @@ use function assert;
 use function is_string;
 
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * @implements ProcessorInterface<CreateBookmarkInput, BookmarkResource|null>
@@ -39,7 +40,10 @@ final readonly class BookmarkStateProcessor implements ProcessorInterface
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): ?BookmarkResource
     {
         $user = $this->security->getUser();
-        assert($user instanceof User);
+
+        if (!$user instanceof User) {
+            throw new AccessDeniedException();
+        }
         $ownerId = $user->getId()->toRfc4122();
 
         if ($operation instanceof Post && $data instanceof CreateBookmarkInput) {

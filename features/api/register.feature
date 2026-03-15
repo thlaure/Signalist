@@ -12,24 +12,24 @@ Feature: Authentication - Register
       """
       {
         "email": "newuser@signalist.app",
-        "password": "securepassword"
+        "password": "Fixture_Only!NotAReal#Pw9"
       }
       """
     Then the response status code should be 201
     And the response should be JSON
-    And the JSON response should contain "id"
+    And the JSON response should contain "message"
 
-  Scenario: Registration with duplicate email
+  Scenario: Registration with duplicate email returns same generic response
     When I send a "POST" request to "/api/v1/auth/register" with body:
       """
       {
         "email": "admin@signalist.app",
-        "password": "securepassword"
+        "password": "Fixture_Only!NotAReal#Pw9"
       }
       """
-    Then the response status code should be 409
+    Then the response status code should be 201
     And the response should be JSON
-    And the JSON response should be a RFC 7807 problem
+    And the JSON response should contain "message"
 
   Scenario: Registration with missing email
     When I send a "POST" request to "/api/v1/auth/register" with body:
@@ -58,7 +58,7 @@ Feature: Authentication - Register
       """
       {
         "email": "not-an-email",
-        "password": "securepassword"
+        "password": "Fixture_Only!NotAReal#Pw9"
       }
       """
     Then the response status code should be 422

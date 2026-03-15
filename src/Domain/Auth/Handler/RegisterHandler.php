@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Domain\Auth\Handler;
 
 use App\Domain\Auth\Command\RegisterCommand;
-use App\Domain\Auth\Exception\EmailAlreadyExistsException;
 use App\Domain\Auth\Message\SendVerificationEmailMessage;
 use App\Domain\Auth\Port\UserRepositoryInterface;
 use App\Entity\User;
@@ -21,12 +20,14 @@ final readonly class RegisterHandler
     ) {
     }
 
-    public function __invoke(RegisterCommand $command): string
+    public function __invoke(RegisterCommand $command): void
     {
         $existingUser = $this->userRepository->findByEmail($command->email);
 
         if ($existingUser instanceof User) {
-            throw new EmailAlreadyExistsException($command->email);
+            // Silently ignore — do not reveal whether the email is registered.
+            // The caller always receives the same generic 201 response.
+            return;
         }
 
         $user = new User();
@@ -39,7 +40,5 @@ final readonly class RegisterHandler
             userId: $user->getId()->toRfc4122(),
             email: $user->getEmail(),
         ));
-
-        return $user->getId()->toRfc4122();
     }
 }

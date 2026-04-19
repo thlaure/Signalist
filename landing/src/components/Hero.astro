@@ -1,0 +1,67 @@
+---
+import type { Translations } from '../i18n/translations';
+
+interface Props {
+  t: Translations;
+}
+
+const { t } = Astro.props;
+const { hero } = t;
+---
+<section class="relative overflow-hidden bg-white pt-20 pb-28">
+  <div class="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(99,102,241,0.12),transparent)]"></div>
+
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 text-center">
+    <div class="inline-flex items-center gap-2 bg-indigo-50 text-indigo-700 text-xs font-semibold px-3 py-1.5 rounded-full mb-8">
+      <span class="relative flex h-2 w-2">
+        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+        <span class="relative inline-flex h-2 w-2 rounded-full bg-indigo-500"></span>
+      </span>
+      {hero.badge}
+    </div>
+
+    <h1 class="text-5xl sm:text-6xl font-black text-slate-900 tracking-tight leading-tight mb-6">
+      {hero.headline}<br />
+      <span class="text-indigo-600">{hero.headlineAccent}</span>
+    </h1>
+
+    <p class="text-xl text-slate-500 leading-relaxed max-w-2xl mx-auto mb-10">
+      {hero.subheadline}
+    </p>
+
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+      <a
+        href="#waitlist"
+        class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-8 py-3.5 rounded-xl transition-colors text-base"
+      >
+        {hero.primaryCta}
+      </a>
+      <a
+        href="#features"
+        class="w-full sm:w-auto text-slate-700 hover:text-slate-900 font-semibold px-8 py-3.5 rounded-xl border border-slate-200 hover:border-slate-300 transition-colors text-base"
+      >
+        {hero.secondaryCta}
+      </a>
+    </div>
+
+    <div class="mt-16 rounded-2xl border border-slate-200 bg-slate-50 overflow-hidden shadow-xl shadow-slate-200/60">
+      <div class="flex items-center gap-1.5 px-4 py-3 bg-white border-b border-slate-100">
+        <span class="w-3 h-3 rounded-full bg-red-400"></span>
+        <span class="w-3 h-3 rounded-full bg-yellow-400"></span>
+        <span class="w-3 h-3 rounded-full bg-green-400"></span>
+        <span class="text-xs text-slate-400 ml-2 font-mono">{hero.urlPreview}</span>
+      </div>
+      <div class="p-6 space-y-3">
+        {hero.articles.map(item => (
+          <div class={`flex items-start gap-4 p-3 rounded-lg ${item.read ? 'opacity-50' : 'bg-white border border-slate-100 shadow-sm'}`}>
+            <span class="shrink-0 text-xs font-semibold bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-md mt-0.5">{item.tag}</span>
+            <div class="min-w-0 flex-1">
+              <p class={`text-sm text-left truncate ${item.read ? 'text-slate-400' : 'text-slate-800 font-medium'}`}>{item.title}</p>
+              <p class="text-xs text-slate-400 mt-0.5 text-left">{item.source} · {item.time}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>

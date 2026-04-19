@@ -35,6 +35,12 @@
 /frontend/.env.local
 ###< Frontend ###
 
+###> Landing ###
+/landing/node_modules/
+/landing/dist/
+/landing/.astro/
+###< Landing ###
+
 ###> friendsofphp/php-cs-fixer ###
 /.php-cs-fixer.php
 /.php-cs-fixer.cache

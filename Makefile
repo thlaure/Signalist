@@ -177,6 +177,17 @@ front-test-watch: ## Run frontend tests in watch mode
 front-hooks: ## Set up frontend Git hooks (husky + lint-staged)
 	cd frontend && npm run prepare
 
+## —— Landing ————————————————————————————————————————————————————————————————
+
+landing-install: ## Install landing page dependencies
+	cd landing && npm install
+
+run-landing: ## Start landing page dev server (http://localhost:4321)
+	cd landing && npm run dev
+
+landing-build: ## Build landing page for production
+	cd landing && npm run build
+
 ## —— Project Setup ———————————————————————————————————————————————————————————
 
 install: build up composer-install db-migrate front-install front-hooks ## Full project setup

@@ -36,6 +36,7 @@ ENV APP_ENV=prod
 # Install dependencies without running post-install scripts (cache:clear requires
 # env vars and services that are not available at image build time)
 RUN composer install --no-dev --optimize-autoloader --classmap-authoritative --no-interaction --no-scripts \
+    && mkdir -p /app/var \
     && chown -R www-data:www-data /app/var
 
 # Expose ports (HTTP/HTTPS/HTTP3)

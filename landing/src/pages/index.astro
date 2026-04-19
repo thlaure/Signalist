@@ -1,0 +1,25 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Nav from '../components/Nav.astro';
+import Hero from '../components/Hero.astro';
+import Features from '../components/Features.astro';
+import Pricing from '../components/Pricing.astro';
+import SocialProof from '../components/SocialProof.astro';
+import Waitlist from '../components/Waitlist.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<BaseLayout
+  title="Signalist — AI-powered intelligence for your team"
+  description="Monitor industry news, curate the best content, and publish AI-powered briefings in minutes. Built for comms teams, marketing agencies, and media monitors."
+>
+  <Nav />
+  <main>
+    <Hero />
+    <Features />
+    <Pricing />
+    <SocialProof />
+    <Waitlist />
+  </main>
+  <Footer />
+</BaseLayout>

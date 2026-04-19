@@ -275,14 +275,14 @@
 
 | Task | Status |
 |------|--------|
-| Landing page setup (separate from app) | Not Started |
-| Hero section (headline, subheadline, CTA) | Not Started |
-| Features section | Not Started |
-| Pricing section | Not Started |
-| Social proof / testimonials section | Not Started |
-| Waitlist / early access form | Not Started |
-| SEO meta tags + Open Graph | Not Started |
-| Responsive design (mobile + desktop) | Not Started |
+| Landing page setup (`landing/` — Astro 5 + Tailwind v4) | Done |
+| Hero section (headline, subheadline, CTA, inbox preview) | Done |
+| Features section (Monitor / Curate / Synthesize / Publish) | Done |
+| Pricing section (Free / Team / Enterprise) | Done |
+| Social proof / testimonials section | Done |
+| Waitlist / early access form (UI only — service TBD) | Done |
+| SEO meta tags + Open Graph | Done |
+| Responsive design (mobile + desktop) | Done |
 
 ### 2.3 Infrastructure
 

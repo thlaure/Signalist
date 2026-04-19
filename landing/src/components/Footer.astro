@@ -1,0 +1,25 @@
+---
+const year = new Date().getFullYear();
+---
+<footer class="border-t border-slate-100 bg-white">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-12 flex flex-col sm:flex-row items-center justify-between gap-6">
+    <a href="/" class="flex items-center gap-2 font-bold text-slate-900">
+      <svg width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" rx="8" fill="#4f46e5"/>
+        <path d="M8 10h16M8 16h10M8 22h13" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="24" cy="22" r="4" fill="#a5b4fc"/>
+      </svg>
+      Signalist
+    </a>
+
+    <nav class="flex flex-wrap items-center justify-center gap-6 text-sm text-slate-500">
+      <a href="#features" class="hover:text-slate-900 transition-colors">Features</a>
+      <a href="#pricing" class="hover:text-slate-900 transition-colors">Pricing</a>
+      <a href="/privacy" class="hover:text-slate-900 transition-colors">Privacy</a>
+      <a href="/terms" class="hover:text-slate-900 transition-colors">Terms</a>
+      <a href="mailto:hello@signalist.app" class="hover:text-slate-900 transition-colors">Contact</a>
+    </nav>
+
+    <p class="text-sm text-slate-400">© {year} Signalist. All rights reserved.</p>
+  </div>
+</footer>

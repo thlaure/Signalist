@@ -106,21 +106,21 @@ final class DoctrineBookmarkRepositoryTest extends DatabaseTestCase
 
         $category = new Category();
         $category->setName('Tech');
-        $category->setSlug('tech-' . bin2hex(random_bytes(4)));
+        $category->setSlug('tech-'.bin2hex(random_bytes(4)));
         $category->setOwner($user);
         $this->entityManager->persist($category);
 
         $feed = new Feed();
         $feed->setTitle('Feed');
-        $feed->setUrl('https://example.com/feed-' . bin2hex(random_bytes(4)));
+        $feed->setUrl('https://example.com/feed-'.bin2hex(random_bytes(4)));
         $feed->setCategory($category);
         $feed->setOwner($user);
         $this->entityManager->persist($feed);
 
         $article = new Article();
         $article->setTitle('Article');
-        $article->setGuid('guid-' . bin2hex(random_bytes(8)));
-        $article->setUrl('https://example.com/' . bin2hex(random_bytes(4)));
+        $article->setGuid('guid-'.bin2hex(random_bytes(8)));
+        $article->setUrl('https://example.com/'.bin2hex(random_bytes(4)));
         $article->setPublishedAt(new DateTimeImmutable());
         $article->setFeed($feed);
         $this->entityManager->persist($article);

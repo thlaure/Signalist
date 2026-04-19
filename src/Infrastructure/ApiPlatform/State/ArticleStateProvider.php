@@ -62,7 +62,7 @@ final readonly class ArticleStateProvider implements ProviderInterface
 
             $isRead = null;
 
-            if ($isReadParam !== null) {
+            if (null !== $isReadParam) {
                 $isRead = filter_var($isReadParam, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
             }
 

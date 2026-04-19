@@ -425,6 +425,28 @@
 | Sync status UI (frontend) | Not Started |
 | Unit tests | Not Started |
 
+### 4.5 Social Recap (AI-Generated Weekly Post)
+
+> Reuses Phase 4.2 content aggregation + Phase 3 LLM summarization to generate
+> platform-native social posts from the week's curated articles.
+
+| Task | Status |
+|------|--------|
+| `SocialRecap` entity + migration (platform, period, content, status) | Not Started |
+| `CreateSocialRecapCommand` + `CreateSocialRecapHandler` | Not Started |
+| `DeleteSocialRecapCommand` + `DeleteSocialRecapHandler` | Not Started |
+| `GetSocialRecapQuery` + `GetSocialRecapHandler` | Not Started |
+| `ListSocialRecapsQuery` + `ListSocialRecapsHandler` | Not Started |
+| `SocialRecapRepositoryInterface` port | Not Started |
+| `DoctrineSocialRecapRepository` adapter | Not Started |
+| `SocialRecapContentBuilder` service (reuses `NewsletterContentBuilder` aggregation) | Not Started |
+| Platform output formatters: LinkedIn, X (thread), Instagram caption | Not Started |
+| LLM prompt templates per platform (tone, length, hashtag style) | Not Started |
+| `GenerateSocialRecapMessage` (async) + handler | Not Started |
+| Social Recap API Platform resource | Not Started |
+| Frontend: recap generator UI (select period, platform, preview, copy) | Not Started |
+| Unit tests for content builder + formatters | Not Started |
+
 ---
 
 ## Phase 5 — Team: Multi-User Workspace & Collaborative Curation
@@ -498,6 +520,8 @@
 
 ### 6.3 Social Sharing
 
+#### 6.3.1 Share Links (link-based, no OAuth required)
+
 | Task | Status |
 |------|--------|
 | Share intent model | Not Started |
@@ -508,6 +532,27 @@
 | Bluesky share adapter | Not Started |
 | Share button UI (frontend) | Not Started |
 | Unit tests | Not Started |
+
+#### 6.3.2 Crossposting via Platform APIs (requires OAuth2 per platform)
+
+> Upgrade path from 6.3.1 — posts content directly via platform APIs.
+> Builds on OAuth2 infrastructure established in Phase 4.4 (Raindrop.io).
+
+| Task | Status |
+|------|--------|
+| `SocialAccount` entity + migration (platform, accessToken, refreshToken, expiresAt) | Not Started |
+| `SocialAccountRepositoryInterface` port | Not Started |
+| `DoctrineSocialAccountRepository` adapter | Not Started |
+| OAuth2 flow: LinkedIn (`Infrastructure/External/LinkedIn/`) | Not Started |
+| OAuth2 flow: X / Twitter (`Infrastructure/External/X/`) | Not Started |
+| OAuth2 flow: Bluesky (`Infrastructure/External/Bluesky/`) | Not Started |
+| `CrosspostMessage` (async) + `CrosspostMessageHandler` | Not Started |
+| `CrosspostAdapterInterface` port (per-platform implementations) | Not Started |
+| Token refresh strategy (background job) | Not Started |
+| Crosspost status tracking (pending, published, failed) | Not Started |
+| Frontend: connect social accounts UI (OAuth2 redirect flow) | Not Started |
+| Frontend: crosspost action on articles + recap posts | Not Started |
+| Unit tests for adapters | Not Started |
 
 ---
 

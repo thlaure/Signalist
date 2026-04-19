@@ -1,4 +1,6 @@
 {
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "allowedMcpServers": [],
   "hooks": {
     "PostToolUse": [
       {
@@ -6,10 +8,75 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash -c 'CMD=$(echo \"$CLAUDE_TOOL_INPUT\" | python3 -c \"import sys,json; print(json.load(sys.stdin).get(\\\"command\\\",\\\"\\\"))\" 2>/dev/null || true); if echo \"$CMD\" | grep -qE \"(git commit|git push)\"; then echo \"Reminder: ensure make quality passed before this commit\" >&2; fi'"
+            "command": "python3 \"$(git rev-parse --show-toplevel)/.claude/hooks/guardrails.py\" bash"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$(git rev-parse --show-toplevel)/.claude/hooks/guardrails.py\" edit"
+          }
+        ]
+      },
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$(git rev-parse --show-toplevel)/.claude/hooks/guardrails.py\" write"
+          }
+        ]
+      },
+      {
+        "matcher": "Read",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$(git rev-parse --show-toplevel)/.claude/hooks/guardrails.py\" read"
           }
         ]
       }
+    ]
+  },
+  "permissions": {
+    "allow": [
+      "Bash(docker compose:*)",
+      "Bash(make lint:*)",
+      "Bash(make analyse:*)",
+      "Bash(make rector:*)",
+      "Bash(make quality:*)",
+      "Bash(make tests:*)",
+      "Bash(make tests-unit:*)",
+      "Bash(make tests-integration:*)",
+      "Bash(make tests-api:*)",
+      "Bash(make front-lint:*)",
+      "Bash(make front-test:*)",
+      "Bash(make front-build:*)",
+      "Bash(make grumphp:*)",
+      "Bash(npm run typecheck:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git show:*)",
+      "Bash(git branch:*)",
+      "Bash(git add:*)",
+      "Bash(git checkout:*)",
+      "Bash(git fetch:*)",
+      "Read",
+      "Write",
+      "Edit"
+    ],
+    "deny": [
+      "Bash(rm -rf:*)",
+      "Bash(rm -r:*)",
+      "Bash(rm -f:*)",
+      "Bash(curl:*)",
+      "Bash(wget:*)",
+      "Read(./.env)",
+      "Read(./.env.*)"
     ]
   }
 }

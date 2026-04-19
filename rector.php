@@ -9,14 +9,18 @@ use Rector\PHPUnit\Set\PHPUnitSetList;
 use Rector\Symfony\Set\SymfonySetList;
 
 return RectorConfig::configure()
+    ->withImportNames(importShortClasses: false)
     ->withPaths([
-        __DIR__ . '/src',
-        __DIR__ . '/tests',
+        __DIR__.'/config',
+        __DIR__.'/public',
+        __DIR__.'/src',
+        __DIR__.'/migrations',
+        __DIR__.'/tests',
     ])
     ->withSkip([
-        __DIR__ . '/var',
-        __DIR__ . '/vendor',
-        __DIR__ . '/config/reference.php',
+        __DIR__.'/var',
+        __DIR__.'/vendor',
+        __DIR__.'/config/reference.php',
         // Skip Override attribute for PHP 8.5 compatibility
         AddOverrideAttributeToOverriddenMethodsRector::class,
     ])
@@ -24,8 +28,6 @@ return RectorConfig::configure()
     ->withPreparedSets(
         deadCode: true,
         codeQuality: true,
-        typeDeclarations: true,
-        earlyReturn: true,
     )
     ->withAttributesSets(
         symfony: true,
@@ -35,7 +37,9 @@ return RectorConfig::configure()
         SymfonySetList::SYMFONY_74,
         SymfonySetList::SYMFONY_CODE_QUALITY,
         SymfonySetList::SYMFONY_CONSTRUCTOR_INJECTION,
+        SymfonySetList::ANNOTATIONS_TO_ATTRIBUTES,
         SymfonySetList::CONFIGS,
         DoctrineSetList::DOCTRINE_CODE_QUALITY,
         PHPUnitSetList::PHPUNIT_100,
+        DoctrineSetList::DOCTRINE_ORM_300,
     ]);

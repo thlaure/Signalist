@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Tests\Behat;
 
+use App\DataFixtures\UserFixture;
 use App\Entity\Article;
 use App\Entity\Feed;
+use App\Entity\User;
 
 use function array_key_exists;
 
@@ -88,7 +90,7 @@ final class ApiContext implements Context
     public function thereAreDefaultUsers(): void
     {
         $loader = new Loader();
-        $loader->addFixture(new \App\DataFixtures\UserFixture($this->passwordHasher));
+        $loader->addFixture(new UserFixture($this->passwordHasher));
 
         $executor = new ORMExecutor($this->entityManager);
         $executor->execute($loader->getFixtures(), append: true);
@@ -101,7 +103,7 @@ final class ApiContext implements Context
      */
     public function thereIsAnUnverifiedUser(string $email, string $password): void
     {
-        $user = new \App\Entity\User();
+        $user = new User();
         $user->setEmail($email);
         $user->setPassword($this->passwordHasher->hashPassword($user, $password));
 
@@ -128,8 +130,8 @@ final class ApiContext implements Context
         /** @var array{token: string}|null $data */
         $data = json_decode($content, true);
 
-        if (json_last_error() !== JSON_ERROR_NONE || !isset($data['token'])) {
-            throw new RuntimeException('Authentication failed: ' . $content);
+        if (JSON_ERROR_NONE !== json_last_error() || !isset($data['token'])) {
+            throw new RuntimeException('Authentication failed: '.$content);
         }
 
         $this->jwtToken = $data['token'];
@@ -168,7 +170,7 @@ final class ApiContext implements Context
         $url = $this->replaceStoredVariables($url);
         $bodyContent = $this->replaceStoredVariables($body->getRaw());
 
-        $contentType = $method === 'PATCH' ? 'application/merge-patch+json' : 'application/json';
+        $contentType = 'PATCH' === $method ? 'application/merge-patch+json' : 'application/json';
 
         $this->getClient()->request(
             $method,
@@ -207,8 +209,8 @@ final class ApiContext implements Context
         /** @var array<string, mixed>|null $data */
         $data = json_decode($content, true);
 
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new RuntimeException('Response is not valid JSON: ' . $content);
+        if (JSON_ERROR_NONE !== json_last_error()) {
+            throw new RuntimeException('Response is not valid JSON: '.$content);
         }
 
         $this->lastResponseData = $data;
@@ -272,8 +274,8 @@ final class ApiContext implements Context
                 ? $items['member']
                 : (is_array($items) && !isset($items['@type']) ? $items : []);
 
-            if ($collection !== []) {
-                throw new RuntimeException('Expected empty collection, got: ' . json_encode($collection));
+            if ([] !== $collection) {
+                throw new RuntimeException('Expected empty collection, got: '.json_encode($collection));
             }
 
             return;
@@ -281,16 +283,16 @@ final class ApiContext implements Context
 
         // Handle Hydra collection format
         if (isset($data['member'])) {
-            if ($data['member'] !== []) {
-                throw new RuntimeException('Expected empty collection, got: ' . json_encode($data['member']));
+            if ([] !== $data['member']) {
+                throw new RuntimeException('Expected empty collection, got: '.json_encode($data['member']));
             }
 
             return;
         }
 
         // Handle plain array
-        if ($data !== []) {
-            throw new RuntimeException('Expected empty array, got: ' . json_encode($data));
+        if ([] !== $data) {
+            throw new RuntimeException('Expected empty array, got: '.json_encode($data));
         }
     }
 
@@ -380,7 +382,7 @@ final class ApiContext implements Context
 
         $statusCode = $this->session->getStatusCode();
 
-        if ($statusCode !== 201) {
+        if (201 !== $statusCode) {
             throw new RuntimeException(sprintf(
                 'Failed to create category. Status: %d, Response: %s',
                 $statusCode,
@@ -420,7 +422,7 @@ final class ApiContext implements Context
             }
         }
 
-        if ($categoryId === null) {
+        if (null === $categoryId) {
             throw new RuntimeException(sprintf('Category with slug "%s" not found', $slug));
         }
 
@@ -435,7 +437,7 @@ final class ApiContext implements Context
 
         $statusCode = $this->session->getStatusCode();
 
-        if ($statusCode !== 201) {
+        if (201 !== $statusCode) {
             throw new RuntimeException(sprintf(
                 'Failed to create feed. Status: %d, Response: %s',
                 $statusCode,
@@ -458,9 +460,9 @@ final class ApiContext implements Context
         }
 
         $article = new Article();
-        $article->setGuid('guid-' . $title);
+        $article->setGuid('guid-'.$title);
         $article->setTitle($title);
-        $article->setUrl('https://example.com/articles/' . urlencode($title));
+        $article->setUrl('https://example.com/articles/'.urlencode($title));
         $article->setFeed($feed);
         $article->setPublishedAt(new DateTimeImmutable());
 
@@ -508,7 +510,7 @@ final class ApiContext implements Context
      */
     private function getJsonResponse(): array
     {
-        if ($this->lastResponseData !== null) {
+        if (null !== $this->lastResponseData) {
             return $this->lastResponseData;
         }
 
@@ -516,8 +518,8 @@ final class ApiContext implements Context
         /** @var array<string, mixed>|null $data */
         $data = json_decode($content, true);
 
-        if (json_last_error() !== JSON_ERROR_NONE || $data === null) {
-            throw new RuntimeException('Response is not valid JSON: ' . $content);
+        if (JSON_ERROR_NONE !== json_last_error() || null === $data) {
+            throw new RuntimeException('Response is not valid JSON: '.$content);
         }
 
         $this->lastResponseData = $data;
@@ -543,15 +545,15 @@ final class ApiContext implements Context
 
     private function castValue(string $value): mixed
     {
-        if ($value === 'true') {
+        if ('true' === $value) {
             return true;
         }
 
-        if ($value === 'false') {
+        if ('false' === $value) {
             return false;
         }
 
-        if ($value === 'null') {
+        if ('null' === $value) {
             return null;
         }
 
@@ -572,8 +574,8 @@ final class ApiContext implements Context
             'HTTP_ACCEPT' => 'application/ld+json',
         ];
 
-        if ($this->jwtToken !== null) {
-            $headers['HTTP_AUTHORIZATION'] = 'Bearer ' . $this->jwtToken;
+        if (null !== $this->jwtToken) {
+            $headers['HTTP_AUTHORIZATION'] = 'Bearer '.$this->jwtToken;
         }
 
         return $headers;

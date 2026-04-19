@@ -100,6 +100,6 @@ final readonly class CrawlFeedMessageHandler
                 'guid' => $guid,
             ]);
 
-        return $existingArticle !== null;
+        return null !== $existingArticle;
     }
 }

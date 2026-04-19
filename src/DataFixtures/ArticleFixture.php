@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\DataFixtures;
 
 use App\Entity\Article;
+use App\Entity\Feed;
 use DateTimeImmutable;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
@@ -232,7 +233,7 @@ final class ArticleFixture extends Fixture implements OrderedFixtureInterface
             $article->setImageUrl($data['imageUrl']);
             $article->setIsRead($data['isRead']);
             $article->setPublishedAt(new DateTimeImmutable($data['publishedAt']));
-            $article->setFeed($this->getReference($data['feed'], \App\Entity\Feed::class));
+            $article->setFeed($this->getReference($data['feed'], Feed::class));
 
             $manager->persist($article);
             $this->addReference($key, $article);

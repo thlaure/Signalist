@@ -46,17 +46,17 @@ final readonly class LaminasFeedRssFetcher implements RssFetcherInterface
         foreach ($feed as $entry) {
             $guid = $entry->getId() ?? $entry->getLink() ?? '';
 
-            if ($guid === '') {
+            if ('' === $guid) {
                 continue;
             }
 
             $link = $entry->getLink();
 
-            if ($link === null) {
+            if (null === $link) {
                 continue;
             }
 
-            if ($link === '') {
+            if ('' === $link) {
                 continue;
             }
 
@@ -87,7 +87,7 @@ final readonly class LaminasFeedRssFetcher implements RssFetcherInterface
 
     private function cleanText(?string $text): ?string
     {
-        if ($text === null) {
+        if (null === $text) {
             return null;
         }
 
@@ -95,7 +95,7 @@ final readonly class LaminasFeedRssFetcher implements RssFetcherInterface
         $decoded = html_entity_decode($stripped, ENT_QUOTES | ENT_HTML5, 'UTF-8');
         $normalized = trim((string) preg_replace('/\s+/u', ' ', $decoded));
 
-        if ($normalized === '' || mb_strlen($normalized) < 30) {
+        if ('' === $normalized || mb_strlen($normalized) < 30) {
             return null;
         }
 
@@ -106,14 +106,14 @@ final readonly class LaminasFeedRssFetcher implements RssFetcherInterface
     {
         $authors = $entry->getAuthors();
 
-        if ($authors === null) {
+        if (null === $authors) {
             return null;
         }
 
         // Convert iterable to array to safely access first element
         $authorsArray = iterator_to_array($authors);
 
-        if ($authorsArray === []) {
+        if ([] === $authorsArray) {
             return null;
         }
 

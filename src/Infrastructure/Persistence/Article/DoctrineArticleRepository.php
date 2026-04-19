@@ -139,9 +139,9 @@ final readonly class DoctrineArticleRepository implements ArticleRepositoryInter
                 ->setParameter('isRead', $filters['isRead']);
         }
 
-        if (isset($filters['search']) && $filters['search'] !== '') {
+        if (isset($filters['search']) && '' !== $filters['search']) {
             $qb->andWhere('(LOWER(a.title) LIKE :search OR LOWER(a.summary) LIKE :search)')
-                ->setParameter('search', '%' . mb_strtolower($filters['search']) . '%');
+                ->setParameter('search', '%'.mb_strtolower($filters['search']).'%');
         }
     }
 }

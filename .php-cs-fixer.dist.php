@@ -2,7 +2,10 @@
 
 declare(strict_types=1);
 
-$finder = (new PhpCsFixer\Finder())
+use PhpCsFixer\Config;
+use PhpCsFixer\Finder;
+
+$finder = new Finder()
     ->in(__DIR__)
     ->exclude('var')
     ->exclude('vendor')
@@ -11,7 +14,7 @@ $finder = (new PhpCsFixer\Finder())
     ->notPath('config/reference.php')
 ;
 
-return (new PhpCsFixer\Config())
+return new Config()
     ->setRules([
         '@PSR12' => true,
         '@Symfony' => true,
@@ -25,8 +28,6 @@ return (new PhpCsFixer\Config())
         'phpdoc_order' => true,
         'phpdoc_separation' => true,
         'phpdoc_align' => ['align' => 'left'],
-        'concat_space' => ['spacing' => 'one'],
-        'cast_spaces' => ['space' => 'single'],
         'binary_operator_spaces' => [
             'default' => 'single_space',
             'operators' => [
@@ -41,7 +42,6 @@ return (new PhpCsFixer\Config())
             ],
         ],
         'single_line_throw' => false,
-        'yoda_style' => false,
         'blank_line_before_statement' => [
             'statements' => [
                 'return',
@@ -66,7 +66,6 @@ return (new PhpCsFixer\Config())
         ],
         'final_class' => true,
         'self_accessor' => true,
-        'php_unit_method_casing' => ['case' => 'camel_case'],
         'php_unit_test_annotation' => ['style' => 'prefix'],
         'php_unit_strict' => true,
     ])

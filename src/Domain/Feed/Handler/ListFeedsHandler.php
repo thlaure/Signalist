@@ -20,7 +20,7 @@ final readonly class ListFeedsHandler
      */
     public function __invoke(ListFeedsQuery $query): array
     {
-        if ($query->categoryId !== null) {
+        if (null !== $query->categoryId) {
             return $this->feedRepository->findByCategoryAndOwner($query->categoryId, $query->ownerId);
         }
 

@@ -68,7 +68,7 @@ final readonly class ProblemDetailsExceptionListener
 
         if ($exception instanceof MissingConstructorArgumentsException) {
             return [
-                'type' => self::BASE_TYPE_URI . '/validation-error',
+                'type' => self::BASE_TYPE_URI.'/validation-error',
                 'title' => 'Validation Error',
                 'status' => Response::HTTP_UNPROCESSABLE_ENTITY,
                 'detail' => $exception->getMessage(),
@@ -78,7 +78,7 @@ final readonly class ProblemDetailsExceptionListener
 
         if ($exception instanceof HttpExceptionInterface) {
             return [
-                'type' => self::BASE_TYPE_URI . '/http-error',
+                'type' => self::BASE_TYPE_URI.'/http-error',
                 'title' => Response::$statusTexts[$exception->getStatusCode()] ?? 'Error',
                 'status' => $exception->getStatusCode(),
                 'detail' => $exception->getMessage(),
@@ -88,10 +88,10 @@ final readonly class ProblemDetailsExceptionListener
 
         // Generic server error
         return [
-            'type' => self::BASE_TYPE_URI . '/internal-error',
+            'type' => self::BASE_TYPE_URI.'/internal-error',
             'title' => 'Internal Server Error',
             'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
-            'detail' => $this->environment === 'prod'
+            'detail' => 'prod' === $this->environment
                 ? 'An unexpected error occurred.'
                 : $exception->getMessage(),
             'instance' => $path,

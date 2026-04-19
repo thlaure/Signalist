@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\DataFixtures;
 
+use App\Entity\Category;
 use App\Entity\Feed;
 use App\Entity\User;
 use DateTimeImmutable;
@@ -97,7 +98,7 @@ final class FeedFixture extends Fixture implements OrderedFixtureInterface
             $feed->setTitle($data['title']);
             $feed->setUrl($data['url']);
             $feed->setStatus($data['status']);
-            $feed->setCategory($this->getReference($data['category'], \App\Entity\Category::class));
+            $feed->setCategory($this->getReference($data['category'], Category::class));
             $feed->setLastFetchedAt(new DateTimeImmutable($data['lastFetchedAt']));
             $feed->setOwner($admin);
 

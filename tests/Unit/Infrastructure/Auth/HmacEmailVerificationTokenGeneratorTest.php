@@ -31,8 +31,8 @@ final class HmacEmailVerificationTokenGeneratorTest extends TestCase
         $url = $this->generator->generateSignedUrl($userId, $email);
 
         $this->assertStringStartsWith('http://localhost:5173/verify-email?', $url);
-        $this->assertStringContainsString('userId=' . urlencode($userId), $url);
-        $this->assertStringContainsString('email=' . urlencode($email), $url);
+        $this->assertStringContainsString('userId='.urlencode($userId), $url);
+        $this->assertStringContainsString('email='.urlencode($email), $url);
         $this->assertStringContainsString('expiresAt=', $url);
         $this->assertStringContainsString('signature=', $url);
     }

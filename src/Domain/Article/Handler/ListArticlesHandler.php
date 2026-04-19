@@ -21,19 +21,19 @@ final readonly class ListArticlesHandler
     {
         $filters = ['ownerId' => $query->ownerId];
 
-        if ($query->feedId !== null) {
+        if (null !== $query->feedId) {
             $filters['feedId'] = $query->feedId;
         }
 
-        if ($query->categoryId !== null) {
+        if (null !== $query->categoryId) {
             $filters['categoryId'] = $query->categoryId;
         }
 
-        if ($query->isRead !== null) {
+        if (null !== $query->isRead) {
             $filters['isRead'] = $query->isRead;
         }
 
-        if ($query->search !== null) {
+        if (null !== $query->search) {
             $filters['search'] = $query->search;
         }
 

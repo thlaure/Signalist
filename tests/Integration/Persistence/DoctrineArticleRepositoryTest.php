@@ -168,13 +168,13 @@ final class DoctrineArticleRepositoryTest extends DatabaseTestCase
 
         $category = new Category();
         $category->setName('Tech');
-        $category->setSlug('tech-' . bin2hex(random_bytes(4)));
+        $category->setSlug('tech-'.bin2hex(random_bytes(4)));
         $category->setOwner($user);
         $this->entityManager->persist($category);
 
         $feed = new Feed();
         $feed->setTitle('Test Feed');
-        $feed->setUrl('https://example.com/feed-' . bin2hex(random_bytes(4)));
+        $feed->setUrl('https://example.com/feed-'.bin2hex(random_bytes(4)));
         $feed->setCategory($category);
         $feed->setOwner($user);
         $this->entityManager->persist($feed);
@@ -201,9 +201,9 @@ final class DoctrineArticleRepositoryTest extends DatabaseTestCase
     {
         $article = new Article();
         $article->setTitle($title);
-        $article->setGuid('guid-' . bin2hex(random_bytes(8)));
-        $article->setUrl('https://example.com/' . bin2hex(random_bytes(4)));
-        $article->setSummary('Summary of ' . $title);
+        $article->setGuid('guid-'.bin2hex(random_bytes(8)));
+        $article->setUrl('https://example.com/'.bin2hex(random_bytes(4)));
+        $article->setSummary('Summary of '.$title);
         $article->setPublishedAt(new DateTimeImmutable());
         $article->setFeed($feed);
 

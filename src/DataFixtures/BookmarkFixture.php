@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\DataFixtures;
 
+use App\Entity\Article;
 use App\Entity\Bookmark;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
@@ -42,7 +43,7 @@ final class BookmarkFixture extends Fixture implements OrderedFixtureInterface
     {
         foreach (self::BOOKMARKS as $index => $data) {
             $bookmark = new Bookmark();
-            $bookmark->setArticle($this->getReference($data['article'], \App\Entity\Article::class));
+            $bookmark->setArticle($this->getReference($data['article'], Article::class));
             $bookmark->setNotes($data['notes']);
 
             $manager->persist($bookmark);

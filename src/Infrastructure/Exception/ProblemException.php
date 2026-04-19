@@ -60,11 +60,11 @@ abstract class ProblemException extends Exception implements HttpExceptionInterf
             'detail' => $this->getDetail(),
             'instance' => $this->instance,
             ...$this->extensions,
-        ], static fn (mixed $value): bool => $value !== null);
+        ], static fn (mixed $value): bool => null !== $value);
     }
 
     protected static function buildTypeUri(string $problemType): string
     {
-        return self::BASE_TYPE_URI . '/' . $problemType;
+        return self::BASE_TYPE_URI.'/'.$problemType;
     }
 }

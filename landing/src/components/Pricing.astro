@@ -1,86 +1,28 @@
 ---
-const plans = [
-  {
-    name: 'Free',
-    price: '€0',
-    period: 'forever',
-    description: 'For individuals and small teams getting started with content monitoring.',
-    cta: 'Get started free',
-    ctaHref: '#waitlist',
-    featured: false,
-    limits: [
-      '5 RSS feeds',
-      '1 user',
-      '100 articles / day',
-      'Full-text search',
-      'Bookmarks',
-      '—',
-      '—',
-    ],
-  },
-  {
-    name: 'Team',
-    price: '€29',
-    period: 'per month',
-    description: 'For comms teams and marketing agencies who need AI and collaboration.',
-    cta: 'Join waitlist',
-    ctaHref: '#waitlist',
-    featured: true,
-    limits: [
-      '30 RSS feeds',
-      'Up to 5 users',
-      'Unlimited articles',
-      'Full-text + semantic search',
-      'Bookmarks + annotations',
-      'AI summaries & auto-tagging',
-      'AI newsletters & social recap',
-    ],
-  },
-  {
-    name: 'Enterprise',
-    price: 'Custom',
-    period: 'contact us',
-    description: 'For organisations with advanced needs, SSO, and dedicated support.',
-    cta: 'Contact us',
-    ctaHref: 'mailto:hello@signalist.app',
-    featured: false,
-    limits: [
-      'Unlimited feeds',
-      'Unlimited users',
-      'Unlimited articles',
-      'Full-text + semantic search',
-      'Bookmarks + annotations',
-      'AI summaries & auto-tagging',
-      'AI newsletters, recap & API',
-    ],
-  },
-];
+import type { Translations } from '../i18n/translations';
 
-const featureLabels = [
-  'RSS feeds',
-  'Users',
-  'Articles',
-  'Search',
-  'Bookmarks',
-  'AI features',
-  'Publishing',
-];
+interface Props {
+  t: Translations;
+}
+
+const { t } = Astro.props;
+const { pricing } = t;
 ---
 
 <section id="pricing" class="py-24 bg-white">
   <div class="max-w-6xl mx-auto px-4 sm:px-6">
     <div class="text-center mb-16">
-      <p class="text-indigo-600 font-semibold text-sm uppercase tracking-widest mb-3">Pricing</p>
-      <h2 class="text-4xl font-black text-slate-900 tracking-tight">Simple, transparent pricing</h2>
-      <p class="mt-4 text-lg text-slate-500">No hidden fees. Cancel anytime.</p>
+      <p class="text-indigo-600 font-semibold text-sm uppercase tracking-widest mb-3">{pricing.label}</p>
+      <h2 class="text-4xl font-black text-slate-900 tracking-tight">{pricing.headline}</h2>
+      <p class="mt-4 text-lg text-slate-500">{pricing.subheadline}</p>
     </div>
 
     <div class="grid md:grid-cols-3 gap-6 items-start">
-      {plans.map((plan, i) => (
+      {pricing.plans.map((plan, i) => (
         <div class={`rounded-2xl border p-8 relative ${plan.featured ? 'border-indigo-500 bg-indigo-600 text-white shadow-xl shadow-indigo-200' : 'border-slate-200 bg-white'}`}>
           {plan.featured && (
             <span class="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-white text-indigo-600 text-xs font-bold px-3 py-1 rounded-full border border-indigo-200 whitespace-nowrap">
-              Most popular
+              {pricing.popularBadge}
             </span>
           )}
 
@@ -101,7 +43,7 @@ const featureLabels = [
                 ) : (
                   <svg class={`w-4 h-4 shrink-0 ${plan.featured ? 'text-indigo-200' : 'text-indigo-500'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
                 )}
-                <span><span class={`font-medium ${limit === '—' ? '' : ''}`}>{featureLabels[j]}:</span> {limit}</span>
+                <span><span class="font-medium">{pricing.featureLabels[j]}:</span> {limit}</span>
               </li>
             ))}
           </ul>

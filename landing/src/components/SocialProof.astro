@@ -1,46 +1,31 @@
 ---
-const testimonials = [
-  {
-    quote:
-      "We used to spend 2 hours every Monday morning scanning industry news. Signalist cut that to 15 minutes and our briefings are actually better now.",
-    author: 'Sophie M.',
-    role: 'Head of Communications',
-    company: 'European Media Group',
-    initials: 'SM',
-    color: 'bg-indigo-100 text-indigo-700',
-  },
-  {
-    quote:
-      "The AI summaries are surprisingly good. We pipe our curated feed straight into our weekly LinkedIn post — it's become our best-performing content.",
-    author: 'Lucas D.',
-    role: 'Content Strategist',
-    company: 'Digital Marketing Agency',
-    initials: 'LD',
-    color: 'bg-violet-100 text-violet-700',
-  },
-  {
-    quote:
-      "Finally a tool built for teams, not just personal reading. The shared workspace and role system made it easy to onboard our whole comms department.",
-    author: 'Amira K.',
-    role: 'Marketing Director',
-    company: 'B2B SaaS Company',
-    initials: 'AK',
-    color: 'bg-sky-100 text-sky-700',
-  },
+import type { Translations } from '../i18n/translations';
+
+interface Props {
+  t: Translations;
+}
+
+const { t } = Astro.props;
+const { socialProof } = t;
+
+const avatarColors = [
+  'bg-indigo-100 text-indigo-700',
+  'bg-violet-100 text-violet-700',
+  'bg-sky-100 text-sky-700',
 ];
 ---
 
 <section class="py-24 bg-slate-50">
   <div class="max-w-6xl mx-auto px-4 sm:px-6">
     <div class="text-center mb-16">
-      <p class="text-indigo-600 font-semibold text-sm uppercase tracking-widest mb-3">Early feedback</p>
+      <p class="text-indigo-600 font-semibold text-sm uppercase tracking-widest mb-3">{socialProof.label}</p>
       <h2 class="text-4xl font-black text-slate-900 tracking-tight">
-        Trusted by teams who live in their inbox
+        {socialProof.headline}
       </h2>
     </div>
 
     <div class="grid md:grid-cols-3 gap-6">
-      {testimonials.map((t) => (
+      {socialProof.testimonials.map((testimonial, i) => (
         <div class="bg-white rounded-2xl border border-slate-200 p-8 flex flex-col">
           <div class="flex gap-1 mb-5">
             {[...Array(5)].map(() => (
@@ -48,15 +33,15 @@ const testimonials = [
             ))}
           </div>
           <blockquote class="text-slate-600 leading-relaxed flex-1 mb-6">
-            "{t.quote}"
+            "{testimonial.quote}"
           </blockquote>
           <div class="flex items-center gap-3">
-            <div class={`w-10 h-10 rounded-full ${t.color} flex items-center justify-center font-bold text-sm shrink-0`}>
-              {t.initials}
+            <div class={`w-10 h-10 rounded-full ${avatarColors[i]} flex items-center justify-center font-bold text-sm shrink-0`}>
+              {testimonial.initials}
             </div>
             <div>
-              <p class="font-semibold text-slate-900 text-sm">{t.author}</p>
-              <p class="text-slate-400 text-xs">{t.role} · {t.company}</p>
+              <p class="font-semibold text-slate-900 text-sm">{testimonial.author}</p>
+              <p class="text-slate-400 text-xs">{testimonial.role} · {testimonial.company}</p>
             </div>
           </div>
         </div>

@@ -4,16 +4,17 @@ import '../styles/global.css';
 interface Props {
   title: string;
   description: string;
+  lang?: string;
   image?: string;
 }
 
-const { title, description, image = '/og-image.png' } = Astro.props;
+const { title, description, lang = 'en', image = '/og-image.png' } = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? 'https://signalist.app');
 const ogImage = new URL(image, Astro.site ?? 'https://signalist.app');
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={lang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />

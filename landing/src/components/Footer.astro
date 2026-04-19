@@ -1,4 +1,12 @@
 ---
+import type { Translations } from '../i18n/translations';
+
+interface Props {
+  t: Translations;
+}
+
+const { t } = Astro.props;
+const { footer } = t;
 const year = new Date().getFullYear();
 ---
 <footer class="border-t border-slate-100 bg-white">
@@ -13,13 +21,13 @@ const year = new Date().getFullYear();
     </a>
 
     <nav class="flex flex-wrap items-center justify-center gap-6 text-sm text-slate-500">
-      <a href="#features" class="hover:text-slate-900 transition-colors">Features</a>
-      <a href="#pricing" class="hover:text-slate-900 transition-colors">Pricing</a>
-      <a href="/privacy" class="hover:text-slate-900 transition-colors">Privacy</a>
-      <a href="/terms" class="hover:text-slate-900 transition-colors">Terms</a>
-      <a href="mailto:hello@signalist.app" class="hover:text-slate-900 transition-colors">Contact</a>
+      <a href="#features" class="hover:text-slate-900 transition-colors">{footer.features}</a>
+      <a href="#pricing" class="hover:text-slate-900 transition-colors">{footer.pricing}</a>
+      <a href="/privacy" class="hover:text-slate-900 transition-colors">{footer.privacy}</a>
+      <a href="/terms" class="hover:text-slate-900 transition-colors">{footer.terms}</a>
+      <a href="mailto:hello@signalist.app" class="hover:text-slate-900 transition-colors">{footer.contact}</a>
     </nav>
 
-    <p class="text-sm text-slate-400">© {year} Signalist. All rights reserved.</p>
+    <p class="text-sm text-slate-400">© {year} Signalist. {footer.copyright}</p>
   </div>
 </footer>

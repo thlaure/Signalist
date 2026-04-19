@@ -1,4 +1,12 @@
 ---
+import type { Translations } from '../i18n/translations';
+
+interface Props {
+  t: Translations;
+}
+
+const { t } = Astro.props;
+const { hero } = t;
 ---
 <section class="relative overflow-hidden bg-white pt-20 pb-28">
   <div class="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(99,102,241,0.12),transparent)]"></div>
@@ -9,17 +17,16 @@
         <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
         <span class="relative inline-flex h-2 w-2 rounded-full bg-indigo-500"></span>
       </span>
-      Now in early access — join the waitlist
+      {hero.badge}
     </div>
 
     <h1 class="text-5xl sm:text-6xl font-black text-slate-900 tracking-tight leading-tight mb-6">
-      Stop drowning in news.<br />
-      <span class="text-indigo-600">Start leading</span> the conversation.
+      {hero.headline}<br />
+      <span class="text-indigo-600">{hero.headlineAccent}</span>
     </h1>
 
     <p class="text-xl text-slate-500 leading-relaxed max-w-2xl mx-auto mb-10">
-      Signalist monitors hundreds of RSS feeds, surfaces what matters to your industry,
-      and helps your team publish AI-powered briefings in minutes — not hours.
+      {hero.subheadline}
     </p>
 
     <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -27,13 +34,13 @@
         href="#waitlist"
         class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-8 py-3.5 rounded-xl transition-colors text-base"
       >
-        Get early access
+        {hero.primaryCta}
       </a>
       <a
         href="#features"
         class="w-full sm:w-auto text-slate-700 hover:text-slate-900 font-semibold px-8 py-3.5 rounded-xl border border-slate-200 hover:border-slate-300 transition-colors text-base"
       >
-        See how it works
+        {hero.secondaryCta}
       </a>
     </div>
 
@@ -42,15 +49,10 @@
         <span class="w-3 h-3 rounded-full bg-red-400"></span>
         <span class="w-3 h-3 rounded-full bg-yellow-400"></span>
         <span class="w-3 h-3 rounded-full bg-green-400"></span>
-        <span class="text-xs text-slate-400 ml-2 font-mono">signalist.app/inbox</span>
+        <span class="text-xs text-slate-400 ml-2 font-mono">{hero.urlPreview}</span>
       </div>
       <div class="p-6 space-y-3">
-        {[
-          { tag: 'AI', title: 'OpenAI announces GPT-5 with improved reasoning capabilities', source: 'TechCrunch', time: '2m ago', read: false },
-          { tag: 'Marketing', title: 'How leading brands are leveraging AI for content strategy in 2026', source: 'Marketing Week', time: '14m ago', read: false },
-          { tag: 'AI', title: 'Anthropic raises $3B Series D to accelerate safety research', source: 'The Verge', time: '1h ago', read: true },
-          { tag: 'Industry', title: 'European media companies report 40% increase in digital subscriptions', source: 'Reuters', time: '2h ago', read: true },
-        ].map(item => (
+        {hero.articles.map(item => (
           <div class={`flex items-start gap-4 p-3 rounded-lg ${item.read ? 'opacity-50' : 'bg-white border border-slate-100 shadow-sm'}`}>
             <span class="shrink-0 text-xs font-semibold bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-md mt-0.5">{item.tag}</span>
             <div class="min-w-0 flex-1">

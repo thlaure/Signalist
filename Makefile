@@ -1,5 +1,7 @@
 .PHONY: help up down build rebuild shell logs lint analyse tests-unit tests-integration tests db-migrate db-reset cache-clear composer-install composer-update front-install front-dev front-build front-preview front-lint front-test front-test-watch front-hooks grumphp
 
+RECTOR_FLAGS ?=
+
 # Default target
 .DEFAULT_GOAL := help
 
@@ -75,7 +77,7 @@ analyse: ## Run PHPStan static analysis
 	docker compose exec app vendor/bin/phpstan analyse
 
 rector: ## Run Rector to refactor code
-	docker compose exec app vendor/bin/rector process
+	docker compose exec app vendor/bin/rector process $(RECTOR_FLAGS)
 
 rector-dry: ## Run Rector in dry-run mode
 	docker compose exec app vendor/bin/rector process --dry-run
@@ -96,8 +98,8 @@ tests-integration: ## Run integration tests
 tests: ## Run all tests
 	docker compose exec app vendor/bin/phpunit
 
-tests-coverage: ## Run unit tests with coverage report (HTML + text)
-	docker compose exec -e XDEBUG_MODE=coverage app vendor/bin/phpunit --testsuite=Unit --coverage-html var/coverage --coverage-text
+tests-coverage: ## Run backend behavior tests with coverage report (HTML + text)
+	docker compose exec -e XDEBUG_MODE=coverage app vendor/bin/phpunit --coverage-html var/coverage --coverage-text
 
 tests-api: ## Run Behat API tests
 	docker compose exec app vendor/bin/behat --colors

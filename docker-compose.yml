@@ -6,9 +6,9 @@ services:
     container_name: signalist-app
     restart: unless-stopped
     ports:
-      - "8000:80"
-      - "4443:443"
-      - "4443:443/udp"
+      - "${SIGNALIST_HTTP_PORT:-8000}:80"
+      - "${SIGNALIST_HTTPS_PORT:-4443}:443"
+      - "${SIGNALIST_HTTPS_PORT:-4443}:443/udp"
     volumes:
       - .:/app:cached
       - ./docker/frankenphp/php.ini:/usr/local/etc/php/conf.d/app.ini:ro
@@ -25,7 +25,8 @@ services:
       - REDIS_URL=redis://redis:6379
       - MESSENGER_TRANSPORT_DSN=redis://redis:6379
       - MAILER_DSN=smtp://mailpit:1025
-      - FRONTEND_URL=http://localhost:5173
+      - FRONTEND_URL=${FRONTEND_URL:-http://localhost:5173}
+      - SIGNALIST_PUBLIC_API_URL=${SIGNALIST_PUBLIC_API_URL:-http://localhost:${SIGNALIST_HTTP_PORT:-8000}}
       - FRANKENPHP_CONFIG=worker ./public/index.php
       - SERVER_NAME=:80
     depends_on:
@@ -56,7 +57,8 @@ services:
       - REDIS_URL=redis://redis:6379
       - MESSENGER_TRANSPORT_DSN=redis://redis:6379
       - MAILER_DSN=smtp://mailpit:1025
-      - FRONTEND_URL=http://localhost:5173
+      - FRONTEND_URL=${FRONTEND_URL:-http://localhost:5173}
+      - SIGNALIST_PUBLIC_API_URL=${SIGNALIST_PUBLIC_API_URL:-http://localhost:${SIGNALIST_HTTP_PORT:-8000}}
     depends_on:
       postgres:
         condition: service_healthy
@@ -64,9 +66,15 @@ services:
         condition: service_healthy
       mailpit:
         condition: service_started
-    command: sh -c 'while true; do php bin/console messenger:consume async --time-limit=30 --memory-limit=256M -vv; done'
+    command: sh -c 'while true; do php bin/console messenger:consume oauth_priority async --time-limit=30 --memory-limit=256M; done'
     networks:
       - signalist
+
+  scheduler:
+    extends:
+      service: messenger
+    container_name: signalist-scheduler
+    command: php bin/console messenger:consume scheduler_signalist --time-limit=3600 --memory-limit=256M
 
   postgres:
     image: pgvector/pgvector:pg16

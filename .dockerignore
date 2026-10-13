@@ -41,3 +41,9 @@ vendor/
 CLAUDE.md
 grumphp.yml
 Makefile
+
+**/node_modules/
+landing/dist/
+config/jwt/
+.env
+.env.*

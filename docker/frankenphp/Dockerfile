@@ -1,3 +1,10 @@
+FROM node:24-alpine AS frontend
+WORKDIR /build/frontend
+COPY frontend/package.json frontend/package-lock.json ./
+RUN npm ci --ignore-scripts
+COPY frontend/ ./
+RUN npm run build
+
 FROM dunglas/frankenphp:1-php8.5-alpine
 
 # Install mlocati/docker-php-extension-installer for easier extension management
@@ -10,6 +17,8 @@ RUN apk add --no-cache \
     curl \
     zip \
     unzip \
+    nodejs \
+    npm \
     && install-php-extensions \
     pdo_pgsql \
     intl \
@@ -29,13 +38,16 @@ COPY . .
 
 # Copy PHP configuration
 COPY docker/frankenphp/php.ini /usr/local/etc/php/conf.d/app.ini
-COPY docker/frankenphp/Caddyfile /etc/caddy/Caddyfile
+COPY docker/frankenphp/Caddyfile.prod /etc/caddy/Caddyfile
+COPY --from=frontend /build/frontend/dist /app/frontend/dist
 
 ENV APP_ENV=prod
 
 # Install dependencies without running post-install scripts (cache:clear requires
 # env vars and services that are not available at image build time)
 RUN composer install --no-dev --optimize-autoloader --classmap-authoritative --no-interaction --no-scripts \
+    && cd /app/integrations/bluesky && npm ci --omit=dev --ignore-scripts \
+    && touch /app/.env \
     && mkdir -p /app/var \
     && chown -R www-data:www-data /app/var
 

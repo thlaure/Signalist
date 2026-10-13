@@ -1,0 +1,77 @@
+# Standalone production topology. Configure through a protected operator env file.
+x-app: &app
+  image: signalist:${SIGNALIST_IMAGE_TAG:-local}
+  build:
+    context: .
+    dockerfile: docker/frankenphp/Dockerfile
+  restart: unless-stopped
+  env_file: ${SIGNALIST_PRODUCTION_ENV_FILE:?Set a protected production environment file}
+  environment:
+    APP_ENV: prod
+    APP_DEBUG: "0"
+    JWT_SECRET_KEY: /run/keys/private.pem
+    JWT_PUBLIC_KEY: /run/keys/public.pem
+  volumes:
+    - ${SIGNALIST_JWT_DIR:?Set the directory containing JWT keys}:/run/keys:ro
+    - app_cache:/app/var
+  depends_on:
+    postgres:
+      condition: service_healthy
+    redis:
+      condition: service_healthy
+  networks: [signalist]
+services:
+  app:
+    <<: *app
+    ports: ["80:80", "443:443", "443:443/udp"]
+    volumes:
+      - ${SIGNALIST_JWT_DIR:?Set the directory containing JWT keys}:/run/keys:ro
+      - app_cache:/app/var
+      - caddy_data:/data
+      - caddy_config:/config
+    healthcheck:
+      test: ["CMD", "php", "-r", "exit(is_dir('/app/frontend/dist') && is_file('/app/vendor/autoload.php') ? 0 : 1);"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+  messenger:
+    <<: *app
+    command: php bin/console messenger:consume oauth_priority async --time-limit=3600 --memory-limit=256M
+  scheduler:
+    <<: *app
+    command: php bin/console messenger:consume scheduler_signalist --time-limit=3600 --memory-limit=256M
+  postgres:
+    image: pgvector/pgvector:pg16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: signalist
+      POSTGRES_DB: signalist
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set the database password}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U signalist -d signalist"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks: [signalist]
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    volumes: ["redis_data:/data"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks: [signalist]
+networks:
+  signalist:
+volumes:
+  postgres_data:
+  redis_data:
+  app_cache:
+  caddy_data:
+  caddy_config:

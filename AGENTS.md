@@ -94,16 +94,34 @@ Execution principles:
 - feature work: add the right test level instead of only broad smoke coverage
 - refactor: verify behavior before and after with the relevant checks
 
-Ask first:
+## Autonomous Execution
 
-- adding composer or npm packages
-- changing PostgreSQL schema or pgvector dimensions
-- changing AI provider configuration or prompt contracts
-- changing the project MCP protocol implementation
-- changing `phpstan.neon`
-- changing shared instruction files
+An explicit request to implement a feature, fix, or roadmap authorizes the necessary local implementation and verification. Continue through the requested scope without asking for permission for each routine step. State material assumptions, use existing conventions, and report progress and blockers.
+
+Within the requested scope, work autonomously on:
+
+- adding necessary composer or npm packages after checking compatibility
+- changing PostgreSQL schema and pgvector dimensions through reviewed, tested migration files; apply migrations only to local development or test databases
+- implementing AI provider configuration and versioned prompt contracts without exposing secrets or sending raw personal data
+- implementing application MCP endpoints with authentication, authorization, and scoped output; this does not authorize external agent runtime MCP access
+- starting local development services and running relevant quality gates
+- making reversible local code, configuration, test, and documentation changes required to complete the task
+
+Use configurable defaults when external accounts or product decisions are unavailable. Complete and test independent work while reporting the remaining setup. Ask for clarification only when a missing decision materially affects correctness, security, cost, or irreversible behavior.
+
+Keep fixing PHPStan findings in code, types, or PHPDoc. Do not weaken analysis or quality gates to obtain passing checks. Changes to `phpstan.neon` still require explicit approval.
+
+Ask first for:
+
+- destructive operations that discard existing user work or data
+- production database changes, public deployment, or publishing
+- live external messages, email delivery, social posts, charges, or paid API usage unless already explicitly authorized
+- enabling external agent runtime MCP access
+- shared instruction changes that were not explicitly requested or approved in the current conversation
 - running `git commit`
 - running `git push`
+
+Explicit authorization persists for the approved scope in the current conversation; do not ask again for the same action. These autonomous execution rules take precedence over stricter routine-step approval guidance in repo-local workflows. Preserve security and privacy requirements.
 
 Never:
 
@@ -180,7 +198,8 @@ Policy:
   - duplicated or conflicting guidance
 - only reusable, stable guidance should be added
 - temporary context, one-off fixes, and local anecdotes should not be added to instruction files
-- changes to instruction files must be proposed first and applied only after explicit confirmation in the current conversation
+- agent-initiated instruction improvements must be proposed first and applied only after explicit confirmation in the current conversation
+- an explicit user request to change instruction files authorizes that requested edit; explain the intended change and apply it without a second confirmation
 
 ## Quality Gates
 

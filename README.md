@@ -13,13 +13,18 @@ publishing insights across newsletters and social media.
 **Monitor → Curate → Synthesize → Publish**
 
 - **Aggregate** RSS feeds into categorized, searchable inboxes
-- **Summarize** articles automatically with LLMs (OpenAI, Anthropic, Mistral)
-- **Bookmark & tag** content with AI-assisted auto-tagging
+- **Enrich** articles through a provider-independent AI port (live provider setup deferred)
+- **Bookmark & tag** content, with owner-scoped tag management and optional AI tagging
 - **Generate newsletters** from curated articles, configurable by reading time
-- **Publish** to social media (X, LinkedIn, Threads, Bluesky, WhatsApp)
-- **Search** with full-text and semantic (vector) search
+- **Share** links to X, LinkedIn, Threads, Bluesky and WhatsApp; approve API publishing to configured LinkedIn, X and Bluesky accounts
+- **Search** with full text; semantic/hybrid modes become available with a configured embedding provider
+- **Collaborate** in workspaces with roles, annotations and independent read status
+- **Control privacy** with consent, export, restriction and password-confirmed deletion
+- **Manage plans** through configured Stripe checkout, portal and signed webhooks
 
 ---
+
+Implementation and release configuration: [deployment guide](docs/DEPLOYMENT.md). External provider integrations are disabled until credentials and account approvals are supplied. Production deployment and live provider validation remain outstanding.
 
 ## Tech Stack
 
@@ -28,8 +33,9 @@ publishing insights across newsletters and social media.
 | **Backend** | PHP 8.5 · Symfony 7.4 · API Platform 4.x · FrankenPHP |
 | **Frontend** | React 19 · TypeScript · Vite 7 · MUI v7 · react-i18next |
 | **Database** | PostgreSQL 16 · pgvector |
+| **Landing** | Astro 7 · Tailwind v4 · Node 22.19+ |
 | **Queue** | Symfony Messenger · Redis |
-| **AI** | Symfony AI (OpenAI / Anthropic / Mistral) |
+| **AI** | Provider-independent adapters; live provider setup deferred |
 | **Auth** | LexikJWT |
 | **Testing** | PHPUnit · Behat · Vitest · React Testing Library |
 

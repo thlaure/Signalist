@@ -1,9 +1,14 @@
 # Signalist Roadmap
 
 > This document tracks every feature, sub-task, and deliverable across all project phases.
-> **Status indicators:** `Done` | `In Progress` | `Not Started`
+> **Status indicators:** `Done` | `In Progress` | `Not Started` | `Deferred`
 >
 > Updated by the agent after each feature passes quality checks (`make quality`) and tests.
+
+
+> Local implementation covers privacy, pgvector storage, provider-independent AI pipelines, search/Q&A, tags, newsletters, teams, billing, OAuth/sync, social drafts/publishing, Spotlight and read-only MCP. Live AI/provider setup, production domain/deployment and operator agreements remain external prerequisites. See [deployment guide](DEPLOYMENT.md).
+> Task names below describe capabilities: handlers/messages are consolidated where useful, new async endpoints use thin controllers, and Doctrine supplies persistence without redundant repository wrappers. An implementation marked Done does not claim successful live provider validation.
+> Verification on 2026-10-13: 193 backend tests, 85 API scenarios, 42 frontend tests and five offline Bluesky SDK tests passed; domain statement coverage is 82.65%. Frontend/landing builds and local quality checks passed. See [review notes](PR-NOTES.md) for exact checks, migration evidence and remaining launch risks. [Browser QA](BROWSER-QA.md) records the local end-to-end pass and its limits.
 
 ---
 
@@ -17,7 +22,7 @@
 | `Category` entity (name, slug, description, color, position) | Done |
 | `Article` entity (guid, title, url, summary, content, author, imageUrl, publishedAt, isRead) | Done |
 | `Bookmark` entity (notes, article relation, createdAt) | Done |
-| `ArticleEmbedding` entity (embedding JSON, chunkIndex, chunkText) | Done |
+| `ArticleEmbedding` entity (vector(1536), chunkIndex, chunkText) | Done |
 | Initial migration (`Version20260131135830`) | Done |
 | Unique constraints (feed.url, category.slug, bookmark.article_id) | Done |
 | Indexes on `published_at`, `is_read` | Done |
@@ -267,20 +272,20 @@
 
 | Task | Status |
 |------|--------|
-| Value proposition copywriting | Not Started |
-| Wireframes / mockup (Figma or equivalent) | Not Started |
-| Pricing tiers definition (free, team, enterprise) | Not Started |
+| Value proposition copywriting | Done |
+| Wireframes / mockup (Figma or equivalent) | Done |
+| Pricing tiers definition (free, team, enterprise) | Done (quotas; commercial prices pending) |
 
 ### 2.2 Implementation
 
 | Task | Status |
 |------|--------|
-| Landing page setup (`landing/` — Astro 5 + Tailwind v4) | Done |
+| Landing page setup (`landing/` — Astro 7 + Tailwind v4) | Done |
 | Hero section (headline, subheadline, CTA, inbox preview) | Done |
 | Features section (Monitor / Curate / Synthesize / Publish) | Done |
 | Pricing section (Free / Team / Enterprise) | Done |
-| Social proof / testimonials section | Done |
-| Waitlist / early access form (UI only — service TBD) | Done |
+| Product principles section (fabricated testimonials removed) | Done |
+| Waitlist / early access form with confirmed, withdrawable backend | Done |
 | SEO meta tags + Open Graph | Done |
 | Responsive design (mobile + desktop) | Done |
 
@@ -288,9 +293,9 @@
 
 | Task | Status |
 |------|--------|
-| Domain configuration | Not Started |
-| Deploy to production (Vercel / Netlify / other) | Not Started |
-| Analytics (privacy-friendly, e.g. Plausible) | Not Started |
+| Domain configuration | Not Started (external setup) |
+| Deploy to production (Vercel / Netlify / other) | Not Started (external setup) |
+| Analytics (privacy-friendly, e.g. Plausible) | Done |
 
 ---
 
@@ -300,72 +305,72 @@
 
 | Task | Status |
 |------|--------|
-| Install and configure `symfony/ai` | Not Started |
-| Configure LLM providers (OpenAI, Anthropic, Mistral) | Not Started |
-| Environment variables for API keys | Not Started |
-| AI client adapter (`Infrastructure/AI/`) | Not Started |
+| Install and configure `symfony/ai` | Deferred (provider setup) |
+| Configure LLM providers (OpenAI, Anthropic, Mistral) | Deferred (provider setup) |
+| Environment variables for API keys | Deferred (provider setup) |
+| AI client adapter (`Infrastructure/AI/`) | Done (provider ports; live adapter deferred) |
 
 ### 3.2 Article Embeddings (pgvector)
 
 | Task | Status |
 |------|--------|
-| Enable pgvector `vector(1536)` column type (replace JSON) | Not Started |
-| IVFFlat index on embeddings | Not Started |
-| HTML cleaning pipeline (Readability) | Not Started |
-| Text chunking strategy | Not Started |
-| `GenerateEmbeddingMessage` (async) | Not Started |
-| `GenerateEmbeddingMessageHandler` | Not Started |
-| Embedding generation adapter (OpenAI / Mistral) | Not Started |
-| Unit tests for embedding pipeline | Not Started |
+| Enable pgvector `vector(1536)` column type (replace JSON) | Done |
+| IVFFlat index on embeddings | Done |
+| HTML cleaning pipeline (Readability) | Done |
+| Text chunking strategy | Done |
+| `GenerateEmbeddingMessage` (async) | Done |
+| `GenerateEmbeddingMessageHandler` | Done |
+| Embedding generation adapter (OpenAI / Mistral) | Deferred (provider setup) |
+| Unit tests for embedding pipeline | Done |
 
 ### 3.3 Semantic Search
 
 | Task | Status |
 |------|--------|
-| Search domain (`src/Domain/Search/`) | Not Started |
-| `SemanticSearchQuery` + `SemanticSearchHandler` | Not Started |
-| `SearchRepositoryInterface` port | Not Started |
-| `PgvectorSearchRepository` adapter | Not Started |
-| Cosine similarity search endpoint | Not Started |
-| Combined full-text + semantic search | Not Started |
-| Search API Platform resource | Not Started |
-| Frontend search UI with results | Not Started |
-| Unit + integration tests | Not Started |
+| Search domain (`src/Domain/Search/`) | Done |
+| `SemanticSearchQuery` + `SemanticSearchHandler` | Done |
+| `SearchRepositoryInterface` port | Done |
+| `PgvectorSearchRepository` adapter | Done |
+| Cosine similarity search endpoint | Done |
+| Combined full-text + semantic search | Done |
+| Search API Platform resource | Done |
+| Frontend search UI with results | Done |
+| Unit + integration tests | Done |
 
 ### 3.4 LLM Summarization
 
 | Task | Status |
 |------|--------|
-| `SummarizeArticleMessage` (async) | Not Started |
-| `SummarizeArticleMessageHandler` | Not Started |
-| Summarization prompt templates | Not Started |
-| Source URL retention in summaries | Not Started |
-| Summary storage (Article entity field) | Not Started |
-| Frontend summary display | Not Started |
-| Unit tests for summarization | Not Started |
+| `SummarizeArticleMessage` (async) | Done |
+| `SummarizeArticleMessageHandler` | Done |
+| Summarization prompt templates | Deferred (provider setup) |
+| Source URL retention in summaries | Done |
+| Summary storage (Article entity field) | Done |
+| Frontend summary display | Done |
+| Unit tests for summarization | Done |
 
 ### 3.5 Auto-Tagging
 
 | Task | Status |
 |------|--------|
-| Tag entity + migration | Not Started |
-| `AutoTagArticleMessage` (async) | Not Started |
-| `AutoTagArticleMessageHandler` | Not Started |
-| LLM-based tag extraction | Not Started |
-| Tag CRUD domain (Command/Query/Handler) | Not Started |
-| Tag API endpoint | Not Started |
-| Frontend tag display + filtering | Not Started |
-| Unit tests | Not Started |
+| Tag entity + migration | Done |
+| `AutoTagArticleMessage` (async) | Done |
+| `AutoTagArticleMessageHandler` | Done |
+| LLM-based tag extraction | Deferred (provider setup) |
+| Tag CRUD domain (Command/Query/Handler) | Done |
+| Tag API endpoint | Done |
+| Frontend tag display + filtering | Done |
+| Unit tests | Done |
 
 ### 3.6 Data Anonymization (GDPR)
 
 | Task | Status |
 |------|--------|
-| `ArticleAnonymizer` service | Not Started |
-| PII detection (email, phone, names, IPs) | Not Started |
-| Anonymization before LLM calls | Not Started |
-| Logging of data sent to external AI services | Not Started |
-| Unit tests for anonymizer | Not Started |
+| `ArticleAnonymizer` service | Done |
+| PII detection (email, phone, names, IPs) | In Progress (common identifiers and known names; arbitrary-name NER pending) |
+| Anonymization before LLM calls | Done |
+| Logging of data sent to external AI services | Done |
+| Unit tests for anonymizer | Done |
 
 ---
 
@@ -375,55 +380,55 @@
 
 | Task | Status |
 |------|--------|
-| Newsletter entity + migration | Not Started |
-| `CreateNewsletterCommand` + `CreateNewsletterHandler` | Not Started |
-| `UpdateNewsletterCommand` + `UpdateNewsletterHandler` | Not Started |
-| `DeleteNewsletterCommand` + `DeleteNewsletterHandler` | Not Started |
-| `GetNewsletterQuery` + `GetNewsletterHandler` | Not Started |
-| `ListNewslettersQuery` + `ListNewslettersHandler` | Not Started |
-| Newsletter input/output DTOs | Not Started |
-| `NewsletterRepositoryInterface` port | Not Started |
-| `DoctrineNewsletterRepository` adapter | Not Started |
-| Newsletter API Platform resource | Not Started |
-| Unit tests for all handlers | Not Started |
+| Newsletter entity + migration | Done |
+| `CreateNewsletterCommand` + `CreateNewsletterHandler` | Done |
+| `UpdateNewsletterCommand` + `UpdateNewsletterHandler` | Done |
+| `DeleteNewsletterCommand` + `DeleteNewsletterHandler` | Done |
+| `GetNewsletterQuery` + `GetNewsletterHandler` | Done |
+| `ListNewslettersQuery` + `ListNewslettersHandler` | Done |
+| Newsletter input/output DTOs | Done |
+| `NewsletterRepositoryInterface` port | Done |
+| `DoctrineNewsletterRepository` adapter | Done |
+| Newsletter API Platform resource | Done |
+| Unit tests for all handlers | Done |
 
 ### 4.2 Newsletter Content Generation
 
 | Task | Status |
 |------|--------|
-| `NewsletterContentBuilder` service | Not Started |
-| Reading time calculation (200 wpm) | Not Started |
-| Category-grouped article selection | Not Started |
-| LLM-generated concise summaries | Not Started |
-| Clickable titles with source URLs | Not Started |
-| HTML email template | Not Started |
-| Unit tests | Not Started |
+| `NewsletterContentBuilder` service | Done |
+| Reading time calculation (200 wpm) | Done |
+| Category-grouped article selection | Done |
+| LLM-generated concise summaries | Deferred (uses stored AI summaries when available) |
+| Clickable titles with source URLs | Done |
+| HTML email template | Done |
+| Unit tests | Done |
 
 ### 4.3 Newsletter Scheduling
 
 | Task | Status |
 |------|--------|
-| Symfony Scheduler integration | Not Started |
-| Daily / weekly / custom schedule options | Not Started |
-| `GenerateNewsletterMessage` (async) | Not Started |
-| `GenerateNewsletterMessageHandler` | Not Started |
+| Symfony Scheduler integration | Done |
+| Daily / weekly / custom schedule options | Done |
+| `GenerateNewsletterMessage` (async) | Done |
+| `GenerateNewsletterMessageHandler` | Done |
 | Symfony Mailer configuration | Done |
-| Email delivery adapter | Not Started |
-| Schedule management UI (frontend) | Not Started |
-| Unit + integration tests | Not Started |
+| Email delivery adapter | Done |
+| Schedule management UI (frontend) | Done |
+| Unit + integration tests | Done |
 
 ### 4.4 Raindrop.io Sync
 
 | Task | Status |
 |------|--------|
-| OAuth2 flow for Raindrop.io | Not Started |
-| `RaindropSyncMessage` (async) | Not Started |
-| `RaindropSyncMessageHandler` | Not Started |
-| Raindrop API client (`Infrastructure/External/Raindrop/`) | Not Started |
-| Bidirectional bookmark sync | Not Started |
-| Conflict resolution strategy | Not Started |
-| Sync status UI (frontend) | Not Started |
-| Unit tests | Not Started |
+| OAuth2 flow for Raindrop.io | In Progress (secure state binding implemented; provider state echo unverified) |
+| `RaindropSyncMessage` (async) | Done |
+| `RaindropSyncMessageHandler` | Done |
+| Raindrop API client (`Infrastructure/External/Raindrop/`) | Done |
+| Bidirectional bookmark sync | Done |
+| Conflict resolution strategy | Done |
+| Sync status UI (frontend) | Done |
+| Unit tests | Done |
 
 ### 4.5 Social Recap (AI-Generated Weekly Post)
 
@@ -432,20 +437,20 @@
 
 | Task | Status |
 |------|--------|
-| `SocialRecap` entity + migration (platform, period, content, status) | Not Started |
-| `CreateSocialRecapCommand` + `CreateSocialRecapHandler` | Not Started |
-| `DeleteSocialRecapCommand` + `DeleteSocialRecapHandler` | Not Started |
-| `GetSocialRecapQuery` + `GetSocialRecapHandler` | Not Started |
-| `ListSocialRecapsQuery` + `ListSocialRecapsHandler` | Not Started |
-| `SocialRecapRepositoryInterface` port | Not Started |
-| `DoctrineSocialRecapRepository` adapter | Not Started |
-| `SocialRecapContentBuilder` service (reuses `NewsletterContentBuilder` aggregation) | Not Started |
-| Platform output formatters: LinkedIn, X (thread), Instagram caption | Not Started |
-| LLM prompt templates per platform (tone, length, hashtag style) | Not Started |
-| `GenerateSocialRecapMessage` (async) + handler | Not Started |
-| Social Recap API Platform resource | Not Started |
-| Frontend: recap generator UI (select period, platform, preview, copy) | Not Started |
-| Unit tests for content builder + formatters | Not Started |
+| `SocialRecap` entity + migration (platform, period, content, status) | Done |
+| `CreateSocialRecapCommand` + `CreateSocialRecapHandler` | Done |
+| `DeleteSocialRecapCommand` + `DeleteSocialRecapHandler` | Done |
+| `GetSocialRecapQuery` + `GetSocialRecapHandler` | Done |
+| `ListSocialRecapsQuery` + `ListSocialRecapsHandler` | Done |
+| `SocialRecapRepositoryInterface` port | Done |
+| `DoctrineSocialRecapRepository` adapter | Done |
+| `SocialRecapContentBuilder` service (reuses `NewsletterContentBuilder` aggregation) | Done |
+| Platform output formatters: LinkedIn, X (thread), Instagram caption | Done |
+| LLM prompt templates per platform (tone, length, hashtag style) | Done |
+| `GenerateSocialRecapMessage` (async) + handler | Done |
+| Social Recap API Platform resource | Done |
+| Frontend: recap generator UI (select period, platform, preview, copy) | Done |
+| Unit tests for content builder + formatters | Done |
 
 ---
 
@@ -455,37 +460,37 @@
 
 | Task | Status |
 |------|--------|
-| `Organization` entity + migration | Not Started |
-| `OrganizationMember` entity (userId, orgId, role) + migration | Not Started |
-| Roles: `admin`, `curator`, `reader` | Not Started |
-| `InviteMemberCommand` + `InviteMemberHandler` | Not Started |
-| `RemoveMemberCommand` + `RemoveMemberHandler` | Not Started |
-| `UpdateMemberRoleCommand` + `UpdateMemberRoleHandler` | Not Started |
-| Organization API endpoints | Not Started |
-| Role-based access control (Symfony voters) | Not Started |
-| Unit tests | Not Started |
+| `Organization` entity + migration | Done |
+| `OrganizationMember` entity (userId, orgId, role) + migration | Done |
+| Roles: `admin`, `curator`, `reader` | Done |
+| `InviteMemberCommand` + `InviteMemberHandler` | Done |
+| `RemoveMemberCommand` + `RemoveMemberHandler` | Done |
+| `UpdateMemberRoleCommand` + `UpdateMemberRoleHandler` | Done |
+| Organization API endpoints | Done |
+| Role-based access control (Symfony voters) | Done |
+| Unit tests | Done |
 
 ### 5.2 Shared Workspace
 
 | Task | Status |
 |------|--------|
-| Feeds and categories scoped to organization | Not Started |
-| Shared bookmarks with curator attribution | Not Started |
-| Collaborative annotations on bookmarks | Not Started |
-| Activity feed (who curated what, when) | Not Started |
-| Per-member read status (independent of shared articles) | Not Started |
-| Frontend team workspace UI | Not Started |
-| Unit + integration tests | Not Started |
+| Feeds and categories scoped to organization | Done |
+| Shared bookmarks with curator attribution | Done |
+| Collaborative annotations on bookmarks | Done |
+| Activity feed (who curated what, when) | Done |
+| Per-member read status (independent of shared articles) | Done |
+| Frontend team workspace UI | Done |
+| Unit + integration tests | Done |
 
 ### 5.3 Billing & Plans
 
 | Task | Status |
 |------|--------|
-| Plan model (free, team, enterprise) | Not Started |
-| Per-seat pricing logic | Not Started |
-| Usage limits per plan (feeds, members, AI calls) | Not Started |
-| Stripe integration (subscriptions) | Not Started |
-| Plan management UI | Not Started |
+| Plan model (free, team, enterprise) | Done |
+| Per-seat pricing logic | Done |
+| Usage limits per plan (feeds, members, AI calls) | Done |
+| Stripe integration (subscriptions) | Done |
+| Plan management UI | Done |
 
 ---
 
@@ -495,28 +500,28 @@
 
 | Task | Status |
 |------|--------|
-| Spotlight domain (`src/Domain/Spotlight/`) | Not Started |
-| `Cmd+K` activation (frontend) | Not Started |
-| Command parser (NLP intent mapping) | Not Started |
-| CRUD intent handlers (add feed, create category, etc.) | Not Started |
-| AI query handler (ask questions about articles) | Not Started |
-| Spotlight UI component (overlay, suggestions, results) | Not Started |
-| Frontend + backend integration | Not Started |
-| Unit tests for command parser | Not Started |
+| Spotlight domain (`src/Domain/Spotlight/`) | Done |
+| `Cmd+K` activation (frontend) | Done |
+| Command parser (NLP intent mapping) | Done (bounded English/French grammar; AI intent extraction deferred) |
+| CRUD intent handlers (add feed, create category, etc.) | Done |
+| AI query handler (ask questions about articles) | Done |
+| Spotlight UI component (overlay, suggestions, results) | Done |
+| Frontend + backend integration | Done |
+| Unit tests for command parser | Done |
 
 ### 6.2 MCP Server (Model Context Protocol)
 
 | Task | Status |
 |------|--------|
-| MCP infrastructure (`src/Infrastructure/MCP/`) | Not Started |
-| `#[AsTool]` tool definitions | Not Started |
-| `search_articles` tool | Not Started |
-| `get_feed_summary` tool | Not Started |
-| `list_categories` tool | Not Started |
-| `get_article` tool | Not Started |
-| MCP routing (`/mcp/` prefix) | Not Started |
-| Authentication for MCP endpoints | Not Started |
-| Integration tests | Not Started |
+| MCP infrastructure (`src/Infrastructure/MCP/`) | Done |
+| SDK tool definitions (explicit registration) | Done |
+| `search_articles` tool | Done |
+| `get_feed_summary` tool | Done |
+| `list_categories` tool | Done |
+| `get_article` tool | Done |
+| MCP routing (`/mcp/` prefix) | Done |
+| Authentication for MCP endpoints | Done |
+| Integration tests | Done |
 
 ### 6.3 Social Sharing
 
@@ -524,14 +529,14 @@
 
 | Task | Status |
 |------|--------|
-| Share intent model | Not Started |
-| WhatsApp share adapter | Not Started |
-| X (Twitter) share adapter | Not Started |
-| LinkedIn share adapter | Not Started |
-| Threads share adapter | Not Started |
-| Bluesky share adapter | Not Started |
-| Share button UI (frontend) | Not Started |
-| Unit tests | Not Started |
+| Share intent model | Done |
+| WhatsApp share adapter | Done |
+| X (Twitter) share adapter | Done |
+| LinkedIn share adapter | Done |
+| Threads share adapter | Done |
+| Bluesky share adapter | Done |
+| Share button UI (frontend) | Done |
+| Unit tests | Done |
 
 #### 6.3.2 Crossposting via Platform APIs (requires OAuth2 per platform)
 
@@ -540,19 +545,19 @@
 
 | Task | Status |
 |------|--------|
-| `SocialAccount` entity + migration (platform, accessToken, refreshToken, expiresAt) | Not Started |
-| `SocialAccountRepositoryInterface` port | Not Started |
-| `DoctrineSocialAccountRepository` adapter | Not Started |
-| OAuth2 flow: LinkedIn (`Infrastructure/External/LinkedIn/`) | Not Started |
-| OAuth2 flow: X / Twitter (`Infrastructure/External/X/`) | Not Started |
-| OAuth2 flow: Bluesky (`Infrastructure/External/Bluesky/`) | Not Started |
-| `CrosspostMessage` (async) + `CrosspostMessageHandler` | Not Started |
-| `CrosspostAdapterInterface` port (per-platform implementations) | Not Started |
-| Token refresh strategy (background job) | Not Started |
-| Crosspost status tracking (pending, published, failed) | Not Started |
-| Frontend: connect social accounts UI (OAuth2 redirect flow) | Not Started |
-| Frontend: crosspost action on articles + recap posts | Not Started |
-| Unit tests for adapters | Not Started |
+| `SocialAccount` entity + migration (platform, accessToken, refreshToken, expiresAt) | Done |
+| `SocialAccountRepositoryInterface` port | Done |
+| `DoctrineSocialAccountRepository` adapter | Done |
+| OAuth2 flow: LinkedIn (`Infrastructure/External/LinkedIn/`) | Done |
+| OAuth2 flow: X / Twitter (`Infrastructure/External/X/`) | Done |
+| OAuth2 flow: Bluesky (`Infrastructure/External/Bluesky/`) | Done |
+| `CrosspostMessage` (async) + `CrosspostMessageHandler` | Done |
+| `CrosspostAdapterInterface` port (per-platform implementations) | Done |
+| Token refresh strategy (background job) | Done |
+| Crosspost status tracking (pending, published, failed) | Done |
+| Frontend: connect social accounts UI (OAuth2 redirect flow) | Done |
+| Frontend: crosspost action on articles + recap posts | Done |
+| Unit tests for adapters | Done |
 
 ---
 
@@ -560,22 +565,22 @@
 
 | Task | Status |
 |------|--------|
-| `UserConsent` entity + migration | Not Started |
-| Consent management endpoints (grant, withdraw) | Not Started |
-| `GET /api/v1/user/data-export` (Access right) | Not Started |
-| `DELETE /api/v1/user/account` (Erasure right) | Not Started |
-| `GET /api/v1/user/data-export?format=portable` (Portability) | Not Started |
-| `PUT /api/v1/user/profile` (Rectification) | Not Started |
-| `POST /api/v1/user/restrict-processing` (Restriction) | Not Started |
-| `POST /api/v1/user/opt-out` (Objection) | Not Started |
-| Soft-delete (`deletedAt`) on personal data entities | Not Started |
-| Cascade deletion for related personal data | Not Started |
-| Data retention scheduler (90-day articles, 30-day sessions) | Not Started |
-| Encrypted sensitive columns (`EncryptedStringType`) | Not Started |
-| Data access audit logging (`DataAccessAuditor`) | Not Started |
-| Privacy policy documentation | Not Started |
-| DPA documentation for AI providers | Not Started |
-| GDPR-specific problem types (consent-required, etc.) | Not Started |
+| `UserConsent` entity + migration | Done |
+| Consent management endpoints (grant, withdraw) | Done |
+| `GET /api/v1/user/data-export` (Access right) | Done |
+| `DELETE /api/v1/user/account` (Erasure right) | Done |
+| `GET /api/v1/user/data-export?format=portable` (Portability) | Done |
+| `PUT /api/v1/user/profile` (Rectification) | Done |
+| `POST /api/v1/user/restrict-processing` (Restriction) | Done |
+| `POST /api/v1/user/opt-out` (Objection) | Done |
+| User tombstone (`deletedAt`) with immediate owned personal-data erasure | Done |
+| Cascade deletion for related personal data | Done |
+| Data retention scheduler (90-day articles, 30-day sessions) | Done |
+| Encrypted credential columns (sodium and SDK ciphertext) | Done |
+| Data access audit logging (`DataAccessAuditor`) | Done |
+| Privacy policy documentation | In Progress (deployment drafts; operator completion required) |
+| DPA documentation for AI providers | In Progress (deployment drafts; operator completion required) |
+| GDPR-specific problem types (consent-required, etc.) | Done |
 
 ---
 

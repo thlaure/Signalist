@@ -18,6 +18,11 @@ import CircleIcon from '@mui/icons-material/Circle';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import LogoutIcon from '@mui/icons-material/Logout';
+import SettingsIcon from '@mui/icons-material/Settings';
+import SearchIcon from '@mui/icons-material/Search';
+import MailOutlineIcon from '@mui/icons-material/MailOutline';
+import GroupsIcon from '@mui/icons-material/Groups';
+import CreditCardIcon from '@mui/icons-material/CreditCard';
 import { useTranslation } from 'react-i18next';
 import { useCategories } from '../../hooks/useCategories';
 import { useAuth } from '../../hooks/useAuth';
@@ -75,6 +80,14 @@ export default function Sidebar({
     { label: t('nav.feed'), icon: <HomeIcon />, path: '/' },
     { label: t('nav.feeds'), icon: <RssFeedIcon />, path: '/feeds' },
     { label: t('nav.bookmarks'), icon: <BookmarkIcon />, path: '/bookmarks' },
+    { label: t('nav.settings'), icon: <SettingsIcon />, path: '/settings' },
+    { label: t('nav.search'), icon: <SearchIcon />, path: '/search' },
+    { label: t('nav.newsletters'), icon: <MailOutlineIcon />, path: '/newsletters' },
+    { label: t('nav.workspaces'), icon: <GroupsIcon />, path: '/workspaces' },
+    { label: t('nav.tags'), icon: <FolderIcon />, path: '/tags' },
+    { label: t('nav.social'), icon: <MailOutlineIcon />, path: '/social' },
+    { label: t('nav.connections'), icon: <RssFeedIcon />, path: '/connections' },
+    { label: t('nav.billing'), icon: <CreditCardIcon />, path: '/billing' },
   ];
 
   const drawerContent = (

@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { login as loginApi } from '../api/auth';
 import type { LoginInput } from '../types';
 import { AuthContext } from './authContextValue';
+import { useQueryClient } from '@tanstack/react-query';
 
 const AUTH_TOKEN_KEY = 'auth_token';
 
@@ -16,21 +17,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.getItem(AUTH_TOKEN_KEY)
   );
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const login = useCallback(
     async (input: LoginInput) => {
       const response = await loginApi(input);
+      queryClient.clear();
       localStorage.setItem(AUTH_TOKEN_KEY, response.token);
       setToken(response.token);
     },
-    []
+    [queryClient]
   );
 
   const logout = useCallback(() => {
+    queryClient.clear();
     localStorage.removeItem(AUTH_TOKEN_KEY);
     setToken(null);
     navigate('/login');
-  }, [navigate]);
+  }, [navigate, queryClient]);
 
   const value = useMemo(
     () => ({

@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react';
-import { useNavigate, Link as RouterLink } from 'react-router-dom';
+import { useNavigate, useLocation, Link as RouterLink } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -16,6 +16,7 @@ import { isProblemError } from '../api/client';
 export default function LoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -31,13 +32,15 @@ export default function LoginPage() {
 
     try {
       await login({ email, password });
-      navigate('/', { replace: true });
+      const state: unknown = location.state;
+      const target = typeof state === 'object' && state !== null && 'returnTo' in state ? state.returnTo : null;
+      navigate(typeof target === 'string' && target.startsWith('/') && !target.startsWith('//') && !target.includes('\\') ? target : '/', { replace: true });
     } catch (err) {
       if (isProblemError(err)) {
         if (err.problem.type.endsWith('/email-not-verified')) {
           setEmailNotVerified(true);
         }
-        setError(err.problem.detail);
+        setError(err.problem.status >= 500 ? t('auth.unexpectedError') : err.problem.detail);
       } else {
         setError(t('auth.unexpectedError'));
       }

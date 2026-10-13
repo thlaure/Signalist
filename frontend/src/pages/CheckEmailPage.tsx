@@ -8,7 +8,7 @@ import Button from '@mui/material/Button';
 import Alert from '@mui/material/Alert';
 import Link from '@mui/material/Link';
 import CircularProgress from '@mui/material/CircularProgress';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { resendVerification } from '../api/auth';
 
 export default function CheckEmailPage() {
@@ -49,7 +49,7 @@ export default function CheckEmailPage() {
           </Typography>
           <Typography variant="body1" color="text.secondary" mb={3}>
             {email
-              ? t('checkEmail.message', { email })
+              ? <Trans i18nKey="checkEmail.message" values={{ email }} components={{ strong: <strong /> }} />
               : t('checkEmail.messageNoEmail')}
           </Typography>
 

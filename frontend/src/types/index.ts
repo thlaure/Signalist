@@ -39,6 +39,8 @@ export interface Article {
   title: string;
   url: string;
   summary: string | null;
+  aiSummary?: string | null;
+  tags?: string[];
   content: string | null;
   author: string | null;
   imageUrl: string | null;

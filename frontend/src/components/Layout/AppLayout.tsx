@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
@@ -6,6 +6,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { useTranslation } from 'react-i18next';
 import Sidebar from './Sidebar';
 import CommandPalette from './CommandPalette';
+import LoadingSpinner from '../Common/LoadingSpinner';
 
 const DRAWER_WIDTH = 240;
 const COLLAPSED_WIDTH = 68;
@@ -47,7 +48,9 @@ export default function AppLayout() {
         >
           <MenuIcon />
         </IconButton>
-        <Outlet />
+        <Suspense fallback={<LoadingSpinner />}>
+          <Outlet />
+        </Suspense>
         <CommandPalette />
       </Box>
     </Box>

@@ -112,6 +112,6 @@ final readonly class BlueskyBridge implements BlueskyGatewayInterface
             throw new UnrecoverableMessageHandlingException('Bluesky response unavailable.');
         }
 
-return $value;
+        return $value;
     }
 }

@@ -22,6 +22,11 @@ abstract class DatabaseTestCase extends KernelTestCase
 
         $this->entityManager = self::getContainer()->get(EntityManagerInterface::class);
 
+        $this->resetDatabaseSchema();
+    }
+
+    protected function resetDatabaseSchema(): void
+    {
         $database = $this->entityManager->getConnection()->getParams()['dbname'] ?? '';
 
         if (!is_string($database) || !str_ends_with($database, '_test')) {
@@ -30,7 +35,9 @@ abstract class DatabaseTestCase extends KernelTestCase
 
         $schemaTool = new SchemaTool($this->entityManager);
         $metadata = $this->entityManager->getMetadataFactory()->getAllMetadata();
-        $schemaTool->dropSchema($metadata);
+        // Migrations can use constraint names absent from ORM metadata.
+        // Introspect the disposable database so those constraints are removed too.
+        $schemaTool->dropDatabase();
         $schemaTool->createSchema($metadata);
     }
 

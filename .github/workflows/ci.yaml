@@ -134,6 +134,12 @@ jobs:
       - name: Build prod image
         run: docker build -f docker/frankenphp/Dockerfile -t signalist:ci .
 
+      - name: Validate patched runtime
+        run: |
+          docker run --rm --entrypoint frankenphp signalist:ci build-info | grep -F 'golang.org/x/net' | grep -F 'v0.60.0'
+          docker run --rm --entrypoint php signalist:ci -v
+          docker run --rm --entrypoint frankenphp -e APP_DOMAIN=http://localhost signalist:ci validate --config /etc/caddy/Caddyfile
+
       - name: Scan image for vulnerabilities
         uses: aquasecurity/trivy-action@v0.35.0
         with:

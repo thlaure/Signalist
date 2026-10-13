@@ -6,6 +6,10 @@ namespace App\Tests\Integration;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
+
+use function is_string;
+
+use RuntimeException;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 abstract class DatabaseTestCase extends KernelTestCase
@@ -18,15 +22,30 @@ abstract class DatabaseTestCase extends KernelTestCase
 
         $this->entityManager = self::getContainer()->get(EntityManagerInterface::class);
 
+        $this->resetDatabaseSchema();
+    }
+
+    protected function resetDatabaseSchema(): void
+    {
+        $database = $this->entityManager->getConnection()->getParams()['dbname'] ?? '';
+
+        if (!is_string($database) || !str_ends_with($database, '_test')) {
+            throw new RuntimeException('Integration tests require a disposable _test database.');
+        }
+
         $schemaTool = new SchemaTool($this->entityManager);
         $metadata = $this->entityManager->getMetadataFactory()->getAllMetadata();
-        $schemaTool->dropSchema($metadata);
+        // Migrations can use constraint names absent from ORM metadata.
+        // Introspect the disposable database so those constraints are removed too.
+        $schemaTool->dropDatabase();
         $schemaTool->createSchema($metadata);
     }
 
     protected function tearDown(): void
     {
-        $this->entityManager->close();
+        if (isset($this->entityManager)) {
+            $this->entityManager->close();
+        }
 
         parent::tearDown();
     }

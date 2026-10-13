@@ -8,6 +8,7 @@ use App\Domain\Feed\Command\DeleteFeedCommand;
 use App\Domain\Feed\Exception\FeedNotFoundException;
 use App\Domain\Feed\Port\FeedRepositoryInterface;
 use App\Entity\Feed;
+use App\Entity\Organization;
 
 final readonly class DeleteFeedHandler
 {
@@ -24,7 +25,7 @@ final readonly class DeleteFeedHandler
             throw new FeedNotFoundException($command->id);
         }
 
-        if ($feed->getOwner()->getId()->toRfc4122() !== $command->ownerId) {
+        if ($feed->getOrganization() instanceof Organization || $feed->getOwner()->getId()->toRfc4122() !== $command->ownerId) {
             throw new FeedNotFoundException($command->id);
         }
 

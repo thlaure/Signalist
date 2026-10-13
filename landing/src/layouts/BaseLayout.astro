@@ -8,9 +8,11 @@ interface Props {
   image?: string;
 }
 
-const { title, description, lang = 'en', image = '/og-image.png' } = Astro.props;
-const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? 'https://signalist.app');
-const ogImage = new URL(image, Astro.site ?? 'https://signalist.app');
+const { title, description, lang = 'en', image = '/og-image.svg' } = Astro.props;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? 'http://localhost:4321');
+const ogImage = new URL(image, Astro.site ?? 'http://localhost:4321');
+const analytics = import.meta.env.PUBLIC_PLAUSIBLE_SCRIPT_URL;
+const analyticsUrl = analytics && /^https:\/\/[^/?#]+\/js\/pa-[a-zA-Z0-9_-]+\.js$/.test(analytics) ? analytics : null;
 ---
 
 <!doctype html>
@@ -36,6 +38,10 @@ const ogImage = new URL(image, Astro.site ?? 'https://signalist.app');
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
+    <link rel="alternate" hreflang="en" href={new URL('/', Astro.site)} />
+    <link rel="alternate" hreflang="fr" href={new URL('/fr/', Astro.site)} />
+    {analyticsUrl && <script is:inline async src={analyticsUrl}></script>}
+    {analyticsUrl && <script is:inline>window.plausible=window.plausible||function(){(window.plausible.q=window.plausible.q||[]).push(arguments)};window.plausible.init=window.plausible.init||function(o){window.plausible.o=o||{}};window.plausible.init();</script>}
   </head>
   <body class="bg-white text-slate-900">
     <slot />

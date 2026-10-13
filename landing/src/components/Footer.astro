@@ -7,6 +7,8 @@ interface Props {
 
 const { t } = Astro.props;
 const { footer } = t;
+const prefix = Astro.url.pathname.startsWith('/fr') ? '/fr' : '';
+const contact = import.meta.env.PUBLIC_CONTACT_EMAIL;
 const year = new Date().getFullYear();
 ---
 <footer class="border-t border-slate-100 bg-white">
@@ -23,9 +25,9 @@ const year = new Date().getFullYear();
     <nav class="flex flex-wrap items-center justify-center gap-6 text-sm text-slate-500">
       <a href="#features" class="hover:text-slate-900 transition-colors">{footer.features}</a>
       <a href="#pricing" class="hover:text-slate-900 transition-colors">{footer.pricing}</a>
-      <a href="/privacy" class="hover:text-slate-900 transition-colors">{footer.privacy}</a>
-      <a href="/terms" class="hover:text-slate-900 transition-colors">{footer.terms}</a>
-      <a href="mailto:hello@signalist.app" class="hover:text-slate-900 transition-colors">{footer.contact}</a>
+      <a href={`${prefix}/privacy`} class="hover:text-slate-900 transition-colors">{footer.privacy}</a>
+      <a href={`${prefix}/terms`} class="hover:text-slate-900 transition-colors">{footer.terms}</a>
+      {contact && <a href={`mailto:${contact}`} class="hover:text-slate-900 transition-colors">{footer.contact}</a>}
     </nav>
 
     <p class="text-sm text-slate-400">© {year} Signalist. {footer.copyright}</p>

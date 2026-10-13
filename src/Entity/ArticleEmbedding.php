@@ -29,7 +29,7 @@ class ArticleEmbedding
      *
      * @var array<int, float>|null
      */
-    #[ORM\Column(type: Types::JSON, nullable: true)]
+    #[ORM\Column(type: 'vector', nullable: true)]
     private ?array $embedding = null;
 
     #[ORM\Column(type: Types::INTEGER, options: ['default' => 0])]

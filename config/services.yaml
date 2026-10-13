@@ -7,6 +7,13 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    mail_sender: 'noreply@signalist.app'
+    retention_disabled: false
+    linkedin_version: '202605'
+    node_binary: '/usr/bin/node'
+    backend_url: 'http://localhost:8000'
+    billing_empty: ''
+    plan_limits: !php/const App\Domain\Billing\Service\PlanCatalog::DEFAULTS
 
 services:
     # default configuration for services in *this* file
@@ -14,17 +21,109 @@ services:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
         bind:
+            string $mailSender: '%env(default:mail_sender:SIGNALIST_MAIL_SENDER)%'
             string $environment: '%kernel.environment%'
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
     App\:
         resource: '../src/'
+        exclude: '../src/DataFixtures/'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 
+    App\Domain\Social\Port\RecapIntelligenceInterface:
+        alias: App\Infrastructure\AI\UnconfiguredRecapIntelligence
+
+    App\Domain\Social\Port\CrosspostAdapterInterface:
+        alias: App\Infrastructure\External\Social\PlatformCrosspostAdapter
+    App\Infrastructure\External\Social\PlatformCrosspostAdapter:
+        arguments:
+            $linkedinVersion: '%env(default:linkedin_version:LINKEDIN_API_VERSION)%'
+
+    App\Domain\Privacy\MessageHandler\ApplyRetentionMessageHandler:
+        arguments:
+            $enabled: '%env(bool:default:retention_disabled:SIGNALIST_RETENTION_ENABLED)%'
+
+    App\Domain\Spotlight\Port\ArticleQuestionInterface:
+        alias: App\Infrastructure\AI\UnconfiguredArticleQuestions
+
     # Repository bindings
+    App\Domain\Sync\Port\RaindropClientInterface:
+        alias: App\Infrastructure\External\Raindrop\RaindropClient
+    App\Domain\Connection\Port\BlueskyGatewayInterface:
+        alias: App\Infrastructure\Connection\BlueskyBridge
+    App\Infrastructure\Connection\BlueskyBridge:
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+            $nodeBinary: '%env(default:node_binary:SIGNALIST_NODE_BINARY)%'
+            $databaseUrl: '%env(resolve:DATABASE_URL)%'
+            $encodedKey: '%env(default:billing_empty:CREDENTIAL_ENCRYPTION_KEY)%'
+            $privateKey: '%env(default:billing_empty:BLUESKY_CLIENT_PRIVATE_KEY)%'
+            $backendUrl: '%env(default:backend_url:SIGNALIST_PUBLIC_API_URL)%'
+            $frontendUrl: '%env(FRONTEND_URL)%'
+    App\Infrastructure\Security\TokenCipher:
+        arguments:
+            $encodedKey: '%env(default:billing_empty:CREDENTIAL_ENCRYPTION_KEY)%'
+    App\Domain\Connection\Port\OAuthGatewayInterface:
+        alias: App\Infrastructure\Connection\ProviderOAuthGateway
+    App\Infrastructure\Connection\ProviderOAuthGateway:
+        arguments:
+            $backendUrl: '%env(default:backend_url:SIGNALIST_PUBLIC_API_URL)%'
+            $credentials:
+                raindrop:
+                    clientId: '%env(default:billing_empty:RAINDROP_CLIENT_ID)%'
+                    clientSecret: '%env(default:billing_empty:RAINDROP_CLIENT_SECRET)%'
+                linkedin:
+                    clientId: '%env(default:billing_empty:LINKEDIN_CLIENT_ID)%'
+                    clientSecret: '%env(default:billing_empty:LINKEDIN_CLIENT_SECRET)%'
+                x:
+                    clientId: '%env(default:billing_empty:X_CLIENT_ID)%'
+                    clientSecret: '%env(default:billing_empty:X_CLIENT_SECRET)%'
+    App\UI\Controller\OAuthCallbackController:
+        arguments:
+            $frontendUrl: '%env(FRONTEND_URL)%'
+    App\Domain\Billing\Service\PlanCatalog:
+        arguments:
+            $limits: '%plan_limits%'
+    App\Domain\Billing\Port\BillingGatewayInterface:
+        alias: App\Infrastructure\Billing\StripeBillingGateway
+    App\Infrastructure\Billing\StripeBillingGateway:
+        arguments:
+            $secretKey: '%env(default:billing_empty:STRIPE_SECRET_KEY)%'
+            $webhookSecret: '%env(default:billing_empty:STRIPE_WEBHOOK_SECRET)%'
+            $teamPriceId: '%env(default:billing_empty:STRIPE_TEAM_PRICE_ID)%'
+            $enterprisePriceId: '%env(default:billing_empty:STRIPE_ENTERPRISE_PRICE_ID)%'
+            $frontendUrl: '%env(FRONTEND_URL)%'
+    App\Infrastructure\Billing\BillingWebhookReceiver:
+        arguments:
+            $webhookSecret: '%env(default:billing_empty:STRIPE_WEBHOOK_SECRET)%'
+    App\Infrastructure\Organization\InvitationToken:
+        arguments:
+            $appSecret: '%env(APP_SECRET)%'
+            $frontendUrl: '%env(FRONTEND_URL)%'
+    App\Infrastructure\MCP\McpServerFactory:
+        arguments:
+            $cacheDir: '%kernel.cache_dir%'
+    App\UI\Controller\McpController:
+        arguments:
+            $frontendUrl: '%env(FRONTEND_URL)%'
+            $backendUrl: '%env(default:backend_url:SIGNALIST_PUBLIC_API_URL)%'
+    App\Domain\Search\Port\SearchRepositoryInterface:
+        alias: App\Infrastructure\Persistence\Search\PgvectorSearchRepository
+    App\UI\Controller\WaitlistController:
+        arguments:
+            $waitlistLimiter: '@limiter.waitlist'
+    App\Infrastructure\Waitlist\WaitlistToken:
+        arguments:
+            $appSecret: '%env(APP_SECRET)%'
+    App\Domain\Waitlist\MessageHandler\SendWaitlistConfirmationMessageHandler:
+        arguments:
+            $frontendUrl: '%env(FRONTEND_URL)%'
+    App\Domain\AI\Port\ArticleIntelligenceInterface:
+        alias: App\Infrastructure\AI\UnconfiguredArticleIntelligence
+
     App\Domain\Category\Port\CategoryRepositoryInterface:
         alias: App\Infrastructure\Persistence\Category\DoctrineCategoryRepository
 

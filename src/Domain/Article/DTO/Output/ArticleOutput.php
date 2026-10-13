@@ -9,6 +9,7 @@ use DateTimeInterface;
 
 final readonly class ArticleOutput
 {
+    /** @param list<string> $tags */
     public function __construct(
         public string $id,
         public string $title,
@@ -25,6 +26,8 @@ final readonly class ArticleOutput
         public string $categoryId,
         public string $categoryName,
         public ?string $categoryColor,
+        public ?string $aiSummary = null,
+        public array $tags = [],
     ) {
     }
 
@@ -49,6 +52,8 @@ final readonly class ArticleOutput
             categoryId: $category->getId()->toRfc4122(),
             categoryName: $category->getName(),
             categoryColor: $category->getColor(),
+            aiSummary: $article->getAiSummary(),
+            tags: $article->getTags(),
         );
     }
 }

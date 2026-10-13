@@ -8,6 +8,7 @@ use App\Domain\Article\Exception\ArticleNotFoundException;
 use App\Domain\Article\Port\ArticleRepositoryInterface;
 use App\Domain\Article\Query\GetArticleQuery;
 use App\Entity\Article;
+use App\Entity\Organization;
 
 final readonly class GetArticleHandler
 {
@@ -24,7 +25,7 @@ final readonly class GetArticleHandler
             throw new ArticleNotFoundException($query->id);
         }
 
-        if ($article->getFeed()->getOwner()->getId()->toRfc4122() !== $query->ownerId) {
+        if ($article->getFeed()->getOrganization() instanceof Organization || $article->getFeed()->getOwner()->getId()->toRfc4122() !== $query->ownerId) {
             throw new ArticleNotFoundException($query->id);
         }
 

@@ -13,7 +13,8 @@ use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'category')]
-#[ORM\UniqueConstraint(name: 'uniq_category_slug_owner', columns: ['slug', 'owner_id'])]
+#[ORM\UniqueConstraint(name: 'uniq_category_slug_owner', columns: ['slug', 'owner_id'], options: ['where' => 'organization_id IS NULL'])]
+#[ORM\UniqueConstraint(name: 'uniq_category_slug_organization', columns: ['slug', 'organization_id'], options: ['where' => 'organization_id IS NOT NULL'])]
 class Category
 {
     #[ORM\Id]
@@ -44,6 +45,10 @@ class Category
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
     private User $owner;
+
+    #[ORM\ManyToOne(targetEntity: Organization::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
+    private ?Organization $organization = null;
 
     /** @var Collection<int, Feed> */
     #[ORM\OneToMany(targetEntity: Feed::class, mappedBy: 'category', orphanRemoval: true)]
@@ -148,6 +153,18 @@ class Category
     public function getOwner(): User
     {
         return $this->owner;
+    }
+
+    public function getOrganization(): ?Organization
+    {
+        return $this->organization;
+    }
+
+    public function setOrganization(Organization $organization): self
+    {
+        $this->organization = $organization;
+
+        return $this;
     }
 
     public function setOwner(User $owner): self

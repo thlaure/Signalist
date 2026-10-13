@@ -1,4 +1,15 @@
-FROM dunglas/frankenphp:1-php8.5-alpine
+FROM dunglas/frankenphp:1.13.0-builder-php8.5-alpine AS patched-frankenphp
+WORKDIR /go/src/app/caddy/frankenphp
+# Keep upstream modules and PHP linkage; patch the embedded HTTP/2 dependency.
+RUN go get golang.org/x/net@v0.60.0 \
+    && GOBIN=/usr/local/bin ../../go.sh install \
+        -ldflags "-w -s -extldflags '-Wl,-z,stack-size=0x80000' -X 'github.com/caddyserver/caddy/v2.CustomVersion=FrankenPHP 1.13.0 PHP $PHP_VERSION Caddy' -X 'github.com/caddyserver/caddy/v2.CustomBinaryName=frankenphp' -X 'github.com/caddyserver/caddy/v2/modules/caddyhttp.ServerHeader=FrankenPHP Caddy'" -buildvcs=true \
+    && frankenphp version \
+    && frankenphp build-info
+
+FROM dunglas/frankenphp:1.13.0-php8.5-alpine
+COPY --from=patched-frankenphp /usr/local/bin/frankenphp /usr/local/bin/frankenphp
+RUN setcap cap_net_bind_service=+ep /usr/local/bin/frankenphp
 
 # Install mlocati/docker-php-extension-installer for easier extension management
 ADD --chmod=0755 https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
@@ -22,6 +33,9 @@ RUN apk add --no-cache \
 
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# Official Bluesky OAuth SDK runs only through the bounded background adapter.
+RUN apk add --no-cache nodejs npm
 
 # Set working directory
 WORKDIR /app

@@ -9,6 +9,18 @@ security:
                 property: email
 
     firewalls:
+        oauth_callback:
+            pattern: ^/api/v1/connections/(raindrop|linkedin|x|bluesky)/callback$
+            stateless: true
+            security: false
+        billing_webhook:
+            pattern: ^/api/v1/billing/webhook$
+            stateless: true
+            security: false
+        waitlist:
+            pattern: ^/api/v1/waitlist(?:/|$)
+            stateless: true
+            security: false
         dev:
             pattern: ^/(_profiler|_wdt|assets|build)/
             security: false
@@ -33,12 +45,17 @@ security:
             stateless: true
             security: false
         api:
-            pattern: ^/api/
+            pattern: ^/(api/|mcp(?:/|$))
             stateless: true
             provider: app_user_provider
+            user_checker: App\Infrastructure\Auth\ActiveUserChecker
             jwt: ~
 
     access_control:
+        - { path: ^/api/v1/connections/(raindrop|linkedin|x|bluesky)/callback$, roles: PUBLIC_ACCESS }
+        - { path: ^/api/v1/billing/webhook$, roles: PUBLIC_ACCESS }
+        - { path: ^/mcp(?:/|$), roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/api/v1/waitlist(?:/|$), roles: PUBLIC_ACCESS }
         - { path: ^/api/v1/auth/login$, roles: PUBLIC_ACCESS }
         - { path: ^/api/v1/auth/register$, roles: PUBLIC_ACCESS }
         - { path: ^/api/v1/auth/verify-email$, roles: PUBLIC_ACCESS }

@@ -8,6 +8,7 @@ use App\Domain\Article\Command\MarkArticleReadCommand;
 use App\Domain\Article\Exception\ArticleNotFoundException;
 use App\Domain\Article\Port\ArticleRepositoryInterface;
 use App\Entity\Article;
+use App\Entity\Organization;
 
 final readonly class MarkArticleReadHandler
 {
@@ -24,7 +25,7 @@ final readonly class MarkArticleReadHandler
             throw new ArticleNotFoundException($command->id);
         }
 
-        if ($article->getFeed()->getOwner()->getId()->toRfc4122() !== $command->ownerId) {
+        if ($article->getFeed()->getOrganization() instanceof Organization || $article->getFeed()->getOwner()->getId()->toRfc4122() !== $command->ownerId) {
             throw new ArticleNotFoundException($command->id);
         }
 

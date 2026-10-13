@@ -19,6 +19,8 @@ import LoadingSpinner from '../components/Common/LoadingSpinner';
 import ErrorAlert from '../components/Common/ErrorAlert';
 import { useArticle, useMarkArticleRead, useMarkArticleUnread } from '../hooks/useArticles';
 import { useBookmarks, useCreateBookmark, useDeleteBookmark } from '../hooks/useBookmarks';
+import ShareMenu from '../components/Article/ShareMenu';
+import ArticleTagsEditor from '../components/Article/ArticleTagsEditor';
 
 export default function ArticlePage() {
   const { id } = useParams<{ id: string }>();
@@ -144,6 +146,7 @@ export default function ArticlePage() {
 
       {/* Action bar */}
       <Box display="flex" alignItems="center" gap={1} mb={3}>
+        <ShareMenu title={article.title} url={article.url} />
         <Tooltip title={article.isRead ? t('article.markAsUnread') : t('article.markAsRead')}>
           <IconButton onClick={handleToggleRead} color={article.isRead ? 'primary' : 'default'}>
             {article.isRead ? <CheckCircleIcon /> : <CheckCircleOutlineIcon />}
@@ -169,6 +172,15 @@ export default function ArticlePage() {
 
       <Divider sx={{ mb: 3 }} />
 
+      {article.aiSummary && <Box sx={{ mb: 3, p: 2, bgcolor: 'action.hover', borderRadius: 2 }}>
+        <Typography variant="h6">{t('article.aiSummary')}</Typography>
+        <Typography sx={{ whiteSpace: 'pre-wrap' }}>{article.aiSummary}</Typography>
+      </Box>}
+      {!!article.tags?.length && <Box display="flex" flexWrap="wrap" gap={1} mb={3}>
+        {article.tags.map((tag) => <Chip key={tag} label={tag} size="small" />)}
+      </Box>}
+
+      <ArticleTagsEditor key={article.id + JSON.stringify(article.tags)} id={article.id} names={article.tags ?? []} />
       {/* Content */}
       {article.content ? (
         <Box

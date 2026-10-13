@@ -3,6 +3,15 @@ framework:
         failure_transport: failed
 
         transports:
+            oauth_priority:
+                dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+                options:
+                    stream: 'signalist_oauth'
+                    group: 'signalist_oauth_consumers'
+                    consumer: 'signalist_oauth_worker'
+                retry_strategy:
+                    max_retries: 2
+                    delay: 1000
             async:
                 dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
                 options:
@@ -24,6 +33,22 @@ framework:
                     consumer: 'signalist_failed_worker'
 
         routing:
+            'App\Domain\Spotlight\Message\AnswerArticleQuestionMessage': async
+            'App\Domain\Privacy\Message\ApplyRetentionMessage': async
+            'App\Domain\Social\Message\CrosspostMessage': async
+            'App\Domain\Social\Message\GenerateSocialRecapMessage': async
+            'App\Domain\Connection\Message\RefreshAccountMessage': oauth_priority
+            'App\Domain\Sync\Message\SyncRaindropMessage': async
+            'App\Domain\Connection\Message\ExchangeOAuthCodeMessage': oauth_priority
+            'App\Domain\Connection\Message\PrepareBlueskyAuthorizationMessage': oauth_priority
+            'App\Domain\Billing\Message\SyncBillingSeatsMessage': async
+            'App\Domain\Billing\Message\CreateBillingLinkMessage': async
+            'App\Domain\Billing\Message\ReconcileBillingEventMessage': async
+            'App\Domain\Organization\Message\SendInvitationMessage': async
+            'App\Domain\Newsletter\Message\GenerateNewsletterMessage': async
+            'App\Domain\Search\Message\RunArticleSearchMessage': async
+            'App\Domain\Waitlist\Message\SendWaitlistConfirmationMessage': async
+            'App\Domain\AI\Message\EnrichArticleMessage': async
             'App\Domain\Feed\Message\CrawlFeedMessage': async
             'App\Domain\Auth\Message\SendVerificationEmailMessage': async
 
@@ -31,5 +56,6 @@ when@test:
     framework:
         messenger:
             transports:
+                oauth_priority: 'in-memory://'
                 async: 'in-memory://'
                 failed: 'in-memory://'

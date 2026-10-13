@@ -11,6 +11,7 @@ use App\Domain\Feed\Exception\FeedNotFoundException;
 use App\Domain\Feed\Port\FeedRepositoryInterface;
 use App\Entity\Category;
 use App\Entity\Feed;
+use App\Entity\Organization;
 use DateTimeImmutable;
 
 final readonly class UpdateFeedHandler
@@ -29,7 +30,7 @@ final readonly class UpdateFeedHandler
             throw new FeedNotFoundException($command->id);
         }
 
-        if ($feed->getOwner()->getId()->toRfc4122() !== $command->ownerId) {
+        if ($feed->getOrganization() instanceof Organization || $feed->getOwner()->getId()->toRfc4122() !== $command->ownerId) {
             throw new FeedNotFoundException($command->id);
         }
 
@@ -39,7 +40,7 @@ final readonly class UpdateFeedHandler
             throw new CategoryNotFoundException($command->categoryId);
         }
 
-        if ($category->getOwner()->getId()->toRfc4122() !== $command->ownerId) {
+        if ($category->getOrganization() instanceof Organization || $category->getOwner()->getId()->toRfc4122() !== $command->ownerId) {
             throw new CategoryNotFoundException($command->categoryId);
         }
 

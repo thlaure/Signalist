@@ -48,15 +48,15 @@ jobs:
 
       - name: Check HTTP reachability
         run: |
-          for i in {1.10}; do
-            if curl -s -f http://localhost:8000/api/v1 > /dev/null 2>&1; then
+          for i in {1..10}; do
+            if curl -s -f http://localhost:8000/health > /dev/null 2>&1; then
               echo "App is ready"
               break
             fi
             echo "Waiting for app... ($i/10)"
             sleep 2
           done
-          curl -v --fail-with-body http://localhost:8000/api/v1 || true
+          curl -v --fail-with-body http://localhost:8000/health
 
       - name: Create test database
         run: docker compose exec -T app php bin/console -e test doctrine:database:create --if-not-exists
@@ -68,7 +68,7 @@ jobs:
         run: docker compose exec -T app vendor/bin/phpunit
 
       - name: Run PHPUnit with coverage
-        run: docker compose exec -T -e XDEBUG_MODE=coverage app vendor/bin/phpunit --testsuite=Unit --coverage-clover var/coverage/clover.xml --coverage-text
+        run: docker compose exec -T -e XDEBUG_MODE=coverage app vendor/bin/phpunit --coverage-clover var/coverage/clover.xml --coverage-text
 
       - name: Check coverage threshold (80%)
         run: |
@@ -89,9 +89,8 @@ jobs:
         run: docker compose exec -T app vendor/bin/behat --no-interaction --colors
 
       - name: Audit PHP dependencies
-        # Exit 1 = vulnerabilities (blocking), exit 2 = abandoned packages (non-blocking)
-        run: |
-          docker compose exec -T app composer audit || { code=$?; [ "$code" -eq 2 ] || exit "$code"; }
+        # Vulnerabilities and abandoned packages block CI.
+        run: docker compose exec -T app composer audit
 
       - name: Run CS Fixer (dry-run)
         run: docker compose exec -T app vendor/bin/php-cs-fixer fix --dry-run --diff
@@ -106,7 +105,7 @@ jobs:
         run: docker compose exec -T app php bin/console lint:yaml config
 
       - name: Doctrine Schema Validator
-        run: docker compose exec -T app php bin/console -e test doctrine:schema:validate --skip-sync || true
+        run: docker compose exec -T app php bin/console -e test doctrine:schema:validate --skip-sync
 
   secret-scan:
     name: Secret Scan
@@ -134,6 +133,12 @@ jobs:
 
       - name: Build prod image
         run: docker build -f docker/frankenphp/Dockerfile -t signalist:ci .
+
+      - name: Validate patched runtime
+        run: |
+          docker run --rm --entrypoint frankenphp signalist:ci build-info | grep -F 'golang.org/x/net' | grep -F 'v0.60.0'
+          docker run --rm --entrypoint php signalist:ci -v
+          docker run --rm --entrypoint frankenphp -e APP_DOMAIN=http://localhost signalist:ci validate --config /etc/caddy/Caddyfile
 
       - name: Scan image for vulnerabilities
         uses: aquasecurity/trivy-action@v0.35.0
@@ -197,6 +202,32 @@ jobs:
         run: npm run build
 
       - name: Audit JS dependencies
+        run: npm audit --audit-level=high
+
+  bluesky:
+    name: Bluesky adapter
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: integrations/bluesky
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+          cache: 'npm'
+          cache-dependency-path: integrations/bluesky/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run offline SDK tests
+        run: npm test
+
+      - name: Audit dependencies
         run: npm audit --audit-level=high
 
   frontend:

@@ -8,6 +8,7 @@ use App\Domain\Bookmark\Exception\BookmarkNotFoundException;
 use App\Domain\Bookmark\Port\BookmarkRepositoryInterface;
 use App\Domain\Bookmark\Query\GetBookmarkQuery;
 use App\Entity\Bookmark;
+use App\Entity\Organization;
 
 final readonly class GetBookmarkHandler
 {
@@ -24,7 +25,7 @@ final readonly class GetBookmarkHandler
             throw new BookmarkNotFoundException($query->id);
         }
 
-        if ($bookmark->getArticle()->getFeed()->getOwner()->getId()->toRfc4122() !== $query->ownerId) {
+        if ($bookmark->getArticle()->getFeed()->getOrganization() instanceof Organization || $bookmark->getArticle()->getFeed()->getOwner()->getId()->toRfc4122() !== $query->ownerId) {
             throw new BookmarkNotFoundException($query->id);
         }
 

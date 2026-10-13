@@ -44,6 +44,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?DateTimeImmutable $deletedAt = null;
 
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
+    private bool $processingRestricted = false;
+
+    #[ORM\Column(length: 100, options: ['default' => ''])]
+    private string $displayName = '';
+
+    #[ORM\Column(length: 20, options: ['default' => 'free'])]
+    private string $plan = 'free';
+
+    #[ORM\Column(nullable: true)]
+    private ?DateTimeImmutable $paidUntil = null;
+
     public function __construct()
     {
         $this->id = Uuid::v7();
@@ -157,5 +169,42 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function isDeleted(): bool
     {
         return $this->deletedAt instanceof DateTimeImmutable;
+    }
+
+    public function isProcessingRestricted(): bool
+    {
+        return $this->processingRestricted;
+    }
+
+    public function setProcessingRestricted(bool $restricted): self
+    {
+        $this->processingRestricted = $restricted;
+        $this->updatedAt = new DateTimeImmutable();
+
+        return $this;
+    }
+
+    public function getDisplayName(): string
+    {
+        return $this->displayName;
+    }
+
+    public function getPlan(): string
+    {
+        return $this->paidUntil instanceof DateTimeImmutable && $this->paidUntil > new DateTimeImmutable() ? $this->plan : 'free';
+    }
+
+    public function setPlan(string $plan, ?DateTimeImmutable $paidUntil): void
+    {
+        $this->plan = $plan;
+        $this->paidUntil = $paidUntil;
+    }
+
+    public function setDisplayName(string $name): self
+    {
+        $this->displayName = $name;
+        $this->updatedAt = new DateTimeImmutable();
+
+        return $this;
     }
 }

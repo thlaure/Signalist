@@ -46,7 +46,7 @@ final readonly class DoctrineCategoryRepository implements CategoryRepositoryInt
 
         return $this->entityManager
             ->getRepository(Category::class)
-            ->findOneBy(['slug' => $slug, 'owner' => Uuid::fromString($ownerId)]);
+            ->findOneBy(['slug' => $slug, 'organization' => null, 'owner' => Uuid::fromString($ownerId)]);
     }
 
     /** @return Category[] */
@@ -58,7 +58,7 @@ final readonly class DoctrineCategoryRepository implements CategoryRepositoryInt
 
         return $this->entityManager
             ->getRepository(Category::class)
-            ->findBy(['owner' => Uuid::fromString($ownerId)], ['position' => 'ASC', 'name' => 'ASC']);
+            ->findBy(['organization' => null, 'owner' => Uuid::fromString($ownerId)], ['position' => 'ASC', 'name' => 'ASC']);
     }
 
     public function hasFeedsAssigned(string $categoryId): bool

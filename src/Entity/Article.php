@@ -35,6 +35,16 @@ class Article
     private ?string $summary = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $aiSummary = null;
+
+    /** @var list<string> */
+    #[ORM\Column(type: Types::JSON, options: ['default' => '[]'])]
+    private array $tags = [];
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?DateTimeImmutable $enrichedAt = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $content = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -114,6 +124,44 @@ class Article
     public function getSummary(): ?string
     {
         return $this->summary;
+    }
+
+    public function getAiSummary(): ?string
+    {
+        return $this->aiSummary;
+    }
+
+    public function setAiSummary(?string $summary): self
+    {
+        $this->aiSummary = $summary;
+
+        return $this;
+    }
+
+    /** @return list<string> */
+    public function getTags(): array
+    {
+        return $this->tags;
+    }
+
+    /** @param list<string> $tags */
+    public function setTags(array $tags): self
+    {
+        $this->tags = $tags;
+
+        return $this;
+    }
+
+    public function getEnrichedAt(): ?DateTimeImmutable
+    {
+        return $this->enrichedAt;
+    }
+
+    public function setEnrichedAt(?DateTimeImmutable $date): self
+    {
+        $this->enrichedAt = $date;
+
+        return $this;
     }
 
     public function setSummary(?string $summary): self

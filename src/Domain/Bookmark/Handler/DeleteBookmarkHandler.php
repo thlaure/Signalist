@@ -8,6 +8,7 @@ use App\Domain\Bookmark\Command\DeleteBookmarkCommand;
 use App\Domain\Bookmark\Exception\BookmarkNotFoundException;
 use App\Domain\Bookmark\Port\BookmarkRepositoryInterface;
 use App\Entity\Bookmark;
+use App\Entity\Organization;
 
 final readonly class DeleteBookmarkHandler
 {
@@ -24,7 +25,7 @@ final readonly class DeleteBookmarkHandler
             throw new BookmarkNotFoundException($command->id);
         }
 
-        if ($bookmark->getArticle()->getFeed()->getOwner()->getId()->toRfc4122() !== $command->ownerId) {
+        if ($bookmark->getArticle()->getFeed()->getOrganization() instanceof Organization || $bookmark->getArticle()->getFeed()->getOwner()->getId()->toRfc4122() !== $command->ownerId) {
             throw new BookmarkNotFoundException($command->id);
         }
 

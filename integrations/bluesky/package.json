@@ -1,0 +1,19 @@
+{
+  "name": "signalist-bluesky-adapter",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.19.0"
+  },
+  "scripts": {
+    "test": "node --test"
+  },
+  "dependencies": {
+    "@atproto/api": "^0.25.0",
+    "@atproto/common-web": "^0.5.14",
+    "@atproto/jwk-jose": "^0.2.4",
+    "@atproto/oauth-client-node": "^0.5.9",
+    "pg": "^8.23.1",
+    "undici": "^8.11.2"
+  }
+}

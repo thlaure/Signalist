@@ -18,25 +18,67 @@ use function is_string;
 use function iterator_to_array;
 
 use Laminas\Feed\Reader\Entry\EntryInterface;
+use Laminas\Feed\Reader\Feed\AbstractFeed;
 use Laminas\Feed\Reader\Reader;
 
 use function reset;
 
 use RuntimeException;
 
-use function sprintf;
+use function strlen;
+
+use Symfony\Component\HttpClient\NoPrivateNetworkHttpClient;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 /**
  * RSS fetcher implementation using Laminas Feed.
  */
 final readonly class LaminasFeedRssFetcher implements RssFetcherInterface
 {
+    private const int MAX_FEED_BYTES = 4 * 1024 * 1024;
+
+    public function __construct(private HttpClientInterface $httpClient)
+    {
+    }
+
     public function fetch(string $url): RssFetchResult
     {
         try {
-            $feed = Reader::import($url);
+            $client = new NoPrivateNetworkHttpClient($this->httpClient);
+            $response = $client->request('GET', $url, [
+                'timeout' => 10,
+                'max_duration' => 20,
+                'max_redirects' => 3,
+                'buffer' => false,
+                'extra' => ['trace_content' => false],
+            ]);
+
+            if (200 !== $response->getStatusCode()) {
+                $response->cancel();
+
+                throw new RuntimeException('RSS source returned an unsuccessful response.');
+            }
+
+            $content = '';
+            foreach ($client->stream($response) as $chunk) {
+                $content .= $chunk->getContent();
+
+                if (strlen($content) > self::MAX_FEED_BYTES) {
+                    $response->cancel();
+
+                    throw new RuntimeException('RSS source exceeded the response size limit.');
+                }
+            }
+
+            $feed = Reader::importString($content);
+
+            if (!$feed instanceof AbstractFeed) {
+                throw new RuntimeException('RSS source returned an unsupported feed.');
+            }
+
+            $feed->setOriginalSourceUri($url);
         } catch (Exception $e) {
-            throw new RuntimeException(sprintf('Failed to fetch RSS feed from "%s": %s', $url, $e->getMessage()), $e->getCode(), previous: $e);
+            throw new RuntimeException('Failed to fetch RSS feed.', $e->getCode(), previous: $e);
         }
 
         $feedTitle = $feed->getTitle() ?? $url;

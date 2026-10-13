@@ -72,6 +72,12 @@ final class ApiContext implements Context
      */
     public function resetDatabase(BeforeScenarioScope $scope): void
     {
+        $database = $this->entityManager->getConnection()->getParams()['dbname'] ?? '';
+
+        if (!is_string($database) || !str_ends_with($database, '_test')) {
+            throw new RuntimeException('API tests require a disposable _test database.');
+        }
+
         $schemaTool = new SchemaTool($this->entityManager);
         $metadata = $this->entityManager->getMetadataFactory()->getAllMetadata();
 

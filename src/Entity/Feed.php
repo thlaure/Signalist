@@ -13,7 +13,8 @@ use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'feed')]
-#[ORM\UniqueConstraint(name: 'uniq_feed_url_owner', columns: ['url', 'owner_id'])]
+#[ORM\UniqueConstraint(name: 'uniq_feed_url_owner', columns: ['url', 'owner_id'], options: ['where' => 'organization_id IS NULL'])]
+#[ORM\UniqueConstraint(name: 'uniq_feed_url_organization', columns: ['url', 'organization_id'], options: ['where' => 'organization_id IS NOT NULL'])]
 class Feed
 {
     public const STATUS_ACTIVE = 'active';
@@ -54,6 +55,13 @@ class Feed
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
     private User $owner;
+
+    #[ORM\ManyToOne(targetEntity: Organization::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
+    private ?Organization $organization = null;
+
+    #[ORM\Column(length: 20, options: ['default' => 'rss'])]
+    private string $source = 'rss';
 
     /** @var Collection<int, Article> */
     #[ORM\OneToMany(targetEntity: Article::class, mappedBy: 'feed', orphanRemoval: true)]
@@ -157,6 +165,7 @@ class Feed
     public function setCategory(Category $category): self
     {
         $this->category = $category;
+        $this->organization = $category->getOrganization();
 
         return $this;
     }
@@ -170,6 +179,23 @@ class Feed
     public function getOwner(): User
     {
         return $this->owner;
+    }
+
+    public function getOrganization(): ?Organization
+    {
+        return $this->organization;
+    }
+
+    public function getSource(): string
+    {
+        return $this->source;
+    }
+
+    public function setSource(string $source): self
+    {
+        $this->source = $source;
+
+        return $this;
     }
 
     public function setOwner(User $owner): self

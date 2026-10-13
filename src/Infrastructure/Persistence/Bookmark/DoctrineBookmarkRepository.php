@@ -61,7 +61,7 @@ final readonly class DoctrineBookmarkRepository implements BookmarkRepositoryInt
             ->from(Bookmark::class, 'b')
             ->join('b.article', 'a')
             ->join('a.feed', 'f')
-            ->where('f.owner = :ownerId')
+            ->where('f.organization IS NULL')->andWhere('f.owner = :ownerId')
             ->setParameter('ownerId', Uuid::fromString($ownerId))
             ->orderBy('b.createdAt', 'DESC')
             ->getQuery()

@@ -9,6 +9,7 @@ use App\Domain\Category\Exception\CategoryHasFeedsException;
 use App\Domain\Category\Exception\CategoryNotFoundException;
 use App\Domain\Category\Port\CategoryRepositoryInterface;
 use App\Entity\Category;
+use App\Entity\Organization;
 
 final readonly class DeleteCategoryHandler
 {
@@ -25,7 +26,7 @@ final readonly class DeleteCategoryHandler
             throw new CategoryNotFoundException($command->id);
         }
 
-        if ($category->getOwner()->getId()->toRfc4122() !== $command->ownerId) {
+        if ($category->getOrganization() instanceof Organization || $category->getOwner()->getId()->toRfc4122() !== $command->ownerId) {
             throw new CategoryNotFoundException($command->id);
         }
 

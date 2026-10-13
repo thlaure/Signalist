@@ -45,7 +45,7 @@ final readonly class DoctrineFeedRepository implements FeedRepositoryInterface
 
         return $this->entityManager
             ->getRepository(Feed::class)
-            ->findOneBy(['url' => $url, 'owner' => Uuid::fromString($ownerId)]);
+            ->findOneBy(['url' => $url, 'organization' => null, 'owner' => Uuid::fromString($ownerId)]);
     }
 
     /** @return Feed[] */
@@ -57,7 +57,7 @@ final readonly class DoctrineFeedRepository implements FeedRepositoryInterface
 
         return $this->entityManager
             ->getRepository(Feed::class)
-            ->findBy(['owner' => Uuid::fromString($ownerId)], ['title' => 'ASC']);
+            ->findBy(['organization' => null, 'owner' => Uuid::fromString($ownerId)], ['title' => 'ASC']);
     }
 
     /** @return Feed[] */
@@ -70,7 +70,7 @@ final readonly class DoctrineFeedRepository implements FeedRepositoryInterface
         return $this->entityManager
             ->getRepository(Feed::class)
             ->findBy(
-                ['category' => Uuid::fromString($categoryId), 'owner' => Uuid::fromString($ownerId)],
+                ['category' => Uuid::fromString($categoryId), 'organization' => null, 'owner' => Uuid::fromString($ownerId)],
                 ['title' => 'ASC'],
             );
     }

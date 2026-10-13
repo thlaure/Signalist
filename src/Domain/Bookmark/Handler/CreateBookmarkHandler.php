@@ -11,6 +11,7 @@ use App\Domain\Bookmark\Exception\ArticleAlreadyBookmarkedException;
 use App\Domain\Bookmark\Port\BookmarkRepositoryInterface;
 use App\Entity\Article;
 use App\Entity\Bookmark;
+use App\Entity\Organization;
 
 final readonly class CreateBookmarkHandler
 {
@@ -28,7 +29,7 @@ final readonly class CreateBookmarkHandler
             throw new ArticleNotFoundException($command->articleId);
         }
 
-        if ($article->getFeed()->getOwner()->getId()->toRfc4122() !== $command->ownerId) {
+        if ($article->getFeed()->getOrganization() instanceof Organization || $article->getFeed()->getOwner()->getId()->toRfc4122() !== $command->ownerId) {
             throw new ArticleNotFoundException($command->articleId);
         }
 

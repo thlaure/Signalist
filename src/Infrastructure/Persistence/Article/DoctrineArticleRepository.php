@@ -102,7 +102,7 @@ final readonly class DoctrineArticleRepository implements ArticleRepositoryInter
             ->select('a')
             ->from(Article::class, 'a')
             ->join('a.feed', 'f')
-            ->where('f.owner = :ownerId')
+            ->where('f.organization IS NULL')->andWhere('f.owner = :ownerId')
             ->andWhere('a.isRead = :isRead')
             ->setParameter('ownerId', Uuid::fromString($ownerId))
             ->setParameter('isRead', false)
@@ -120,7 +120,7 @@ final readonly class DoctrineArticleRepository implements ArticleRepositoryInter
     private function applyFilters(QueryBuilder $qb, array $filters): void
     {
         if (isset($filters['ownerId']) && Uuid::isValid($filters['ownerId'])) {
-            $qb->andWhere('f.owner = :ownerId')
+            $qb->andWhere('f.organization IS NULL')->andWhere('f.owner = :ownerId')
                 ->setParameter('ownerId', Uuid::fromString($filters['ownerId']));
         }
 

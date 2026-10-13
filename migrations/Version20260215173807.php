@@ -41,7 +41,6 @@ final class Version20260215173807 extends AbstractMigration
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('CREATE SCHEMA public');
         $this->addSql('ALTER TABLE feed DROP CONSTRAINT FK_234044AB7E3C61F9');
         $this->addSql('DROP INDEX IDX_234044AB7E3C61F9');
         $this->addSql('DROP INDEX uniq_feed_url_owner');

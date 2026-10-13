@@ -8,6 +8,7 @@ use App\Domain\Feed\Exception\FeedNotFoundException;
 use App\Domain\Feed\Port\FeedRepositoryInterface;
 use App\Domain\Feed\Query\GetFeedQuery;
 use App\Entity\Feed;
+use App\Entity\Organization;
 
 final readonly class GetFeedHandler
 {
@@ -24,7 +25,7 @@ final readonly class GetFeedHandler
             throw new FeedNotFoundException($query->id);
         }
 
-        if ($feed->getOwner()->getId()->toRfc4122() !== $query->ownerId) {
+        if ($feed->getOrganization() instanceof Organization || $feed->getOwner()->getId()->toRfc4122() !== $query->ownerId) {
             throw new FeedNotFoundException($query->id);
         }
 

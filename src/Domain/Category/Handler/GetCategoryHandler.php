@@ -8,6 +8,7 @@ use App\Domain\Category\Exception\CategoryNotFoundException;
 use App\Domain\Category\Port\CategoryRepositoryInterface;
 use App\Domain\Category\Query\GetCategoryQuery;
 use App\Entity\Category;
+use App\Entity\Organization;
 
 final readonly class GetCategoryHandler
 {
@@ -24,7 +25,7 @@ final readonly class GetCategoryHandler
             throw new CategoryNotFoundException($query->id);
         }
 
-        if ($category->getOwner()->getId()->toRfc4122() !== $query->ownerId) {
+        if ($category->getOrganization() instanceof Organization || $category->getOwner()->getId()->toRfc4122() !== $query->ownerId) {
             throw new CategoryNotFoundException($query->id);
         }
 

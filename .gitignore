@@ -41,6 +41,8 @@
 /landing/.astro/
 ###< Landing ###
 
+/integrations/bluesky/node_modules/
+
 ###> friendsofphp/php-cs-fixer ###
 /.php-cs-fixer.php
 /.php-cs-fixer.cache

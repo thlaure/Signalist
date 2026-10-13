@@ -6,6 +6,9 @@ namespace App\Domain\Auth\MessageHandler;
 
 use App\Domain\Auth\Message\SendVerificationEmailMessage;
 use App\Domain\Auth\Port\EmailVerificationTokenGeneratorInterface;
+use App\Domain\Auth\Port\UserRepositoryInterface;
+use App\Entity\User;
+use DateTimeImmutable;
 
 use const ENT_QUOTES;
 use const ENT_SUBSTITUTE;
@@ -20,18 +23,27 @@ final readonly class SendVerificationEmailMessageHandler
     public function __construct(
         private EmailVerificationTokenGeneratorInterface $tokenGenerator,
         private MailerInterface $mailer,
+        private string $mailSender = 'noreply@signalist.app',
+        private ?UserRepositoryInterface $users = null,
     ) {
     }
 
     public function __invoke(SendVerificationEmailMessage $message): void
     {
+        if ($this->users instanceof UserRepositoryInterface) {
+            $user = $this->users->find($message->userId);
+
+            if (!$user instanceof User || $user->isDeleted() || $user->getEmailVerifiedAt() instanceof DateTimeImmutable || $user->getEmail() !== $message->email) {
+                return;
+            }
+        }
         $verificationUrl = $this->tokenGenerator->generateSignedUrl(
             $message->userId,
             $message->email,
         );
 
         $email = new Email()
-            ->from('noreply@signalist.app')
+            ->from($this->mailSender)
             ->to($message->email)
             ->subject('Verify your Signalist email address')
             ->html($this->buildHtml($verificationUrl));

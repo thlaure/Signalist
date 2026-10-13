@@ -1,4 +1,24 @@
 services:
+    App\Infrastructure\Billing\StripeBillingGateway:
+        arguments:
+            $secretKey: ''
+            $teamPriceId: ''
+            $webhookSecret: ''
+            $enterprisePriceId: ''
+            $frontendUrl: 'http://localhost:5173'
+    App\Infrastructure\Connection\ProviderOAuthGateway:
+        arguments:
+            $credentials: []
+            $backendUrl: 'http://localhost:18000'
+    App\Infrastructure\Connection\BlueskyBridge:
+        arguments:
+            $privateKey: ''
+            $encodedKey: ''
+            $projectDir: '%kernel.project_dir%'
+            $nodeBinary: '/usr/bin/node'
+            $databaseUrl: '%env(resolve:DATABASE_URL)%'
+            $backendUrl: 'http://localhost:18000'
+            $frontendUrl: 'http://localhost:5173'
     _defaults:
         autowire: true
         autoconfigure: true

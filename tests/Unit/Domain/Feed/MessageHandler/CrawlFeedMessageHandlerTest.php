@@ -52,6 +52,7 @@ final class CrawlFeedMessageHandlerTest extends TestCase
         $feedId = Uuid::v7();
         $feed = $this->createMock(Feed::class);
         $feed->method('getId')->willReturn($feedId);
+        $feed->method('getSource')->willReturn('rss');
         $feed->method('getUrl')->willReturn('https://example.com/feed.xml');
         $feed->method('getTitle')->willReturn('My Feed');
 
@@ -141,6 +142,7 @@ final class CrawlFeedMessageHandlerTest extends TestCase
         $feedId = Uuid::v7();
         $feed = $this->createMock(Feed::class);
         $feed->method('getId')->willReturn($feedId);
+        $feed->method('getSource')->willReturn('rss');
         $feed->method('getUrl')->willReturn('https://example.com/feed.xml');
 
         $this->feedRepository

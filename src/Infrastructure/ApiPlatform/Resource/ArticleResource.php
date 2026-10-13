@@ -42,6 +42,7 @@ use App\Infrastructure\ApiPlatform\State\ArticleStateProvider;
 )]
 final readonly class ArticleResource
 {
+    /** @param list<string> $tags */
     public function __construct(
         public string $id,
         public string $title,
@@ -58,6 +59,8 @@ final readonly class ArticleResource
         public string $categoryId,
         public string $categoryName,
         public ?string $categoryColor,
+        public ?string $aiSummary = null,
+        public array $tags = [],
     ) {
     }
 }

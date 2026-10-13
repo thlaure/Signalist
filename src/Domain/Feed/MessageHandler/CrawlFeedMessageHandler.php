@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Feed\MessageHandler;
 
+use App\Domain\Billing\Service\UsageBudget;
 use App\Domain\Feed\Message\CrawlFeedMessage;
 use App\Domain\Feed\Port\FeedRepositoryInterface;
 use App\Domain\Feed\Port\RssFetcherInterface;
@@ -23,6 +24,7 @@ final readonly class CrawlFeedMessageHandler
         private RssFetcherInterface $rssFetcher,
         private EntityManagerInterface $entityManager,
         private LoggerInterface $logger,
+        private ?UsageBudget $budget = null,
     ) {
     }
 
@@ -33,6 +35,10 @@ final readonly class CrawlFeedMessageHandler
         if (!$feed instanceof Feed) {
             $this->logger->warning('Feed not found for crawling', ['feedId' => $message->feedId]);
 
+            return;
+        }
+
+        if ('rss' !== $feed->getSource() || $feed->getOwner()->isDeleted() || $feed->getOwner()->isProcessingRestricted() || Feed::STATUS_PAUSED === $feed->getStatus()) {
             return;
         }
 
@@ -49,6 +55,10 @@ final readonly class CrawlFeedMessageHandler
                 // Check if article already exists (by guid)
                 if ($this->articleExists($feed, $fetchedArticle->guid)) {
                     continue;
+                }
+
+                if ($this->budget instanceof UsageBudget && !$this->budget->article($feed->getOwner(), $feed->getOrganization())) {
+                    break;
                 }
 
                 $article = new Article();
@@ -86,7 +96,7 @@ final readonly class CrawlFeedMessageHandler
 
             $this->logger->error('Failed to crawl feed', [
                 'feedId' => $feed->getId()->toRfc4122(),
-                'error' => $e->getMessage(),
+                'exceptionType' => $e::class,
             ]);
         }
     }

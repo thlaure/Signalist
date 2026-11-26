@@ -71,7 +71,7 @@ final class RegisterHandlerTest extends TestCase
 
     public function testInvokeWithExistingEmailReturnsSilentlyWithoutCreatingUser(): void
     {
-        $existingUser = $this->createMock(User::class);
+        $existingUser = $this->createStub(User::class);
 
         $this->userRepository
             ->expects($this->once())

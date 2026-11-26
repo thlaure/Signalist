@@ -48,7 +48,7 @@ GrumPHP:
 
 ## Code conventions
 
-**Backend (PHP 8.5, Symfony 7.4)**
+**Backend (PHP 8.5, Symfony 8.1)**
 
 - `declare(strict_types=1);` in every file.
 - Flow: Controller or API Platform processor → Input DTO → Handler → Doctrine or

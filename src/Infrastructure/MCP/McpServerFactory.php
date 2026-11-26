@@ -6,7 +6,7 @@ namespace App\Infrastructure\MCP;
 
 use App\Entity\User;
 use Mcp\Schema\ToolAnnotations;
-use Mcp\Server;
+use Mcp\Server\Server;
 use Mcp\Server\Session\FileSessionStore;
 use stdClass;
 

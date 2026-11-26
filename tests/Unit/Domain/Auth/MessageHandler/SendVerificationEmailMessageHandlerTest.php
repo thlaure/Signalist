@@ -23,7 +23,7 @@ final class SendVerificationEmailMessageHandlerTest extends TestCase
         $users->method('find')->willReturn($user);
         $mailer = $this->createMock(MailerInterface::class);
         $mailer->expects($this->never())->method('send');
-        new SendVerificationEmailMessageHandler($this->createMock(EmailVerificationTokenGeneratorInterface::class), $mailer, 'sender@example.com', $users)(new SendVerificationEmailMessage($user->getId()->toRfc4122(), 'deleted@example.com'));
+        new SendVerificationEmailMessageHandler($this->createStub(EmailVerificationTokenGeneratorInterface::class), $mailer, 'sender@example.com', $users)(new SendVerificationEmailMessage($user->getId()->toRfc4122(), 'deleted@example.com'));
     }
 
     public function testMailUsesConfiguredSenderAndEscapesSignedLink(): void

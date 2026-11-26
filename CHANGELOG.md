@@ -52,11 +52,22 @@ Earlier team features stay in the codebase but are disabled by default.
   pricing shows two plans.
 - Privacy export and account deletion include weekly digests.
 - Scheduler in MVP mode runs digest, billing and retention jobs only.
+- Upgraded to Symfony 8.1, Doctrine DBAL 4, DoctrineBundle 3, Doctrine
+  Migrations Bundle 4, API Platform 4.4, `mcp/sdk` 0.10 and Behat 4.
+- Runtime moved to FrankenPHP 1.14.0 with PHP 8.5.13; the custom FrankenPHP
+  build stage is gone.
+- Behat configuration moved from `behat.yaml.dist` to `behat.dist.php`, and
+  step definitions use attributes.
+- Rector uses composer-based sets matching the installed Symfony, Doctrine,
+  PHPUnit and Twig versions.
 
 ### Removed
 
 - Password strength score check at registration (minimum length of 8
   characters remains).
+- `runtime/frankenphp-symfony` (unused: FrankenPHP does not run in worker mode)
+  and `enlightn/security-checker` (replaced by `composer audit` in GrumPHP).
+- DBAL 3 type comments (`DC2Type`) on database columns.
 
 ### Fixed
 
@@ -64,6 +75,15 @@ Earlier team features stay in the codebase but are disabled by default.
   the whole attempt budget within seconds.
 - Unfinished editions from earlier weeks are marked `skipped` instead of being
   emailed late once AI is configured.
+- Production container now declares the Doctrine query and result cache pools
+  it references.
+
+### Security
+
+- Patched dependencies flagged by new advisories (Symfony, `mcp/sdk`, undici,
+  follow-redirects, Alpine and Go packages in the runtime image). zod
+  GHSA-mrhx-c7xc-m3w5 in the legacy Bluesky adapter is accepted until
+  `@atproto` supports zod 4.
 
 ## [0.4.0] - 2026-10-13
 

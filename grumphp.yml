@@ -35,8 +35,8 @@ grumphp:
         yamllint:
             ignore_patterns: ["config/services.yaml"]
 
-        securitychecker_enlightn:
-            lockfile: ./composer.lock
+        securitychecker_composeraudit:
+            locked: true
 
         phpstan:
             level: 9
@@ -57,7 +57,7 @@ grumphp:
             always_execute: true
 
         behat:
-            config: behat.yaml.dist
+            config: behat.dist.php
             suite: api
 
         rector:

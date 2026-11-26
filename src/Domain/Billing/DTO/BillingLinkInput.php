@@ -8,7 +8,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 final readonly class BillingLinkInput
 {
-    public function __construct(#[Assert\Choice(['checkout', 'portal'])] public string $kind = 'checkout', #[Assert\Uuid] public ?string $organizationId = null)
+    public function __construct(#[Assert\Choice(choices: ['checkout', 'portal'])] public string $kind = 'checkout', #[Assert\Uuid] public ?string $organizationId = null)
     {
     }
 }

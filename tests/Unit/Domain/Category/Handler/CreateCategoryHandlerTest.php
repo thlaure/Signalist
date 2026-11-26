@@ -35,7 +35,7 @@ final class CreateCategoryHandlerTest extends TestCase
 
     public function testInvokeValidDataSavesCategoryAndReturnsUuid(): void
     {
-        $user = $this->createMock(User::class);
+        $user = $this->createStub(User::class);
 
         $this->userRepository
             ->method('find')
@@ -65,8 +65,8 @@ final class CreateCategoryHandlerTest extends TestCase
 
     public function testInvokeDuplicateSlugThrowsCategorySlugAlreadyExistsException(): void
     {
-        $user = $this->createMock(User::class);
-        $existing = $this->createMock(Category::class);
+        $user = $this->createStub(User::class);
+        $existing = $this->createStub(Category::class);
 
         $this->userRepository->method('find')->willReturn($user);
 

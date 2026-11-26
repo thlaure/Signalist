@@ -12,7 +12,7 @@ final readonly class SearchInput
         #[Assert\NotBlank]
         #[Assert\Length(max: 500)]
         public string $query,
-        #[Assert\Choice(['fulltext', 'semantic', 'hybrid', 'question'])]
+        #[Assert\Choice(choices: ['fulltext', 'semantic', 'hybrid', 'question'])]
         public string $mode = 'hybrid',
     ) {
     }

@@ -30,7 +30,7 @@ final class MvpScopeListenerTest extends TestCase
 
     public function testMcpIsDisabledInMvpMode(): void
     {
-        $event = new RequestEvent($this->createMock(HttpKernelInterface::class), Request::create('/mcp/'), HttpKernelInterface::MAIN_REQUEST);
+        $event = new RequestEvent($this->createStub(HttpKernelInterface::class), Request::create('/mcp/'), HttpKernelInterface::MAIN_REQUEST);
         $this->expectException(NotFoundHttpException::class);
         new MvpScopeListener(true)->request($event);
     }

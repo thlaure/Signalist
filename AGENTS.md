@@ -7,7 +7,7 @@ Canonical agent instructions for this repository live in this file.
 ## Project
 
 - Signalist is an AI-powered RSS intelligence platform with a Symfony/API Platform backend and a React frontend
-- Backend stack: PHP 8.5, Symfony 7.4, API Platform 4.x, FrankenPHP, PostgreSQL, pgvector
+- Backend stack: PHP 8.5, Symfony 8.1, API Platform 4.4, FrankenPHP, PostgreSQL, pgvector
 - Frontend stack: React 19, TypeScript, Vite 7, MUI 7, react-i18next, React Query
 - Runtime integrations: Symfony Messenger, Redis, Symfony AI providers, outbound RSS and third-party syncs
 - Primary route surfaces: `/api/v1/` for application APIs, `/mcp/` for project MCP endpoints, `frontend/` for the web UI

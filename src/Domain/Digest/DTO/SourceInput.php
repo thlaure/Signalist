@@ -10,7 +10,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 final readonly class SourceInput
 {
     public function __construct(
-        #[Assert\NotBlank] #[Assert\Url(protocols: ['https', 'http'])] #[Assert\Length(max: 2048)] #[SsrfSafeUrl] public string $url,
+        #[Assert\NotBlank] #[Assert\Url(protocols: ['https', 'http'], requireTld: false)] #[Assert\Length(max: 2048)] #[SsrfSafeUrl] public string $url,
     ) {
     }
 }

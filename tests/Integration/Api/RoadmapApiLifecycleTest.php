@@ -80,6 +80,7 @@ final class RoadmapApiLifecycleTest extends DatabaseTestCase
         } $this->entityManager->flush();
         $search = $this->api('POST', '/search', ['query' => 'Useful', 'mode' => 'fulltext'], 200);
         $this->assertSame('complete', $search['status']);
+        $this->assertIsArray($search['items']);
         $this->assertCount(1, $search['items']);
         $searchId = $search['id'];
         $this->assertIsString($searchId);

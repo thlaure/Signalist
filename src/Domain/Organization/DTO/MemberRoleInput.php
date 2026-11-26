@@ -8,7 +8,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 final readonly class MemberRoleInput
 {
-    public function __construct(#[Assert\Choice(['admin', 'curator', 'reader'])] public string $role)
+    public function __construct(#[Assert\Choice(choices: ['admin', 'curator', 'reader'])] public string $role)
     {
     }
 }

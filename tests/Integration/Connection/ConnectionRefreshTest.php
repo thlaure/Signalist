@@ -34,8 +34,11 @@ final class ConnectionRefreshTest extends DatabaseTestCase
         $gateway = $this->createMock(OAuthGatewayInterface::class);
         $gateway->expects($this->once())->method('refresh')->with('x', 'old-refresh', 'remote')->willReturn(new OAuthTokens('new-access', null, new DateTimeImmutable('+1 hour'), 'remote'));
         $tokens = new AccountTokens($this->entityManager, $gateway, $cipher);
-        $this->assertSame('new-access', $tokens->accessToken($account, 'remote'));
-        $this->assertSame('new-access', $tokens->accessToken($account, 'remote'));
+        $first = $tokens->accessToken($account, 'remote');
+        // A second call must reuse the refreshed token: the gateway expects a single refresh.
+        $second = $tokens->accessToken($account, 'remote');
+        $this->assertSame('new-access', $first);
+        $this->assertSame($first, $second);
         $stored = json_decode($cipher->decrypt($account->getEncryptedTokens() ?? ''), true);
         $this->assertIsArray($stored);
         $this->assertSame('old-refresh', $stored['refreshToken']);
@@ -49,7 +52,7 @@ final class ConnectionRefreshTest extends DatabaseTestCase
     {
         $owner = $this->user();
         $cipher = new TokenCipher(base64_encode(random_bytes(32)));
-        $gateway = $this->createMock(OAuthGatewayInterface::class);
+        $gateway = $this->createStub(OAuthGatewayInterface::class);
         $bluesky = $this->createMock(BlueskyGatewayInterface::class);
         $bluesky->method('configured')->willReturn(true);
         $bluesky->expects($this->once())->method('authorize')->willReturn('https://auth.example.com/authorize');

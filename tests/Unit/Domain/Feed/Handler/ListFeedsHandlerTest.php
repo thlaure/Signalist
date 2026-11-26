@@ -30,8 +30,8 @@ final class ListFeedsHandlerTest extends TestCase
     public function testInvokeReturnsAllFeeds(): void
     {
         $feeds = [
-            $this->createMock(Feed::class),
-            $this->createMock(Feed::class),
+            $this->createStub(Feed::class),
+            $this->createStub(Feed::class),
         ];
 
         $this->feedRepository

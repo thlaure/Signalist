@@ -84,7 +84,6 @@ final readonly class LaminasFeedRssFetcher implements RssFetcherInterface
         $feedTitle = $feed->getTitle() ?? $url;
         $articles = [];
 
-        /** @var EntryInterface $entry */
         foreach ($feed as $entry) {
             $guid = $entry->getId() ?? $entry->getLink() ?? '';
 
@@ -116,7 +115,6 @@ final readonly class LaminasFeedRssFetcher implements RssFetcherInterface
                 summary: $this->cleanText($entry->getDescription()),
                 content: $entry->getContent(),
                 author: $this->extractAuthor($entry),
-                imageUrl: null,
                 publishedAt: $publishedAt,
             );
         }

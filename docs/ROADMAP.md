@@ -10,6 +10,23 @@
 > Task names below describe capabilities: handlers/messages are consolidated where useful, new async endpoints use thin controllers, and Doctrine supplies persistence without redundant repository wrappers. An implementation marked Done does not claim successful live provider validation.
 > Verification on 2026-10-13: 193 backend tests, 85 API scenarios, 42 frontend tests and five offline Bluesky SDK tests passed; domain statement coverage is 82.65%. Frontend/landing builds and local quality checks passed. See [review notes](PR-NOTES.md) for exact checks, migration evidence and remaining launch risks. [Browser QA](BROWSER-QA.md) records the local end-to-end pass and its limits.
 
+> **November 2026 — product refocus.** Signalist now ships as a personal weekly RSS digest ([MVP.md](MVP.md)). The phases below record the earlier team curation roadmap; their features remain in the codebase but are disabled while `SIGNALIST_MVP_ENABLED=true`.
+
+## Weekly digest MVP
+
+| Task | Status |
+|------|--------|
+| Personal RSS sources with Free (3) / Premium (20) quotas and downgrade selection | Done |
+| `WeeklyDigest` outbox with unique owner/week editions | Done |
+| Local Ollama summaries with bounded input, output and attempts | Done |
+| Weekly email with stored citations, no automatic resend on uncertain delivery | Done |
+| Dispatch lease (15 min) and skipping of stale weeks | Done |
+| MVP scope guard for legacy API routes, MCP and background jobs | Done |
+| Sources, Digests, Digest and simplified Billing pages (EN/FR) | Done |
+| Landing page CTAs point to registration; two-plan pricing | Done |
+| Real Ollama run, Stripe test checkout, browser QA | Not Started |
+| Production deployment | Not Started |
+
 ---
 
 ## Phase 1 — MVP: Core RSS Engine & Dashboard UI

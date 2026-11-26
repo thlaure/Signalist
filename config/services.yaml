@@ -7,6 +7,15 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    mvp_enabled: true
+    free_sources: 3
+    paid_sources: 20
+    digest_articles_per_source: 2
+    digest_articles: 8
+    digest_characters: 2000
+    digest_attempts: 3
+    digest_ai_url: ''
+    digest_ai_model: ''
     mail_sender: 'noreply@signalist.app'
     retention_disabled: false
     linkedin_version: '202605'
@@ -87,6 +96,8 @@ services:
     App\Domain\Billing\Service\PlanCatalog:
         arguments:
             $limits: '%plan_limits%'
+            $freeSources: '%env(int:default:free_sources:SIGNALIST_FREE_SOURCES)%'
+            $paidSources: '%env(int:default:paid_sources:SIGNALIST_PAID_SOURCES)%'
     App\Domain\Billing\Port\BillingGatewayInterface:
         alias: App\Infrastructure\Billing\StripeBillingGateway
     App\Infrastructure\Billing\StripeBillingGateway:
@@ -149,3 +160,33 @@ services:
         arguments:
             $appSecret: '%env(APP_SECRET)%'
             $frontendUrl: '%env(FRONTEND_URL)%'
+
+    App\Infrastructure\EventListener\MvpScopeListener:
+        arguments:
+            $mvpEnabled: '%env(bool:default:mvp_enabled:SIGNALIST_MVP_ENABLED)%'
+    App\Infrastructure\Scheduler\SignalistSchedule:
+        arguments:
+            $mvpEnabled: '%env(bool:default:mvp_enabled:SIGNALIST_MVP_ENABLED)%'
+    App\Domain\Digest\Port\DigestIntelligenceInterface:
+        alias: App\Infrastructure\AI\OllamaDigestIntelligence
+    App\Infrastructure\AI\OllamaDigestIntelligence:
+        arguments:
+            $baseUrl: '%env(default:digest_ai_url:DIGEST_AI_URL)%'
+            $model: '%env(default:digest_ai_model:DIGEST_AI_MODEL)%'
+    App\Domain\Digest\MessageHandler\GenerateWeeklyDigestMessageHandler:
+        arguments:
+            $frontendUrl: '%env(FRONTEND_URL)%'
+
+    App\Domain\Digest\Service\DigestLimits:
+        arguments:
+            $articlesPerSource: '%env(int:default:digest_articles_per_source:DIGEST_ARTICLES_PER_SOURCE)%'
+            $articlesPerDigest: '%env(int:default:digest_articles:DIGEST_ARTICLES_MAX)%'
+            $charactersPerArticle: '%env(int:default:digest_characters:DIGEST_CHARACTERS_MAX)%'
+            $attemptsPerDigest: '%env(int:default:digest_attempts:DIGEST_ATTEMPTS_MAX)%'
+
+    App\Domain\Feed\MessageHandler\CrawlFeedMessageHandler:
+        arguments:
+            $mvpEnabled: '%env(bool:default:mvp_enabled:SIGNALIST_MVP_ENABLED)%'
+    App\Domain\Billing\MessageHandler\CreateBillingLinkMessageHandler:
+        arguments:
+            $mvpEnabled: '%env(bool:default:mvp_enabled:SIGNALIST_MVP_ENABLED)%'

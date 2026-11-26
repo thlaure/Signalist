@@ -1,4 +1,5 @@
 ---
+import { registrationUrl } from '../lib/appUrl';
 import type { Translations } from '../i18n/translations';
 
 interface Props {
@@ -33,7 +34,7 @@ const altHref = lang === 'en' ? '/fr/' : '/';
         {lang === 'en' ? 'FR' : 'EN'}
       </a>
       <a
-        href="#waitlist"
+        href={registrationUrl}
         class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors"
       >
         {t.nav.cta}

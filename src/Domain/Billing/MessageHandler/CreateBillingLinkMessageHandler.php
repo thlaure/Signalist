@@ -24,7 +24,7 @@ use Symfony\Component\Uid\Uuid;
 #[AsMessageHandler]
 final readonly class CreateBillingLinkMessageHandler
 {
-    public function __construct(private EntityManagerInterface $entityManager, private BillingGatewayInterface $gateway, private OrganizationPolicy $policy)
+    public function __construct(private EntityManagerInterface $entityManager, private BillingGatewayInterface $gateway, private OrganizationPolicy $policy, private bool $mvpEnabled = false)
     {
     }
 
@@ -39,7 +39,7 @@ final readonly class CreateBillingLinkMessageHandler
         $subscription = $link->getSubscription();
         $organization = $subscription->getOrganization();
 
-        if ($actor->isDeleted() || $actor->isProcessingRestricted() || $link->getCreatedAt() < new DateTimeImmutable('-30 minutes') || ($organization instanceof Organization && !$this->policy->allows($actor, $organization, 'manage'))) {
+        if (($this->mvpEnabled && $organization instanceof Organization) || $actor->isDeleted() || $actor->isProcessingRestricted() || $link->getCreatedAt() < new DateTimeImmutable('-30 minutes') || ($organization instanceof Organization && !$this->policy->allows($actor, $organization, 'manage'))) {
             $link->fail();
             $this->entityManager->flush();
 

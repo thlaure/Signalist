@@ -99,6 +99,7 @@ export default function RegisterPage() {
               fullWidth
               required
               autoComplete="new-password"
+              helperText={t('auth.passwordHelp')}
               sx={{ mb: 2 }}
             />
             <TextField

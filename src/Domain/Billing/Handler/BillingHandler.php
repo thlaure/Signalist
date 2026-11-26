@@ -38,7 +38,7 @@ final readonly class BillingHandler
         $subscription = $this->entityManager->getRepository(Subscription::class)->findOneBy($scope);
         $plan = $organization?->getPlan() ?? $user->getPlan();
 
-        return ['plan' => $plan, 'limits' => $this->plans->limits($plan), 'status' => $subscription?->getStatus() ?? 'inactive', 'configured' => $this->gateway->configured(), 'seats' => $organization?->getMembers()->count() ?? 1];
+        return ['plan' => $plan, 'limits' => $this->plans->limits($plan), 'status' => $subscription?->getStatus() ?? 'inactive', 'configured' => $this->gateway->configured(), 'seats' => $organization?->getMembers()->count() ?? 1, 'canManage' => null !== $subscription?->getCustomerId(), 'offers' => ['free' => $this->plans->limits('free')['feeds'], 'paid' => $this->plans->limits('team')['feeds']]];
     }
 
     public function createLink(User $user, string $kind, ?string $organizationId): BillingLink

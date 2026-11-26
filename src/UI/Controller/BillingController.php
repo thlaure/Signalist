@@ -32,6 +32,14 @@ final readonly class BillingController
         return new JsonResponse($this->handler->status($user, is_string($organization) ? $organization : null));
     }
 
+    #[Route('/{kind}', requirements: ['kind' => 'checkout|portal'], methods: ['POST'])]
+    public function personal(#[CurrentUser] User $user, string $kind): JsonResponse
+    {
+        $link = $this->handler->createLink($user, $kind, null);
+
+        return new JsonResponse(['id' => $link->getId()->toRfc4122(), 'status' => $link->getStatus()], Response::HTTP_ACCEPTED);
+    }
+
     #[Route('/links', methods: ['POST'])]
     public function create(#[CurrentUser] User $user, #[MapRequestPayload] BillingLinkInput $input): JsonResponse
     {

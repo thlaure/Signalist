@@ -6,6 +6,7 @@ namespace App\Domain\Privacy\Handler;
 
 use App\Domain\Article\DTO\Output\ArticleOutput;
 use App\Domain\Billing\Service\SeatSyncService;
+use App\Domain\Digest\Handler\DigestHandler;
 use App\Domain\Privacy\Service\ConsentPolicy;
 use App\Entity\Article;
 use App\Entity\ArticleReadState;
@@ -31,6 +32,7 @@ use App\Entity\UsageCounter;
 use App\Entity\User;
 use App\Entity\UserConsent;
 use App\Entity\WaitlistEntry;
+use App\Entity\WeeklyDigest;
 
 use const DATE_ATOM;
 
@@ -99,6 +101,7 @@ final readonly class PrivacyHandler
         $audits = $this->entityManager->getRepository(DataAccessAudit::class)->findBy(['user' => $user], ['createdAt' => 'ASC']);
         $result = [
             'version' => 1,
+            'digests' => array_map(DigestHandler::output(...), $this->entityManager->getRepository(WeeklyDigest::class)->findBy(['owner' => $user])),
             'tags' => array_map(static fn (Tag $tag): string => $tag->getName(), $this->entityManager->getRepository(Tag::class)->findBy(['owner' => $user])),
             'searchHistory' => array_map(static fn (ArticleSearch $search): array => ['query' => $search->getQuery(), 'mode' => $search->getMode(), 'answer' => $search->getAnswer(), 'status' => $search->getStatus()], $this->entityManager->getRepository(ArticleSearch::class)->findBy(['owner' => $user])),
             'newsletters' => array_map(static fn (Newsletter $newsletter): array => ['title' => $newsletter->getTitle(), 'html' => $newsletter->getHtml(), 'readingMinutes' => $newsletter->getReadingMinutes(), 'intervalHours' => $newsletter->getIntervalHours()], $this->entityManager->getRepository(Newsletter::class)->findBy(['owner' => $user])),
@@ -149,7 +152,7 @@ final readonly class PrivacyHandler
             }
             $this->eraseWorkspaceMemberships($user);
             // Feed deletion cascades to articles, embeddings, and bookmarks in PostgreSQL.
-            foreach ([Tag::class, SocialRecap::class, ExternalAccount::class, OAuthAttempt::class, OAuthSdkStore::class, Newsletter::class, ArticleSearch::class, Feed::class, Category::class] as $class) {
+            foreach ([WeeklyDigest::class, Tag::class, SocialRecap::class, ExternalAccount::class, OAuthAttempt::class, OAuthSdkStore::class, Newsletter::class, ArticleSearch::class, Feed::class, Category::class] as $class) {
                 $scope = in_array($class, [Feed::class, Category::class], true) ? ' AND e.organization IS NULL' : '';
                 $this->entityManager->createQuery('DELETE FROM '.$class.' e WHERE e.owner = :user'.$scope)->setParameter('user', $user)->execute();
             }

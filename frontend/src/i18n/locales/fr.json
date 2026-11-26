@@ -41,7 +41,8 @@
     "haveAccount": "Déjà un compte ?",
     "unexpectedError": "Une erreur inattendue s'est produite. Veuillez réessayer.",
     "passwordsMismatch": "Les mots de passe ne correspondent pas",
-    "resendVerification": "Renvoyer l'e-mail de vérification"
+    "resendVerification": "Renvoyer l'e-mail de vérification",
+    "passwordHelp": "8 caractères minimum. Aucun chiffre ou symbole imposé."
   },
   "checkEmail": {
     "title": "Vérifiez vos e-mails",
@@ -400,5 +401,53 @@
     "delete": "Supprimer",
     "confirmDelete": "Supprimer cette étiquette et la retirer de vos articles ?",
     "empty": "Aucun article avec cette étiquette."
+  },
+  "mvp": {
+    "promise": "Tes sources RSS, un email de veille chaque semaine avec les liens pour approfondir.",
+    "navigation": "Navigation principale",
+    "sources": "Sources",
+    "digests": "Digests",
+    "billing": "Abonnement",
+    "settings": "Paramètres",
+    "sourcesHelp": "Ajoute des adresses de flux RSS ou Atom. Les pages web ordinaires ne sont pas prises en charge.",
+    "failed": "Action impossible. Réessaie dans un instant.",
+    "quota": "{{active}} sources actives / {{limit}} autorisées",
+    "selectionRequired": "Ton quota a changé. Choisis au maximum {{limit}} sources actives pour reprendre la collecte et les digests. Tes données restent conservées.",
+    "rssUrl": "Adresse du flux RSS",
+    "add": "Ajouter",
+    "noSources": "Ajoute ta première source pour préparer ton prochain digest.",
+    "feedError": "Flux inaccessible ou invalide. Vérifie son adresse RSS. Une nouvelle tentative aura lieu automatiquement.",
+    "saveSelection": "Enregistrer les sources actives",
+    "deleteSource": "Supprimer cette source ?",
+    "deleteSourceHelp": "La source et ses articles seront supprimés. Les digests déjà archivés resteront disponibles.",
+    "schedule": "Chaque lundi à 08:00 UTC. Les articles collectés pendant les sept jours précédents sont regroupés ; aucun email si aucun nouvel article exploitable.",
+    "delivery": "Activer mon digest",
+    "consentHelp": "Active les deux options pour préparer et recevoir ton digest. Tu peux les désactiver à tout moment. Les résumés sont générés automatiquement : consulte les sources pour vérifier les informations.",
+    "restricted": "Le traitement est suspendu. Tu peux le reprendre dans les paramètres.",
+    "aiPending": "La génération IA attend la configuration du service local. Aucun résumé de démonstration ne sera présenté comme réel.",
+    "nextRun": "Prochain envoi : {{date}}",
+    "noDigests": "Ton historique apparaîtra ici après le premier passage hebdomadaire suivant ton inscription et ton activation.",
+    "read": "Consulter",
+    "free": "Gratuit",
+    "paid": "Premium",
+    "sourceLimit": "Jusqu’à {{limit}} sources actives",
+    "sameQuality": "Même qualité de résumé et même fréquence pour tous.",
+    "offer": "Gratuit : {{free}} sources · Premium : {{paid}} sources",
+    "priceHelp": "Le tarif et la périodicité sont affichés dans Stripe avant confirmation.",
+    "downgrade": "Après résiliation, tes digests restent disponibles. Si le quota gratuit est dépassé, choisis tes sources actives pour reprendre le service.",
+    "status": {
+      "queued": "En attente",
+      "generating": "Synthèse en cours",
+      "setup_pending": "Configuration IA en attente",
+      "selection_required": "Choix des sources nécessaire",
+      "ready": "Prêt à envoyer",
+      "sending": "Envoi en cours",
+      "sent": "Envoyé",
+      "empty": "Aucun nouvel article exploitable cette semaine. Aucun email envoyé.",
+      "cancelled": "Suspendu : vérifie tes consentements et paramètres.",
+      "failed": "Génération échouée après les tentatives autorisées.",
+      "uncertain": "Réception incertaine. Le digest reste consultable ici ; aucun renvoi automatique.",
+      "skipped": "Non envoyé : l'édition de cette semaine n'a pas pu être préparée à temps."
+    }
   }
 }

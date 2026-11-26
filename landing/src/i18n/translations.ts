@@ -1,20 +1,20 @@
 export const translations = {
   "en": {
     "meta": {
-      "title": "Signalist — AI-powered intelligence for your team",
-      "description": "Organize RSS feeds, curate articles with your team, and prepare newsletters and social drafts. Early access; AI features depend on provider setup."
+      "title": "Signalist — Your weekly RSS digest",
+      "description": "Your RSS sources, one weekly email with links to explore further. For independent professionals following their industry."
     },
     "nav": {
       "features": "Features",
       "pricing": "Pricing",
-      "cta": "Join waitlist"
+      "cta": "Create my account"
     },
     "hero": {
-      "badge": "Now in early access — join the waitlist",
-      "headline": "Stop drowning in news.",
-      "headlineAccent": "Start leading the conversation.",
-      "subheadline": "Bring RSS sources together, curate useful articles, and prepare briefings in a shared workspace. AI features require a configured provider and your consent.",
-      "primaryCta": "Get early access",
+      "badge": "Personal monitoring · Weekly digest",
+      "headline": "Your RSS sources.",
+      "headlineAccent": "One email every week.",
+      "subheadline": "Your RSS sources, one weekly email with links to explore further. For independent professionals following their industry.",
+      "primaryCta": "Start free",
       "secondaryCta": "See how it works",
       "articles": [
         {
@@ -26,21 +26,21 @@ export const translations = {
         },
         {
           "tag": "Marketing",
-          "title": "Ideas for your next team briefing",
+          "title": "The facts worth reading this week",
           "source": "Demo",
           "time": "example",
           "read": false
         },
         {
           "tag": "Research",
-          "title": "A source curated by your team",
+          "title": "A short summary, a link to explore further",
           "source": "Demo",
           "time": "example",
           "read": true
         },
         {
           "tag": "Industry",
-          "title": "A digest to prepare for your readers",
+          "title": "Your digest, without checking every feed",
           "source": "Demo",
           "time": "example",
           "read": true
@@ -50,126 +50,93 @@ export const translations = {
     },
     "features": {
       "label": "How it works",
-      "headline": "From raw feeds to polished insights",
-      "subheadline": "A clear workflow from collection to approved publication.",
+      "headline": "A simple workflow in three steps",
+      "subheadline": "Every Monday at 08:00 UTC. No email when there are no usable new articles.",
       "items": [
         {
           "step": "01",
-          "title": "Monitor",
-          "headline": "Your sources in one inbox",
-          "description": "Organize RSS sources by category and search articles by keyword. Feed and usage quotas depend on your plan."
+          "title": "Sources",
+          "headline": "Add your RSS feeds",
+          "description": "RSS or Atom feeds only. Choose the sources for your industry."
         },
         {
           "step": "02",
-          "title": "Curate",
-          "headline": "Curate useful content together",
-          "description": "Bookmark useful articles, add notes, and collaborate with admin, curator and reader roles. AI summaries and tags become available after provider setup."
+          "title": "Digest",
+          "headline": "Receive a weekly digest",
+          "description": "A few articles, short summaries and original links. Enable AI generation and delivery from your account."
         },
         {
           "step": "03",
-          "title": "Synthesize",
-          "headline": "Newsletters from your bookmarks",
-          "description": "Compose newsletters from bookmarks, choose a reading budget and delivery interval. Sending requires your consent."
-        },
-        {
-          "step": "04",
-          "title": "Publish",
-          "headline": "Review every post before publishing",
-          "description": "Prepare, edit and copy recap drafts. With a configured connected account, approve publication to LinkedIn, X or Bluesky."
+          "title": "History",
+          "headline": "Revisit your digests",
+          "description": "Read previous editions in your personal account. Keep your history after cancellation."
         }
       ]
     },
     "pricing": {
       "label": "Pricing",
-      "headline": "Plans for your monitoring workflow",
-      "subheadline": "Paid prices announced before launch. Per-seat billing, shown at checkout. AI and external APIs depend on provider setup.",
-      "popularBadge": "Most popular",
+      "headline": "More sources, the same quality",
+      "subheadline": "A free plan and one personal subscription. Stripe shows the Premium price before you confirm.",
+      "popularBadge": "More sources",
       "featureLabels": [
-        "RSS feeds",
-        "Users",
-        "Articles",
-        "Search",
-        "Bookmarks",
-        "AI features",
-        "Publishing"
+        "Sources",
+        "Schedule",
+        "Summaries",
+        "History"
       ],
       "plans": [
         {
           "name": "Free",
-          "price": "€0",
-          "period": "forever",
-          "description": "For individuals and small teams getting started with content monitoring.",
-          "cta": "Get started free",
-          "ctaHref": "#waitlist",
+          "price": "0 €",
+          "period": "free",
+          "description": "Start your personal digest.",
+          "cta": "Start free",
+          "ctaHref": "/register",
           "featured": false,
           "limits": [
-            "5 RSS feeds",
-            "1 user",
-            "100 articles / day",
-            "Full-text search",
-            "Bookmarks",
-            "—",
-            "—"
+            "3 RSS feeds",
+            "Weekly",
+            "Short, with source links",
+            "Included"
           ]
         },
         {
-          "name": "Team",
-          "price": "To be announced",
-          "period": "per seat / month",
-          "description": "For comms teams and marketing agencies who need AI and collaboration.",
-          "cta": "Join waitlist",
-          "ctaHref": "#waitlist",
+          "name": "Premium",
+          "price": "See pricing",
+          "period": "in Stripe",
+          "description": "Follow more sources without extra complexity.",
+          "cta": "Explore Premium",
+          "ctaHref": "/register",
           "featured": true,
           "limits": [
-            "30 RSS feeds",
-            "Up to 5 users",
-            "Unlimited articles",
-            "Full-text + semantic search",
-            "Bookmarks + annotations",
-            "1,000 AI calls / month",
-            "Newsletters and social drafts"
-          ]
-        },
-        {
-          "name": "Enterprise",
-          "price": "Custom",
-          "period": "contact us",
-          "description": "For organizations needing higher usage quotas.",
-          "cta": "Request access",
-          "ctaHref": "#waitlist",
-          "featured": false,
-          "limits": [
-            "Unlimited feeds",
-            "Unlimited users",
-            "Unlimited articles",
-            "Full-text + semantic search",
-            "Bookmarks + annotations",
-            "10,000 AI calls / month",
-            "Newsletters, drafts and API"
+            "20 RSS feeds",
+            "Weekly",
+            "Same quality",
+            "Included"
           ]
         }
       ]
     },
     "socialProof": {
       "label": "Product principles",
-      "headline": "Your team stays in control",
+      "headline": "You stay in control",
       "items": [
         {
-          "title": "Sources retained",
-          "description": "Summaries and drafts keep article links so readers can return to the source context."
+          "title": "Original source links",
+          "description": "Every summary links to its article. Check facts in their original context."
         },
         {
-          "title": "Scoped workspaces",
-          "description": "Personal reading and team collaboration have separate access permissions."
+          "title": "A personal account",
+          "description": "Your sources and digests are accessible only through your account."
         },
         {
           "title": "Explicit consent",
-          "description": "You control external AI processing, newsletter delivery and each social publication."
+          "description": "Enable or pause generation and emails in settings."
         }
       ]
     },
     "waitlist": {
-      "headline": "Be first in line.",
+      "headline": "Create my account",
       "subheadline": "Sign up to hear when early access opens. Confirm your email and withdraw your request whenever you choose.",
       "placeholder": "you@company.com",
       "button": "Join waitlist",
@@ -189,20 +156,20 @@ export const translations = {
   },
   "fr": {
     "meta": {
-      "title": "Signalist — Intelligence IA pour votre équipe",
-      "description": "Organisez vos flux RSS, sélectionnez des articles avec votre équipe et préparez des newsletters et des publications. Accès anticipé ; fonctions IA selon configuration."
+      "title": "Signalist — Ton digest RSS hebdomadaire",
+      "description": "Tes sources RSS, un email de veille chaque semaine avec les liens pour approfondir. Pour les indépendants qui veulent suivre leur secteur."
     },
     "nav": {
       "features": "Fonctionnalités",
       "pricing": "Tarifs",
-      "cta": "Rejoindre la liste"
+      "cta": "Créer mon compte"
     },
     "hero": {
-      "badge": "Accès anticipé disponible — rejoignez la liste d'attente",
-      "headline": "Fini de se noyer dans l'actualité.",
-      "headlineAccent": "Prenez le lead.",
-      "subheadline": "Rassemblez vos sources RSS, sélectionnez les articles utiles et préparez vos briefings dans un espace partagé. Les fonctions IA nécessitent un service configuré et votre consentement.",
-      "primaryCta": "Obtenir un accès anticipé",
+      "badge": "Veille individuelle · Digest hebdomadaire",
+      "headline": "Tes sources RSS.",
+      "headlineAccent": "Un email chaque semaine.",
+      "subheadline": "Tes sources RSS, un email de veille chaque semaine avec les liens pour approfondir. Pour les indépendants qui veulent suivre leur secteur.",
+      "primaryCta": "Commencer gratuitement",
       "secondaryCta": "Voir comment ça marche",
       "articles": [
         {
@@ -214,21 +181,21 @@ export const translations = {
         },
         {
           "tag": "Marketing",
-          "title": "Les idées à retenir pour votre prochain briefing",
+          "title": "Les faits à retenir cette semaine",
           "source": "Demo",
           "time": "exemple",
           "read": false
         },
         {
           "tag": "Veille",
-          "title": "Une source sélectionnée par votre équipe",
+          "title": "Un résumé court, un lien pour approfondir",
           "source": "Demo",
           "time": "exemple",
           "read": true
         },
         {
           "tag": "Secteur",
-          "title": "Une synthèse à préparer pour vos lecteurs",
+          "title": "Ta veille, sans surveiller chaque flux",
           "source": "Demo",
           "time": "exemple",
           "read": true
@@ -238,126 +205,93 @@ export const translations = {
     },
     "features": {
       "label": "Comment ça marche",
-      "headline": "Des flux bruts aux insights synthétisés",
-      "subheadline": "Un parcours simple, de la collecte à la publication approuvée.",
+      "headline": "Une veille simple, en trois étapes",
+      "subheadline": "Chaque lundi à 08:00 UTC. Aucun email si aucun nouvel article exploitable.",
       "items": [
         {
           "step": "01",
-          "title": "Surveiller",
-          "headline": "Vos sources dans une boîte de réception",
-          "description": "Classez vos sources RSS par catégories et recherchez vos articles par mot-clé. Les quotas dépendent du plan choisi."
+          "title": "Sources",
+          "headline": "Ajoute tes flux RSS",
+          "description": "Flux RSS ou Atom uniquement. Choisis les sources de ton secteur."
         },
         {
           "step": "02",
-          "title": "Sélectionner",
-          "headline": "Sélectionnez ensemble les contenus utiles",
-          "description": "Enregistrez les articles utiles, ajoutez des notes et collaborez avec des rôles administrateur, curateur et lecteur. Résumés et étiquettes IA disponibles après configuration."
+          "title": "Digest",
+          "headline": "Reçois une synthèse chaque semaine",
+          "description": "Quelques articles, des résumés courts et leurs liens. Active la génération IA et l’envoi depuis ton compte."
         },
         {
           "step": "03",
-          "title": "Synthétiser",
-          "headline": "Des newsletters à partir de vos favoris",
-          "description": "Composez des newsletters depuis vos favoris, choisissez un temps de lecture et une fréquence. L’envoi nécessite votre consentement."
-        },
-        {
-          "step": "04",
-          "title": "Publier",
-          "headline": "Vérifiez chaque publication avant envoi",
-          "description": "Préparez, modifiez et copiez un récapitulatif. Avec un compte configuré et connecté, approuvez sa publication sur LinkedIn, X ou Bluesky."
+          "title": "Historique",
+          "headline": "Retrouve tes digests",
+          "description": "Consulte les éditions passées dans ton espace personnel. Tu gardes ton historique après résiliation."
         }
       ]
     },
     "pricing": {
       "label": "Tarifs",
-      "headline": "Des plans adaptés à votre veille",
-      "subheadline": "Tarifs payants annoncés avant lancement. Facturation par siège, affichée dans le paiement. Services IA et API externes selon configuration.",
-      "popularBadge": "Le plus populaire",
+      "headline": "Plus de sources, même qualité",
+      "subheadline": "Une offre gratuite et un abonnement individuel. Le tarif Premium est affiché avant confirmation dans Stripe.",
+      "popularBadge": "Plus de sources",
       "featureLabels": [
-        "Flux RSS",
-        "Utilisateurs",
-        "Articles",
-        "Recherche",
-        "Favoris",
-        "Fonctions IA",
-        "Publication"
+        "Sources",
+        "Fréquence",
+        "Résumés",
+        "Historique"
       ],
       "plans": [
         {
-          "name": "Free",
-          "price": "€0",
-          "period": "pour toujours",
-          "description": "Pour les indépendants et les petites équipes qui démarrent avec la veille de contenu.",
+          "name": "Gratuit",
+          "price": "0 €",
+          "period": "gratuit",
+          "description": "Pour commencer ta veille personnelle.",
           "cta": "Commencer gratuitement",
-          "ctaHref": "#waitlist",
+          "ctaHref": "/register",
           "featured": false,
           "limits": [
-            "5 flux RSS",
-            "1 utilisateur",
-            "100 articles / jour",
-            "Recherche plein texte",
-            "Favoris",
-            "—",
-            "—"
+            "3 flux RSS",
+            "Hebdomadaire",
+            "Courts, avec liens",
+            "Inclus"
           ]
         },
         {
-          "name": "Team",
-          "price": "À annoncer",
-          "period": "par siège / mois",
-          "description": "Pour les équipes comms et agences marketing qui ont besoin de l'IA et de la collaboration.",
-          "cta": "Rejoindre la liste",
-          "ctaHref": "#waitlist",
+          "name": "Premium",
+          "price": "Voir le tarif",
+          "period": "dans Stripe",
+          "description": "Élargis ta veille sans ajouter de complexité.",
+          "cta": "Découvrir Premium",
+          "ctaHref": "/register",
           "featured": true,
           "limits": [
-            "30 flux RSS",
-            "Jusqu'à 5 utilisateurs",
-            "Articles illimités",
-            "Recherche plein texte + sémantique",
-            "Favoris + annotations",
-            "1 000 appels IA / mois",
-            "Newsletters et brouillons sociaux"
-          ]
-        },
-        {
-          "name": "Enterprise",
-          "price": "Sur mesure",
-          "period": "contactez-nous",
-          "description": "Pour les organisations nécessitant des quotas plus élevés.",
-          "cta": "Demander un accès",
-          "ctaHref": "#waitlist",
-          "featured": false,
-          "limits": [
-            "Flux illimités",
-            "Utilisateurs illimités",
-            "Articles illimités",
-            "Recherche plein texte + sémantique",
-            "Favoris + annotations",
-            "10 000 appels IA / mois",
-            "Newsletters, brouillons et API"
+            "20 flux RSS",
+            "Hebdomadaire",
+            "Même qualité",
+            "Inclus"
           ]
         }
       ]
     },
     "socialProof": {
       "label": "Choix de conception",
-      "headline": "Votre équipe garde le contrôle",
+      "headline": "Tu gardes le contrôle",
       "items": [
         {
-          "title": "Des sources conservées",
-          "description": "Les résumés et brouillons gardent des liens vers les articles pour retrouver leur contexte."
+          "title": "Des liens vers les sources",
+          "description": "Chaque résumé cite son article. Vérifie les informations dans leur contexte."
         },
         {
-          "title": "Des espaces séparés",
-          "description": "Lecture personnelle et collaboration disposent de droits d’accès distincts."
+          "title": "Un espace individuel",
+          "description": "Tes sources et tes digests restent accessibles uniquement depuis ton compte."
         },
         {
           "title": "Un consentement explicite",
-          "description": "Vous contrôlez le traitement IA, l’envoi de newsletters et chaque publication sociale."
+          "description": "Active ou suspends la génération et les emails depuis les paramètres."
         }
       ]
     },
     "waitlist": {
-      "headline": "Réservez votre place.",
+      "headline": "Créer mon compte",
       "subheadline": "Inscrivez-vous pour être informé de l’ouverture de l’accès anticipé. Confirmez votre email puis retirez votre demande à tout moment.",
       "placeholder": "vous@entreprise.com",
       "button": "Rejoindre la liste",

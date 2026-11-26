@@ -5,11 +5,17 @@ declare(strict_types=1);
 namespace App\Domain\Feed\MessageHandler;
 
 use App\Domain\Billing\Service\UsageBudget;
+use App\Domain\Digest\Service\SourcePolicy;
 use App\Domain\Feed\Message\CrawlFeedMessage;
 use App\Domain\Feed\Port\FeedRepositoryInterface;
 use App\Domain\Feed\Port\RssFetcherInterface;
 use App\Entity\Article;
 use App\Entity\Feed;
+use App\Entity\Organization;
+use App\Infrastructure\Async\JobLock;
+
+use function array_slice;
+
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -25,10 +31,23 @@ final readonly class CrawlFeedMessageHandler
         private EntityManagerInterface $entityManager,
         private LoggerInterface $logger,
         private ?UsageBudget $budget = null,
+        private ?SourcePolicy $sources = null,
+        private bool $mvpEnabled = false,
+        private ?JobLock $jobLock = null,
     ) {
     }
 
     public function __invoke(CrawlFeedMessage $message): void
+    {
+        if ($this->jobLock instanceof JobLock) {
+            $this->jobLock->run('crawl-'.$message->feedId, fn () => $this->crawl($message));
+
+            return;
+        }
+        $this->crawl($message);
+    }
+
+    private function crawl(CrawlFeedMessage $message): void
     {
         $feed = $this->feedRepository->find($message->feedId);
 
@@ -42,6 +61,10 @@ final readonly class CrawlFeedMessageHandler
             return;
         }
 
+        if ($this->mvpEnabled && $this->sources instanceof SourcePolicy && ($feed->getOrganization() instanceof Organization || $this->sources->needsSelection($feed->getOwner()))) {
+            return;
+        }
+
         try {
             $result = $this->rssFetcher->fetch($feed->getUrl());
 
@@ -51,9 +74,10 @@ final readonly class CrawlFeedMessageHandler
             }
 
             $newArticlesCount = 0;
-            foreach ($result->articles as $fetchedArticle) {
+            $seenGuids = [];
+            foreach (array_slice($result->articles, 0, 100) as $fetchedArticle) {
                 // Check if article already exists (by guid)
-                if ($this->articleExists($feed, $fetchedArticle->guid)) {
+                if (isset($seenGuids[$fetchedArticle->guid]) || $this->articleExists($feed, $fetchedArticle->guid)) {
                     continue;
                 }
 
@@ -61,6 +85,7 @@ final readonly class CrawlFeedMessageHandler
                     break;
                 }
 
+                $seenGuids[$fetchedArticle->guid] = true;
                 $article = new Article();
                 $article->setGuid($fetchedArticle->guid);
                 $article->setTitle($fetchedArticle->title);
@@ -88,6 +113,7 @@ final readonly class CrawlFeedMessageHandler
                 'newArticles' => $newArticlesCount,
             ]);
         } catch (Exception $e) {
+            $feed->setLastFetchedAt(new DateTimeImmutable());
             $feed->setStatus(Feed::STATUS_ERROR);
             $feed->setLastError('Feed could not be fetched. Check the URL and try again.');
             $feed->setUpdatedAt(new DateTimeImmutable());

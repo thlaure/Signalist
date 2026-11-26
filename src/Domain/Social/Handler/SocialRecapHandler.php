@@ -76,7 +76,7 @@ final readonly class SocialRecapHandler
         try {
             $recap->draft($this->formatter->format($recap->getPlatform(), $text));
         } catch (InvalidArgumentException $error) {
-            throw new BadRequestHttpException($error->getMessage());
+            throw new BadRequestHttpException($error->getMessage(), $error);
         }
         $this->entityManager->flush();
 

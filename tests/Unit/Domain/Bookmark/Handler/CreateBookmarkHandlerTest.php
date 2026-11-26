@@ -118,7 +118,7 @@ final class CreateBookmarkHandlerTest extends TestCase
     {
         $articleId = Uuid::v7()->toRfc4122();
         $article = $this->createArticleWithOwner($this->ownerId);
-        $existingBookmark = $this->createMock(Bookmark::class);
+        $existingBookmark = $this->createStub(Bookmark::class);
 
         $this->articleRepository
             ->expects($this->once())

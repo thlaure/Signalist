@@ -46,7 +46,7 @@ final readonly class CrosspostHandler
         try {
             $posts = $this->formatter->format($account->getProvider(), $input->text);
         } catch (InvalidArgumentException $error) {
-            throw new BadRequestHttpException($error->getMessage());
+            throw new BadRequestHttpException($error->getMessage(), $error);
         }
         $post = new Crosspost($account, $account->getRemoteId(), $posts, $this->adapter->recordKey($account->getProvider()));
         $this->entityManager->persist($post);

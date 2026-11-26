@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 final readonly class ConsentInput
 {
     public function __construct(
-        #[Assert\Choice(['external_ai', 'newsletter', 'marketing'])]
+        #[Assert\Choice(choices: ['external_ai', 'newsletter', 'marketing'])]
         public string $purpose,
         public bool $granted,
     ) {

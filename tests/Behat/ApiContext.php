@@ -14,8 +14,12 @@ use function array_key_exists;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Behat\Gherkin\Node\PyStringNode;
+use Behat\Hook\BeforeScenario;
 use Behat\Mink\Driver\BrowserKitDriver;
 use Behat\Mink\Session;
+use Behat\Step\Given;
+use Behat\Step\Then;
+use Behat\Step\When;
 
 use function count;
 
@@ -67,9 +71,7 @@ final class ApiContext implements Context
     ) {
     }
 
-    /**
-     * @BeforeScenario
-     */
+    #[BeforeScenario]
     public function resetDatabase(BeforeScenarioScope $scope): void
     {
         $database = $this->entityManager->getConnection()->getParams()['dbname'] ?? '';
@@ -90,9 +92,7 @@ final class ApiContext implements Context
         $this->jwtToken = null;
     }
 
-    /**
-     * @Given there are default users
-     */
+    #[Given('there are default users')]
     public function thereAreDefaultUsers(): void
     {
         $loader = new Loader();
@@ -104,9 +104,7 @@ final class ApiContext implements Context
         $this->entityManager->clear();
     }
 
-    /**
-     * @Given there is an unverified user :email with password :password
-     */
+    #[Given('there is an unverified user :email with password :password')]
     public function thereIsAnUnverifiedUser(string $email, string $password): void
     {
         $user = new User();
@@ -118,9 +116,7 @@ final class ApiContext implements Context
         $this->entityManager->clear();
     }
 
-    /**
-     * @Given I am authenticated as :email
-     */
+    #[Given('I am authenticated as :email')]
     public function iAmAuthenticatedAs(string $email): void
     {
         $this->getClient()->request(
@@ -144,17 +140,13 @@ final class ApiContext implements Context
         $this->lastResponseData = null;
     }
 
-    /**
-     * @Given I set the content type to JSON
-     */
+    #[Given('I set the content type to JSON')]
     public function iSetTheContentTypeToJson(): void
     {
         // Headers are set per-request
     }
 
-    /**
-     * @When I send a :method request to :url
-     */
+    #[When('I send a :method request to :url')]
     public function iSendARequestTo(string $method, string $url): void
     {
         $url = $this->replaceStoredVariables($url);
@@ -168,9 +160,7 @@ final class ApiContext implements Context
         $this->lastResponseData = null;
     }
 
-    /**
-     * @When I send a :method request to :url with body:
-     */
+    #[When('I send a :method request to :url with body:')]
     public function iSendARequestToWithBody(string $method, string $url, PyStringNode $body): void
     {
         $url = $this->replaceStoredVariables($url);
@@ -189,9 +179,7 @@ final class ApiContext implements Context
         $this->lastResponseData = null;
     }
 
-    /**
-     * @Then the response status code should be :code
-     */
+    #[Then('the response status code should be :code')]
     public function theResponseStatusCodeShouldBe(int $code): void
     {
         $actual = $this->session->getStatusCode();
@@ -206,9 +194,7 @@ final class ApiContext implements Context
         }
     }
 
-    /**
-     * @Then the response should be JSON
-     */
+    #[Then('the response should be JSON')]
     public function theResponseShouldBeJson(): void
     {
         $content = $this->session->getPage()->getContent();
@@ -222,9 +208,7 @@ final class ApiContext implements Context
         $this->lastResponseData = $data;
     }
 
-    /**
-     * @Then the JSON response should contain :key
-     */
+    #[Then('the JSON response should contain :key')]
     public function theJsonResponseShouldContain(string $key): void
     {
         $data = $this->getJsonResponse();
@@ -238,9 +222,7 @@ final class ApiContext implements Context
         }
     }
 
-    /**
-     * @Then the JSON response :key should equal :value
-     */
+    #[Then('the JSON response :key should equal :value')]
     public function theJsonResponseKeyShouldEqual(string $key, string $value): void
     {
         $data = $this->getJsonResponse();
@@ -264,9 +246,7 @@ final class ApiContext implements Context
         }
     }
 
-    /**
-     * @Then the JSON collection should be empty
-     */
+    #[Then('the JSON collection should be empty')]
     public function theJsonCollectionShouldBeEmpty(): void
     {
         $data = $this->getJsonResponse();
@@ -302,9 +282,7 @@ final class ApiContext implements Context
         }
     }
 
-    /**
-     * @Then the JSON collection should have :count items
-     */
+    #[Then('the JSON collection should have :count items')]
     public function theJsonCollectionShouldHaveItems(int $count): void
     {
         $data = $this->getJsonResponse();
@@ -325,9 +303,7 @@ final class ApiContext implements Context
         }
     }
 
-    /**
-     * @Then the JSON response should contain a valid UUID in :field
-     */
+    #[Then('the JSON response should contain a valid UUID in :field')]
     public function theJsonResponseShouldContainAValidUuidIn(string $field): void
     {
         $data = $this->getJsonResponse();
@@ -344,9 +320,7 @@ final class ApiContext implements Context
         }
     }
 
-    /**
-     * @Then the response content type should contain :contentType
-     */
+    #[Then('the response content type should contain :contentType')]
     public function theResponseContentTypeShouldContain(string $contentType): void
     {
         $actual = $this->session->getResponseHeader('Content-Type');
@@ -360,9 +334,7 @@ final class ApiContext implements Context
         }
     }
 
-    /**
-     * @Then the JSON response should be a RFC 7807 problem
-     */
+    #[Then('the JSON response should be a RFC 7807 problem')]
     public function theJsonResponseShouldBeRfc7807Problem(): void
     {
         $this->theResponseContentTypeShouldContain('application/problem+json');
@@ -372,9 +344,7 @@ final class ApiContext implements Context
         $this->theJsonResponseShouldContain('detail');
     }
 
-    /**
-     * @Given a category exists with name :name and slug :slug
-     */
+    #[Given('a category exists with name :name and slug :slug')]
     public function aCategoryExistsWithNameAndSlug(string $name, string $slug): void
     {
         $this->getClient()->request(
@@ -399,9 +369,7 @@ final class ApiContext implements Context
         $this->lastResponseData = null;
     }
 
-    /**
-     * @Given a feed exists with title :title and URL :url in category :slug
-     */
+    #[Given('a feed exists with title :title and URL :url in category :slug')]
     public function aFeedExistsWithTitleAndUrlInCategory(string $title, string $url, string $slug): void
     {
         // First, get the category ID by listing categories and finding by slug
@@ -454,9 +422,7 @@ final class ApiContext implements Context
         $this->lastResponseData = null;
     }
 
-    /**
-     * @Given an article exists with title :title in feed :feedTitle
-     */
+    #[Given('an article exists with title :title in feed :feedTitle')]
     public function anArticleExistsWithTitleInFeed(string $title, string $feedTitle): void
     {
         $feed = $this->entityManager->getRepository(Feed::class)->findOneBy(['title' => $feedTitle]);
@@ -479,9 +445,7 @@ final class ApiContext implements Context
         $this->lastResponseData = null;
     }
 
-    /**
-     * @Given I store the last article ID as :variable
-     */
+    #[Given('I store the last article ID as :variable')]
     public function iStoreTheLastArticleIdAs(string $variable): void
     {
         if (!isset($this->storedVariables['lastArticleId'])) {
@@ -491,9 +455,7 @@ final class ApiContext implements Context
         $this->storedVariables[$variable] = $this->storedVariables['lastArticleId'];
     }
 
-    /**
-     * @Given I store the response :field as :variable
-     */
+    #[Given('I store the response :field as :variable')]
     public function iStoreTheResponseFieldAs(string $field, string $variable): void
     {
         $data = $this->getJsonResponse();

@@ -56,7 +56,7 @@ final class AddFeedHandlerTest extends TestCase
         $categoryId = Uuid::v7()->toRfc4122();
         $url = 'https://example.com/feed.xml';
 
-        $user = $this->createMock(User::class);
+        $user = $this->createStub(User::class);
         $category = $this->createMock(Category::class);
 
         $ownerUuid = Uuid::fromString($this->ownerId);
@@ -108,8 +108,8 @@ final class AddFeedHandlerTest extends TestCase
     public function testInvokeWithDuplicateUrlThrowsFeedUrlAlreadyExistsException(): void
     {
         $url = 'https://example.com/feed.xml';
-        $existingFeed = $this->createMock(Feed::class);
-        $user = $this->createMock(User::class);
+        $existingFeed = $this->createStub(Feed::class);
+        $user = $this->createStub(User::class);
 
         $this->userRepository->method('find')->willReturn($user);
 
@@ -134,7 +134,7 @@ final class AddFeedHandlerTest extends TestCase
     {
         $categoryId = Uuid::v7()->toRfc4122();
         $url = 'https://example.com/feed.xml';
-        $user = $this->createMock(User::class);
+        $user = $this->createStub(User::class);
 
         $this->userRepository->method('find')->willReturn($user);
 
@@ -165,7 +165,7 @@ final class AddFeedHandlerTest extends TestCase
     {
         $categoryId = Uuid::v7()->toRfc4122();
         $url = 'https://example.com/feed.xml';
-        $user = $this->createMock(User::class);
+        $user = $this->createStub(User::class);
         $category = $this->createMock(Category::class);
 
         $otherOwnerId = Uuid::v7();

@@ -30,8 +30,8 @@ final class ListBookmarksHandlerTest extends TestCase
     public function testInvokeReturnsAllBookmarks(): void
     {
         $bookmarks = [
-            $this->createMock(Bookmark::class),
-            $this->createMock(Bookmark::class),
+            $this->createStub(Bookmark::class),
+            $this->createStub(Bookmark::class),
         ];
 
         $this->bookmarkRepository

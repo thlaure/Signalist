@@ -10,7 +10,7 @@ final readonly class InviteMemberInput
 {
     public function __construct(
         #[Assert\NotBlank] #[Assert\Email] #[Assert\Length(max: 180)] public string $email,
-        #[Assert\Choice(['admin', 'curator', 'reader'])] public string $role = 'reader',
+        #[Assert\Choice(choices: ['admin', 'curator', 'reader'])] public string $role = 'reader',
     ) {
     }
 }

@@ -31,8 +31,8 @@ final class ListArticlesHandlerTest extends TestCase
     public function testInvokeWithNoFiltersReturnsAllArticles(): void
     {
         $articles = [
-            $this->createMock(Article::class),
-            $this->createMock(Article::class),
+            $this->createStub(Article::class),
+            $this->createStub(Article::class),
         ];
 
         $this->articleRepository
@@ -62,7 +62,7 @@ final class ListArticlesHandlerTest extends TestCase
     public function testInvokeWithFeedIdFilterReturnsFilteredArticles(): void
     {
         $feedId = Uuid::v7()->toRfc4122();
-        $articles = [$this->createMock(Article::class)];
+        $articles = [$this->createStub(Article::class)];
 
         $this->articleRepository
             ->expects($this->once())
@@ -85,7 +85,7 @@ final class ListArticlesHandlerTest extends TestCase
 
     public function testInvokeWithIsReadFilterReturnsFilteredArticles(): void
     {
-        $articles = [$this->createMock(Article::class)];
+        $articles = [$this->createStub(Article::class)];
 
         $this->articleRepository
             ->expects($this->once())
@@ -147,7 +147,7 @@ final class ListArticlesHandlerTest extends TestCase
 
     public function testInvokeWithSearchFilterPassesSearchToRepository(): void
     {
-        $articles = [$this->createMock(Article::class)];
+        $articles = [$this->createStub(Article::class)];
 
         $this->articleRepository
             ->expects($this->once())

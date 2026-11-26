@@ -12,6 +12,7 @@ use function in_array;
 use function strlen;
 
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 /** @extends Voter<string, Organization> */
@@ -26,7 +27,7 @@ final class OrganizationVoter extends Voter
         return $subject instanceof Organization && in_array($attribute, ['organization.read', 'organization.write', 'organization.manage'], true);
     }
 
-    protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
+    protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token, ?Vote $vote = null): bool
     {
         $user = $token->getUser();
 

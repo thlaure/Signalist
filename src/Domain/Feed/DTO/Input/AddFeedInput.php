@@ -11,7 +11,7 @@ final readonly class AddFeedInput
 {
     public function __construct(
         #[Assert\NotBlank(message: 'The feed URL is required.')]
-        #[Assert\Url(message: 'The feed URL must be a valid URL.')]
+        #[Assert\Url(message: 'The feed URL must be a valid URL.', requireTld: false)]
         #[SsrfSafeUrl]
         public string $url,
 

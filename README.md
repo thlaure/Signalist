@@ -84,7 +84,7 @@ Full rules, limits and the API reference: [docs/MVP.md](docs/MVP.md).
 
 | Layer | Technology |
 |-------|------------|
-| **Backend** | PHP 8.5 · Symfony 7.4 · API Platform 4.x · FrankenPHP |
+| **Backend** | PHP 8.5 · Symfony 8.1 · API Platform 4.4 · FrankenPHP |
 | **Frontend** | React 19 · TypeScript · Vite 7 · MUI 7 · React Query · react-i18next |
 | **Database** | PostgreSQL 16 · pgvector (legacy search) |
 | **Queue** | Symfony Messenger · Scheduler · Redis |

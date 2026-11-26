@@ -37,8 +37,8 @@ final class ConnectionWorkflowTest extends DatabaseTestCase
         $gateway = $this->createMock(OAuthGatewayInterface::class);
         $gateway->method('configured')->willReturn(true);
         $gateway->method('authorizationUrl')->willReturn('https://provider.example/authorize');
-        $gateway->expects($this->once())->method('exchange')->with('x', 'private-code', $this->isType('string'))->willReturn(new OAuthTokens('private-access', 'private-refresh', new DateTimeImmutable('+1 hour'), 'remote-owner'));
-        $bluesky = $this->createMock(BlueskyGatewayInterface::class);
+        $gateway->expects($this->once())->method('exchange')->with('x', 'private-code', $this->isString())->willReturn(new OAuthTokens('private-access', 'private-refresh', new DateTimeImmutable('+1 hour'), 'remote-owner'));
+        $bluesky = $this->createStub(BlueskyGatewayInterface::class);
         $bus = self::getContainer()->get(MessageBusInterface::class);
         $handler = new ConnectionHandler($this->entityManager, $gateway, $cipher, $bus, $bluesky);
         $start = $handler->authorize($user, 'x');

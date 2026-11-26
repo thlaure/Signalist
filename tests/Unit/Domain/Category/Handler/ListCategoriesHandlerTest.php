@@ -30,8 +30,8 @@ final class ListCategoriesHandlerTest extends TestCase
     public function testInvokeReturnsAllCategories(): void
     {
         $categories = [
-            $this->createMock(Category::class),
-            $this->createMock(Category::class),
+            $this->createStub(Category::class),
+            $this->createStub(Category::class),
         ];
 
         $this->categoryRepository

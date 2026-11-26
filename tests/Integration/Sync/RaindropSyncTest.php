@@ -70,6 +70,6 @@ final class RaindropSyncTest extends DatabaseTestCase
 
     private function worker(TokenCipher $cipher, RaindropClientInterface $remote): SyncRaindropMessageHandler
     {
-        return new SyncRaindropMessageHandler($this->entityManager, new AccountTokens($this->entityManager, $this->createMock(OAuthGatewayInterface::class), $cipher), $remote, new SyncConflictResolver(), self::getContainer()->get(MessageBusInterface::class), new UsageBudget($this->entityManager->getConnection(), new PlanCatalog()));
+        return new SyncRaindropMessageHandler($this->entityManager, new AccountTokens($this->entityManager, $this->createStub(OAuthGatewayInterface::class), $cipher), $remote, new SyncConflictResolver(), self::getContainer()->get(MessageBusInterface::class), new UsageBudget($this->entityManager->getConnection(), new PlanCatalog()));
     }
 }

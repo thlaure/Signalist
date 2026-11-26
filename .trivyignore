@@ -1,0 +1,7 @@
+# Accepted vulnerabilities. Every entry needs a reason and a review trigger.
+
+# zod < 4.6.6 memory exhaustion (GHSA-mrhx-c7xc-m3w5), pulled in by the
+# Bluesky adapter. Every @atproto release still requires zod 3 and no zod 3
+# fix exists. Bluesky is disabled in the default MVP edition.
+# Remove once @atproto depends on zod >= 4.6.6.
+CVE-2023-54404

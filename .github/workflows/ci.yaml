@@ -134,9 +134,9 @@ jobs:
       - name: Build prod image
         run: docker build -f docker/frankenphp/Dockerfile -t signalist:ci .
 
-      - name: Validate patched runtime
+      - name: Validate runtime
         run: |
-          docker run --rm --entrypoint frankenphp signalist:ci build-info | grep -F 'golang.org/x/net' | grep -F 'v0.60.0'
+          docker run --rm --entrypoint php signalist:ci -r 'exit(version_compare(PHP_VERSION, "8.5.13", ">=") ? 0 : 1);'
           docker run --rm --entrypoint php signalist:ci -v
           docker run --rm --entrypoint frankenphp -e APP_DOMAIN=http://localhost signalist:ci validate --config /etc/caddy/Caddyfile
 
@@ -228,7 +228,21 @@ jobs:
         run: npm test
 
       - name: Audit dependencies
-        run: npm audit --audit-level=high
+        # GHSA-mrhx-c7xc-m3w5 (zod < 4.6.6) is accepted: every @atproto release
+        # still requires zod 3 and no zod 3 fix exists. Bluesky is disabled in
+        # the MVP edition. Remove the exception once @atproto moves to zod 4.
+        # Any other high or critical advisory still fails this step.
+        run: |
+          npm audit --json > audit.json || true
+          remaining=$(jq -r '[.vulnerabilities[].via[] | objects
+            | select(.severity == "high" or .severity == "critical")
+            | select(.url | endswith("GHSA-mrhx-c7xc-m3w5") | not)
+            | .url] | unique | .[]' audit.json)
+          if [ -n "$remaining" ]; then
+            echo "Unaccepted high or critical advisories:"
+            echo "$remaining"
+            exit 1
+          fi
 
   frontend:
     name: Frontend

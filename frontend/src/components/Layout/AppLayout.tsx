@@ -5,7 +5,6 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useTranslation } from 'react-i18next';
 import Sidebar from './Sidebar';
-import CommandPalette from './CommandPalette';
 import LoadingSpinner from '../Common/LoadingSpinner';
 
 const DRAWER_WIDTH = 240;
@@ -51,7 +50,6 @@ export default function AppLayout() {
         <Suspense fallback={<LoadingSpinner />}>
           <Outlet />
         </Suspense>
-        <CommandPalette />
       </Box>
     </Box>
   );

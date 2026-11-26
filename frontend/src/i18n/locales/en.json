@@ -41,7 +41,8 @@
     "haveAccount": "Already have an account?",
     "unexpectedError": "An unexpected error occurred. Please try again.",
     "passwordsMismatch": "Passwords do not match",
-    "resendVerification": "Resend verification email"
+    "resendVerification": "Resend verification email",
+    "passwordHelp": "At least 8 characters. No digits or symbols required."
   },
   "checkEmail": {
     "title": "Check your email",
@@ -400,5 +401,53 @@
     "delete": "Delete",
     "confirmDelete": "Delete this tag and remove it from your articles?",
     "empty": "No articles with this tag."
+  },
+  "mvp": {
+    "promise": "Your RSS sources, one weekly email with links to explore further.",
+    "navigation": "Main navigation",
+    "sources": "Sources",
+    "digests": "Digests",
+    "billing": "Subscription",
+    "settings": "Settings",
+    "sourcesHelp": "Add RSS or Atom feed addresses. Ordinary web pages are not supported.",
+    "failed": "Something went wrong. Please try again.",
+    "quota": "{{active}} active sources / {{limit}} allowed",
+    "selectionRequired": "Your quota changed. Select up to {{limit}} active sources to resume collection and digests. Your data is preserved.",
+    "rssUrl": "RSS feed address",
+    "add": "Add",
+    "noSources": "Add your first source to prepare your next digest.",
+    "feedError": "This feed is unreachable or invalid. Check its RSS address. It will be retried automatically.",
+    "saveSelection": "Save active sources",
+    "deleteSource": "Delete this source?",
+    "deleteSourceHelp": "The source and its articles will be deleted. Archived digests will remain available.",
+    "schedule": "Every Monday at 08:00 UTC. Articles collected in the previous seven days are included; no email when there are no usable new articles.",
+    "delivery": "Enable my digest",
+    "consentHelp": "Enable both options to prepare and receive your digest. You can turn them off anytime. Summaries are generated automatically: check original sources to verify facts.",
+    "restricted": "Processing is paused. You can resume it in settings.",
+    "aiPending": "AI generation requires local service configuration. Demo summaries will never be presented as real.",
+    "nextRun": "Next delivery: {{date}}",
+    "noDigests": "Your history will appear after the first weekly run following signup and activation.",
+    "read": "Read",
+    "free": "Free",
+    "paid": "Premium",
+    "sourceLimit": "Up to {{limit}} active sources",
+    "sameQuality": "The same summary quality and weekly schedule for everyone.",
+    "offer": "Free: {{free}} sources · Premium: {{paid}} sources",
+    "priceHelp": "Stripe shows the price and billing interval before you confirm.",
+    "downgrade": "After cancellation, your digests remain available. If you exceed the free quota, select your active sources to resume service.",
+    "status": {
+      "queued": "Queued",
+      "generating": "Generating summaries",
+      "setup_pending": "AI setup pending",
+      "selection_required": "Select your active sources",
+      "ready": "Ready to send",
+      "sending": "Sending",
+      "sent": "Sent",
+      "empty": "No usable new articles this week. No email sent.",
+      "cancelled": "Paused: check your consent and settings.",
+      "failed": "Generation failed after the allowed attempts.",
+      "uncertain": "Delivery uncertain. Read your digest here; it will not be resent automatically.",
+      "skipped": "Not sent: this week's edition could not be prepared in time."
+    }
   }
 }

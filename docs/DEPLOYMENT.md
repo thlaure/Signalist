@@ -1,10 +1,12 @@
 # Deployment and integration configuration
 
+The default edition is the personal weekly digest MVP (`SIGNALIST_MVP_ENABLED=true`); see [MVP.md](MVP.md) for its configuration. Sections below about workspaces, social providers, Raindrop and MCP apply only when MVP mode is disabled.
+
 The application and workers run locally. Public deployment, production migrations, real email delivery, payment operations and live social posting have not been executed. OpenAI setup was explicitly deferred; all external AI adapters currently report configuration pending.
 
 ## Local development
 
-Start Docker services with `SIGNALIST_HTTP_PORT=18000 SIGNALIST_HTTPS_PORT=18443 rtk docker compose up -d`. Run `rtk make db-migrate`, then `SIGNALIST_HTTP_PORT=18000 rtk make front-dev`. The standard setup uses port 8000. Passing `SIGNALIST_HTTP_PORT=18000` to both Compose and Vite keeps their development URLs aligned; `SIGNALIST_DEV_BACKEND_URL` can override the proxy target. Mailpit is at `http://localhost:8025`. The scheduler dispatches newsletter, billing and connection jobs; the worker consumes `oauth_priority` and `async`.
+Start Docker services with `SIGNALIST_HTTP_PORT=18000 SIGNALIST_HTTPS_PORT=18443 rtk docker compose up -d`. Run `rtk make db-migrate`, then `SIGNALIST_HTTP_PORT=18000 rtk make front-dev`. The standard setup uses port 8000. Passing `SIGNALIST_HTTP_PORT=18000` to both Compose and Vite keeps their development URLs aligned; `SIGNALIST_DEV_BACKEND_URL` can override the proxy target. Mailpit is at `http://localhost:8025`. Podman users can replace `docker compose` with `podman compose`. In MVP mode the scheduler dispatches weekly digest, billing and retention jobs (legacy mode: newsletter, billing, connection and retention jobs); the worker consumes `oauth_priority` and `async`.
 
 Run `rtk make quality`, `rtk make tests`, then `rtk make tests-api`. Backend test suites share a disposable database and must run sequentially. If Rector workers time out, use `rtk make quality RECTOR_FLAGS=--debug` to run the same Rector checks serially. Frontend checks: `rtk make front-lint`, `rtk make front-test`, `rtk npm run typecheck` from `frontend/`, and `rtk make front-build`. Landing: `rtk make landing-build` with Node 22.19+ (Node 24 recommended). Landing uses patched Astro 7; see its [upgrade guide](https://docs.astro.build/en/guides/upgrade-to/v7/). Offline Bluesky: `rtk docker compose exec app node --test integrations/bluesky/*.test.mjs` (Node 22.19+; container uses Node 24).
 
@@ -56,7 +58,7 @@ Raindrop sync imports and exports bookmarks in checkpointed batches. Local chang
 
 Set `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `STRIPE_TEAM_PRICE_ID`, and optionally `STRIPE_ENTERPRISE_PRICE_ID`. Price IDs must represent recurring per-seat prices. The final checkout price is authoritative; landing paid prices are unannounced. Configure the billing portal and point signed subscription webhooks at `/api/v1/billing/webhook`. Subscription reconciliation reads authoritative current provider state; expired entitlements fall back to Free.
 
-Defaults: Free 5 RSS feeds / 1 member / 100 daily imported articles / no AI calls; Team 30 feeds / 5 members / unlimited article intake / 1,000 monthly AI calls; Enterprise unlimited feeds/members/article intake / 10,000 monthly AI calls. Override `plan_limits` through deployment configuration after product review. AI quotas count provider operations, not tokens or currency. Seat changes enqueue Stripe quantity updates with prorations. Active subscriptions must be cancelled before deleting their billed account/workspace.
+Defaults: Free 3 RSS sources / 1 member / 100 daily imported articles / no AI calls; Team (sold as the individual Premium plan in MVP mode) 20 sources / 5 members / 100 daily articles / 1,000 monthly AI calls; Enterprise 20 sources / unlimited members / 100 daily articles / 10,000 monthly AI calls. `SIGNALIST_FREE_SOURCES` and `SIGNALIST_PAID_SOURCES` (1–20) override the source quotas. In MVP mode, organization billing is rejected and `StripeBillingGateway` reports billing as configured only with `sk_test_` keys. Override `plan_limits` through deployment configuration after product review. AI quotas count provider operations, not tokens or currency. Seat changes enqueue Stripe quantity updates with prorations. Active subscriptions must be cancelled before deleting their billed account/workspace.
 
 ## AI, privacy and retention
 

@@ -17,13 +17,13 @@ use Symfony\Component\Messenger\Exception\UnrecoverableMessageHandlingException;
 
 final readonly class StripeBillingGateway implements BillingGatewayInterface
 {
-    public function __construct(private string $secretKey, private string $teamPriceId, private string $enterprisePriceId, private string $frontendUrl, private string $webhookSecret)
+    public function __construct(private string $secretKey, private string $teamPriceId, private string $enterprisePriceId, private string $frontendUrl, private string $webhookSecret, private bool $allowLive = false)
     {
     }
 
     public function configured(): bool
     {
-        return !in_array('', [$this->secretKey, $this->teamPriceId, $this->webhookSecret], true);
+        return ($this->allowLive || str_starts_with($this->secretKey, 'sk_test_')) && !in_array('', [$this->secretKey, $this->teamPriceId, $this->webhookSecret], true);
     }
 
     public function customer(string $scopeId): string

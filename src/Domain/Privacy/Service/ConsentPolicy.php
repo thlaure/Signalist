@@ -6,6 +6,7 @@ namespace App\Domain\Privacy\Service;
 
 use App\Entity\User;
 use App\Entity\UserConsent;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 
 final readonly class ConsentPolicy
@@ -14,7 +15,7 @@ final readonly class ConsentPolicy
     {
     }
 
-    public function allows(User $user, string $purpose): bool
+    public function allows(User $user, string $purpose, ?DateTimeImmutable $notAfter = null): bool
     {
         if ($user->isDeleted() || $user->isProcessingRestricted()) {
             return false;
@@ -23,6 +24,6 @@ final readonly class ConsentPolicy
         $consent = $this->entityManager->getRepository(UserConsent::class)
             ->findOneBy(['user' => $user, 'purpose' => $purpose], ['createdAt' => 'DESC', 'id' => 'DESC']);
 
-        return $consent instanceof UserConsent && $consent->isGranted();
+        return $consent instanceof UserConsent && $consent->isGranted() && (!$notAfter instanceof DateTimeImmutable || $consent->getCreatedAt() <= $notAfter);
     }
 }

@@ -33,6 +33,7 @@ framework:
                     consumer: 'signalist_failed_worker'
 
         routing:
+            'App\Domain\Digest\Message\GenerateWeeklyDigestMessage': async
             'App\Domain\Spotlight\Message\AnswerArticleQuestionMessage': async
             'App\Domain\Privacy\Message\ApplyRetentionMessage': async
             'App\Domain\Social\Message\CrosspostMessage': async

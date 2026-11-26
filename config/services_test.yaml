@@ -27,3 +27,17 @@ services:
         arguments:
             $entityManager: '@doctrine.orm.entity_manager'
             $session: '@behat.mink.default_session'
+
+    App\Infrastructure\EventListener\MvpScopeListener:
+        arguments:
+            $mvpEnabled: false
+    App\Infrastructure\Scheduler\SignalistSchedule:
+        arguments:
+            $mvpEnabled: false
+
+    App\Domain\Feed\MessageHandler\CrawlFeedMessageHandler:
+        arguments:
+            $mvpEnabled: false
+    App\Domain\Billing\MessageHandler\CreateBillingLinkMessageHandler:
+        arguments:
+            $mvpEnabled: false

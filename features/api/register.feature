@@ -19,6 +19,18 @@ Feature: Authentication - Register
     And the response should be JSON
     And the JSON response should contain "message"
 
+  Scenario: Registration accepts eight characters without a complexity score
+    When I send a "POST" request to "/api/v1/auth/register" with body:
+      """
+      {
+        "email": "simple-password@example.test",
+        "password": "abcdefgh"
+      }
+      """
+    Then the response status code should be 201
+    And the response should be JSON
+    And the JSON response should contain "message"
+
   Scenario: Registration with duplicate email returns same generic response
     When I send a "POST" request to "/api/v1/auth/register" with body:
       """

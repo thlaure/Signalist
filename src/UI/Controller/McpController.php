@@ -50,9 +50,10 @@ final readonly class McpController
         if (null !== $origin && !in_array($origin, [$request->getSchemeAndHttpHost(), rtrim($this->frontendUrl, '/')], true)) {
             throw new AccessDeniedHttpException('Origin not permitted.');
         }
+        $origins = [rtrim($this->frontendUrl, '/')];
         $psr17 = new Psr17Factory();
         $bridge = new PsrHttpFactory($psr17, $psr17, $psr17, $psr17);
-        $response = $this->factory->create($user)->run(new StreamableHttpTransport($bridge->createRequest($request), $psr17, $psr17, middleware: array_map(static fn ($middleware) => $middleware instanceof DnsRebindingProtectionMiddleware ? new DnsRebindingProtectionMiddleware($hosts, $psr17, $psr17) : $middleware, StreamableHttpTransport::defaultMiddleware()), maxBodyBytes: 262144));
+        $response = $this->factory->create($user)->run(new StreamableHttpTransport($bridge->createRequest($request), $psr17, $psr17, middleware: array_map(static fn ($middleware) => $middleware instanceof DnsRebindingProtectionMiddleware ? new DnsRebindingProtectionMiddleware($hosts, $origins, $psr17, $psr17) : $middleware, StreamableHttpTransport::defaultMiddleware()), maxBodyBytes: 262144));
         $result = new HttpFoundationFactory()->createResponse($response);
         $result->headers->set('Cache-Control', 'no-store');
 

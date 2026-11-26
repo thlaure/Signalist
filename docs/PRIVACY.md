@@ -14,6 +14,10 @@ PHP authorization values use sodium secretbox. Bluesky SDK stores use AES-GCM wi
 
 Optional retention: 90-day unbookmarked articles (both personal and shared bookmarks protect them), expired OAuth attempts/sessions, seven-day unconfirmed waitlist entries, 30-day access events and deleted-account tombstones. It defaults to disabled/dry-run; the operator must authorize and enable it. Failure queues, infrastructure logs, backups and remote services need additional retention and deletion procedures.
 
+## Weekly digest (MVP edition)
+
+Digest generation requires a verified email, unrestricted processing and both `newsletter` and `external_ai` consents granted before the weekly cutoff (Monday 08:00 UTC). Consent is checked again immediately before inference and before sending; withdrawal cancels the edition. Inference uses a local Ollama endpoint only, so article text does not leave the deployment. Prompts contain cleaned, anonymized article titles and text; account IDs, email addresses and source URLs are excluded. Stored editions keep titles, links, source names and summaries; they are included in the JSON export and erased with the account. Removing a source deletes its articles but keeps already archived editions.
+
 ## Operator and supplier register to complete before public launch
 
 | Field | Required deployment decision |
@@ -22,7 +26,7 @@ Optional retention: 90-day unbookmarked articles (both personal and shared bookm
 | Purposes/legal bases | Authentication, reading, collaboration, optional processing, marketing and billing |
 | Hosting/backup | Provider, locations, access controls, backup lifetime and restore/deletion policy |
 | Email supplier | Provider, sender identity, delivery logs, retention and deletion process |
-| AI supplier | Deferred; record exact provider/model, input categories, purposes, training use, retention, locations and agreement before enabling |
+| AI supplier | Weekly digest: local Ollama, no external supplier. Other AI features deferred; record exact provider/model, input categories, purposes, training use, retention, locations and agreement before enabling |
 | Stripe | Contract/account configuration, payment roles, statutory retention and request handling |
 | Raindrop/LinkedIn/X/Bluesky | User-authorized functions, scopes, retained data, revocation and remote deletion process |
 | Analytics | Off by default; record configured Plausible deployment and public-page data collection if enabled |
